@@ -1,0 +1,26 @@
+.loadMoreBtn {
+  width: 372px;
+  height: 54px;
+  background-color: #9b6c43; /* Light brown */
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 12px; /* округлення по макету */
+  padding: 0 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.loadMoreBtn:hover {
+  background-color: #855732;
+}
+
+.loadMoreBtn:active {
+  transform: scale(0.98);
+}
+
+.loadMoreBtn:disabled {
+  background-color: #d3d3d3; /* Light gray */
+  cursor: not-allowed;
+}

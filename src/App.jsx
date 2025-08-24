@@ -4,8 +4,7 @@ import { getIsLoggedIn } from './redux/auth/selectors.js';
 
 // Імпорт компонентів
 import { Layout } from './component/Layout/Layout.jsx';
-import LoginPage from './pages/LoginPage/LoginPage.jsx';
-import RegisterPage from './pages/RegisterPage/RegisterPage.jsx';
+import AuthPage from './pages/AuthPage/AuthPage.jsx';
 import HomePage from './pages/HomePage/HomePage.jsx';
 import AddRecipePage from './pages/AddRecipePage/AddRecipePage.jsx';
 import ProfilePage from './pages/ProfilePage/ProfilePage.jsx';
@@ -31,23 +30,16 @@ const App = () => {
         <Route index element={<HomePage />} />
         <Route path="recipe-view/:recipeId" element={<RecipeViewPage />} />
 
-        {/* Маршрути для реєстрації та входу */}
+        {/* Маршрут для авторизації */}
         <Route
-          path="login"
+          path="auth/:authType"
           element={
             <PublicRoute>
-              <LoginPage />
+              <AuthPage />
             </PublicRoute>
           }
         />
-        <Route
-          path="register"
-          element={
-            <PublicRoute>
-              <RegisterPage />
-            </PublicRoute>
-          }
-        />
+
         {/* Приватні маршрути */}
         <Route
           path="add-recipe"

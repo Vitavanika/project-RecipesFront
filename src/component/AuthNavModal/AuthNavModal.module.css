@@ -1,0 +1,165 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow: auto;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 56px 24px 32px;
+
+  background: #faf3e0;
+  border-radius: 32px;
+
+  max-width: 362px;
+}
+
+@media only screen and (min-width: 768px) {
+  .container {
+    padding: 56px 32px;
+    width: 420px;
+    max-width: 420px;
+  }
+}
+
+.closeModalButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+}
+
+@media only screen and (min-width: 768px) {
+  .closeModalButton {
+    right: 32px;
+  }
+}
+
+.closeIcon {
+  width: 14;
+  height: 14px;
+  fill: #000000;
+}
+
+.title {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 39px;
+
+  text-align: center;
+
+  color: #000000;
+}
+
+.descr {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.55;
+  text-align: center;
+
+  color: #000000;
+}
+
+.navBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+@media only screen and (min-width: 768px) {
+  .navBlock {
+    flex-direction: row;
+    gap: 27px;
+  }
+}
+
+.loginNavButton {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  color: #000000;
+  padding: 16px 0;
+
+  width: 314px;
+  height: 54px;
+
+  border: 1px solid #000000;
+  border-radius: 8px;
+}
+
+.loginNavButton:hover,
+.loginNavButton:focus {
+  background: #d9d9d9;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+}
+
+.loginNavButton:active {
+  box-shadow: 0px 0px 0px 6px #4e46b41f;
+  box-shadow: 0px 0px 0px 2px #ffffff;
+}
+
+.registerNavButton {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  color: #ffffff;
+  padding: 16px 0;
+
+  width: 314px;
+  height: 54px;
+
+  background: #9b6c43;
+  border-radius: 8px;
+}
+
+.registerNavButton:hover,
+.registerNavButton:focus {
+  background: #6d554b;
+}
+
+.registerNavButton:active {
+  box-shadow: 0px 0px 0px 6px #4e46b41f;
+  box-shadow: 0px 0px 0px 2px #ffffff;
+}
+
+@media only screen and (min-width: 768px) {
+  .loginNavButton,
+  .registerNavButton {
+    padding: 8px;
+    width: 164.5px;
+    height: 36px;
+  }
+}

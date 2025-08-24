@@ -1,0 +1,33 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+}
+
+@media only screen and (min-width: 768px) {
+  .container {
+    flex-direction: row;
+    align-items: center;
+    gap: 32px;
+  }
+}
+
+.link {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 20px;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.link:hover,
+.link:focus {
+  color: #ffffff80;
+}
+
+.link:active {
+  color: #ffffff;
+  text-decoration: underline;
+}

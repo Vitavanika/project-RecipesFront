@@ -1,0 +1,47 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 0;
+  background-color: #3d2218;
+  font-family: 'Monserat';
+}
+
+@media only screen and (min-width: 1440px) {
+  .container {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 35px 108px;
+  }
+}
+
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.logoIcon {
+  fill: #ffffff;
+  width: 32px;
+  height: 32px;
+}
+
+.logoText {
+  font-family: 'Montserrat';
+  font-weight: 600;
+  font-style: normal;
+  font-size: 18.01px;
+  line-height: 22px;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+}
+
+.descr {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 15px;
+}

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { getIsLoggedIn } from './redux/auth/selectors.js';
 
 // Імпорт компонентів
-import Layout from './component/Layout/Layout.jsx';
+import { Layout } from './component/Layout/Layout.jsx';
 import LoginPage from './pages/LoginPage/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage/RegisterPage.jsx';
 import HomePage from './pages/HomePage/HomePage.jsx';

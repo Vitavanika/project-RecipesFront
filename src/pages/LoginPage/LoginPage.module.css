@@ -58,6 +58,34 @@
     box-shadow: 0 0 0 4px rgba(78, 70, 180, 0.2);
 }
 
+.passwordWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.passwordWrapper input {
+    /* padding-right: 40px; */
+}
+
+.eyeButton {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0;
+}
+
+.eyeIcon{
+    width: 16px;
+    height: 14px;
+    stroke-width: 1px;
+    stroke: #000;
+}
+
 .error {
     font-weight: 400;
     font-size: 12px;

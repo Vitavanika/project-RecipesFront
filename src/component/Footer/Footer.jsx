@@ -7,7 +7,7 @@ export const Footer = () => {
     <div className={styles.container}>
       <div className={styles.logoContainer}>
         <svg className={styles.logoIcon} width="32" height="32">
-          <use href="/assets/sprites.svg#logo"></use>
+          <use href="/images/icons.svg#icon-Group-6884"></use>
         </svg>
         <p className={styles.logoText}>Tasteorama</p>
       </div>

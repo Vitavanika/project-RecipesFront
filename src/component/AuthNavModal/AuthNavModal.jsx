@@ -1,9 +1,16 @@
 import { forwardRef } from 'react';
 import { NavLink } from 'react-router';
+import { clsx } from 'clsx';
 
 import styles from './AuthNavModal.module.css';
 
 export const AuthNavModal = forwardRef(({ onClick }, ref) => {
+  const loginNavButtonClassName = clsx(styles.loginNavButton, 'button-outline');
+  const registerNavButtonButtonClassName = clsx(
+    styles.registerNavButton,
+    'button-fill'
+  );
+
   return (
     <div className={styles.overlay}>
       <div ref={ref} className={styles.container}>
@@ -21,14 +28,14 @@ export const AuthNavModal = forwardRef(({ onClick }, ref) => {
           <NavLink
             to="auth/login"
             onClick={onClick}
-            className={styles.loginNavButton}
+            className={loginNavButtonClassName}
           >
             Log in
           </NavLink>
           <NavLink
             to="auth/register"
             onClick={onClick}
-            className={styles.registerNavButton}
+            className={registerNavButtonButtonClassName}
           >
             Register
           </NavLink>

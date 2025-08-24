@@ -6,7 +6,6 @@
   align-items: center;
   padding: 24px 0;
   background-color: #3d2218;
-  font-family: 'Monserat';
 }
 
 @media only screen and (min-width: 1440px) {
@@ -30,9 +29,7 @@
 }
 
 .logoText {
-  font-family: 'Montserrat';
   font-weight: 600;
-  font-style: normal;
   font-size: 18.01px;
   line-height: 22px;
   letter-spacing: -0.03em;
@@ -40,8 +37,7 @@
 }
 
 .descr {
-  font-style: normal;
-  font-weight: 400;
   font-size: 12px;
   line-height: 15px;
+  color: #ffffff;
 }

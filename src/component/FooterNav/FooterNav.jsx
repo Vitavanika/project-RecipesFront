@@ -39,19 +39,19 @@ export const FooterNav = () => {
     <>
       <ul className={styles.container}>
         <li>
-          <NavLink to="/" className={styles.link}>
+          <NavLink to="/" className="link">
             Recipes
           </NavLink>
         </li>
         {!isLoggingIn && (
           <li>
-            <p className={styles.link} onClick={toggleModalState}>
+            <p className="link" onClick={toggleModalState}>
               Account
             </p>
           </li>
         )}
         {isLoggedIn && (
-          <NavLink to="profile" className={styles.link}>
+          <NavLink to="profile" className="link">
             Account
           </NavLink>
         )}

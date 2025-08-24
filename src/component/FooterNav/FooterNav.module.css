@@ -4,6 +4,14 @@
   gap: 44px;
 }
 
+@media only screen and (min-width: 768px) {
+  .container {
+    flex-direction: row;
+    align-items: center;
+    gap: 32px;
+  }
+}
+
 .link {
   font-family: 'Montserrat';
   font-style: normal;
@@ -20,5 +28,6 @@
 }
 
 .link:active {
+  color: #ffffff;
   text-decoration: underline;
 }

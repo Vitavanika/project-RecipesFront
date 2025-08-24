@@ -1,10 +1,19 @@
 import { FooterNav } from '../FooterNav/FooterNav';
 
+import styles from './Footer.module.css';
+
 export const Footer = () => {
   return (
-    <div className="footer">
-      <div className="logo">Tasteorama</div>
-      <p>© 2025 CookingCompanion. All rights reserved.</p>
+    <div className={styles.container}>
+      <div className={styles.logoContainer}>
+        <svg className={styles.logoIcon} width="32" height="32">
+          <use href="/assets/sprites.svg#logo"></use>
+        </svg>
+        <p className={styles.logoText}>Tasteorama</p>
+      </div>
+      <p className={styles.descr}>
+        © 2025 CookingCompanion. All rights reserved.
+      </p>
       <FooterNav />
     </div>
   );

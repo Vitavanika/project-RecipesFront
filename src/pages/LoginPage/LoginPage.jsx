@@ -2,15 +2,14 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-// import { useState } from 'react';
+import { useState } from 'react';
 import { loginUser } from '../../redux/auth/slice'; 
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import s from './LoginPage.module.css';
 
 // SVG
-// import EyeOpen from '../../images/eye-open.svg';
-// import EyeClosed from '../../images/eye-closed.svg';
+import icons from '../../images/icons.svg';
 
 const validationSchema = Yup.object({
   email: Yup.string()
@@ -26,9 +25,9 @@ export default function LoginPage() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
     const authState = useSelector((state) => state.auth);
-//     const [passwordVisible, setPasswordVisible] = useState(false);
+    const [passwordVisible, setPasswordVisible] = useState(false);
 
-//   const togglePassword = () => setPasswordVisible(!passwordVisible);
+  const togglePassword = () => setPasswordVisible(!passwordVisible);
 
   return (
     <main className={s.page}>
@@ -74,21 +73,22 @@ export default function LoginPage() {
              <div className={s.passwordWrapper}>
                   <Field
                     className={s.input}
-                    // type={passwordVisible ? 'text' : 'password'}
+                    type={passwordVisible ? 'text' : 'password'}
                     name="password"
                     placeholder="*********"
                     autoComplete="current-password"
                   />
-                  {/* <button
+                  <button
                     type="button"
                     className={s.eyeButton}
                     onClick={togglePassword}
                   >
-                    <img 
-                      src={passwordVisible ? EyeOpen : EyeClosed} 
-                      alt="toggle password visibility" 
-                    />
-                  </button> */}
+                    <svg className={s.eyeIcon}>
+                      <use 
+                        href={`${icons}#${passwordVisible ? 'icon-eye-open' : 'icon-eye-crossed'}`} 
+                      />
+                    </svg>
+                  </button>
                 </div>
                 <ErrorMessage
                   name="password"

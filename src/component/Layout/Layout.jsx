@@ -1,12 +1,12 @@
-import { Header } from '../Header/Header';
+//import { Header } from '../Header/Header';
 import { Footer } from '../Footer/Footer';
 
 import { Outlet } from 'react-router';
 
 export const Layout = () => {
   return (
-    <div>
-      <Header />
+    <div className={styles.container}>
+      {/* <Header /> */}
       <Outlet />
       <Footer />
     </div>

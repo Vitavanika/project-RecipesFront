@@ -22,7 +22,7 @@ export const Header = () => {
             <Logo />
             <BurgerButton isOpen={isMenuOpen} onClick={toggleMenu} />
         </div>
-        {isMenuOpen && <MobileMenu onclose={closeMenu} />}
+        {isMenuOpen && <MobileMenu onClose={closeMenu} />}
       </header>
     );
 }

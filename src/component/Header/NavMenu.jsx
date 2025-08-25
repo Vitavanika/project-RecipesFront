@@ -5,20 +5,26 @@ import { useSelector } from "react-redux";
 import { getIsLoggedIn } from "../../redux/auth/selectors";
 import { ProfileBlock } from "./ProfileBlock";
 
-export const NavMenu = () => {
+export const NavMenu = ({onClose}) => {
   const isAuth = useSelector(getIsLoggedIn);
 
   if (!isAuth) {
     return (
       <ul className={css.menuList}>
         <li>
-          <Link to="/">Recipes</Link>
+          <Link to="/" onClick={onClose}>
+            Recipes
+          </Link>
         </li>
         <li>
-          <Link to="auth/login">Log in</Link>
+          <Link to="auth/login" onClick={onClose}>
+            Log in
+          </Link>
         </li>
         <li>
-          <Link to="auth/register">Register</Link>
+          <Link to="auth/register" onClick={onClose}>
+            Register
+          </Link>
         </li>
       </ul>
     );
@@ -27,16 +33,22 @@ export const NavMenu = () => {
   return (
     <ul className={css.navMenuList}>
       <li>
-        <Link to="/">Recipes</Link>
+        <Link to="/" onClick={onClose}>
+          Recipes
+        </Link>
       </li>
       <li>
-        <Link to="profile/:recipeType">My Profile</Link>
+        <Link to="profile/:recipeType" onClick={onClose}>
+          My Profile
+        </Link>
       </li>
       <li>
-        <ProfileBlock />
+        <ProfileBlock onClose={onClose} />
       </li>
       <li>
-        <Link to="add-recipe">Add Recipes</Link>
+        <Link to="add-recipe" onClick={onClose}>
+          Add Recipes
+        </Link>
       </li>
     </ul>
   );

@@ -1,6 +1,6 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { NavLink, useLocation } from 'react-router';
+import { Navigate, NavLink, useLocation } from 'react-router';
 import { getIsLoggedIn } from '../../redux/auth/selectors';
 import { AuthNavModal } from '../AuthNavModal/AuthNavModal';
 import styles from './FooterNav.module.css';

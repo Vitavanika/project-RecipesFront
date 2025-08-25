@@ -12,6 +12,10 @@
   }
 }
 
+.navlink:focus {
+  outline: none; /* remove default */
+}
+
 .link {
   font-family: 'Montserrat';
   font-style: normal;
@@ -22,8 +26,15 @@
   cursor: pointer;
 }
 
-.link:hover,
+.link:hover {
+  color: #ffffff80;
+}
+
 .link:focus {
+  outline: none;
+}
+
+.link:focus-visible {
   color: #ffffff80;
 }
 

@@ -5,7 +5,7 @@
   justify-content: center;
   align-items: center;
   padding: 24px 0;
-  background-color: #3d2218;
+  background-color: var(--color-dark-brown);
   font-family: 'Monserat';
 }
 
@@ -24,19 +24,18 @@
 }
 
 .logoIcon {
-  fill: #ffffff;
+  fill: var(--color-white);
   width: 32px;
   height: 32px;
 }
 
 .logoText {
-  font-family: 'Montserrat';
   font-weight: 600;
   font-style: normal;
   font-size: 18.01px;
   line-height: 22px;
   letter-spacing: -0.03em;
-  color: #ffffff;
+  color: var(--color-white);
 }
 
 .descr {
@@ -44,4 +43,5 @@
   font-weight: 400;
   font-size: 12px;
   line-height: 15px;
+  color: var(--color-white);
 }

@@ -1,6 +1,7 @@
 .card {
   position: relative;
-  width: 300px;
+  width: 343px;
+  height: 335px;
   background: transparent;
   border-radius: 8px;
   overflow: hidden;
@@ -20,10 +21,22 @@
 
 .cardImageContainer {
   position: relative;
-  width: 100%;
+  width: 343px;
   height: 323px;
   overflow: hidden;
   border-radius: 8px;
+}
+
+@media screen and (min-width: 768px) {
+  .cardImageContainer {
+    width: 336px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .cardImageContainer {
+    width: 300px;
+  }
 }
 
 .cardImage {
@@ -54,11 +67,16 @@
   font-size: 16px;
   font-weight: 500;
   line-height: 1.25;
-  color: #22252a;
+  color: #3e4462;
   margin: 0;
   flex: 1;
   margin-right: 16px;
   font-family: 'Poppins', sans-serif;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cardTime {
@@ -76,20 +94,21 @@
   width: 14px;
   height: 14px;
   stroke: #3e4462;
+  flex-shrink: 0;
 }
 
 .cardDescription {
   font-size: 12px;
   line-height: 1.33;
-  color: #23262a;
+  color: #3e4462;
   margin-bottom: 18px;
   display: -webkit-box;
   -webkit-line-clamp: 4;
   line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  height: 50px;
   font-family: 'Poppins', sans-serif;
+  opacity: 0.8;
 }
 
 .cardInfo {
@@ -98,7 +117,7 @@
 
 .cardCalories {
   font-size: 12px;
-  color: #23262a;
+  color: #3e4462;
   margin: 0;
   font-family: 'Poppins', sans-serif;
 }
@@ -119,9 +138,10 @@
   font-size: 12px;
   font-weight: 400;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   font-family: 'Poppins', sans-serif;
   min-width: 87px;
+  line-height: 1.5;
 }
 
 .learnMoreBtn:hover,
@@ -138,8 +158,9 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  transition: all 0.3s ease;
   padding: 0;
+  flex-shrink: 0;
 }
 
 .favoriteBtn:hover {
@@ -172,16 +193,24 @@
 
   .cardDescription {
     font-size: 14px;
-    height: 65px;
   }
 
   .cardCalories {
     font-size: 14px;
+  }
+
+  .cardTitle {
+    font-size: 16px;
   }
 }
 
 @media screen and (min-width: 1440px) {
   .cardContent {
     padding: 24px;
+  }
+
+  .learnMoreBtn {
+    padding: 12px 32px;
+    min-width: 110px;
   }
 }

@@ -1,0 +1,30 @@
+.img {
+  border-radius: 8px;
+  width: 361px;
+  height: 276px;
+  margin: 48px 0 32px;
+}
+@media only screen and (min-width: 768px) {
+  .img {
+    width: 704px;
+    height: 624px;
+    margin: 0 0 32px;
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  .container {
+    width: 1226px;
+    height: 624px;
+    border-radius: 8px;
+    background-color: #2b2d30;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 0 32px;
+  }
+  .img {
+    margin: 0;
+    border-radius: 0;
+  }
+}

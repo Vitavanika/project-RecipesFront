@@ -1,11 +1,14 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { logOut } from '../../redux/auth/operations';
-import { getUserData } from '../../redux/auth/selectors';
+// import css from "./ProfileBlock.module.css";
+import { Link } from "react-router";
+
+import { useDispatch, useSelector } from "react-redux";
+import { logOut } from "../../redux/auth/operations";
+import { getUserData } from "../../redux/auth/selectors";
 
 export const ProfileBlock = () => {
   const dispatch = useDispatch();
   const user = useSelector(getUserData);
-  const firstName = user.name.split(' ')[0] || 'User';
+  const firstName = user.name.split(" ")[0] || "User";
   const firstLetter = firstName[0].toUpperCase();
 
   const handleLogout = () => {
@@ -13,25 +16,15 @@ export const ProfileBlock = () => {
   };
 
   return (
-    <ul className={css.profileList}>
-      <li>
-        <Link to="/">Recipes</Link>
-      </li>
-      <li>
-        <Link to="profile">My Profile</Link>
-      </li>
-      <li>
+    <div>
         <div>{firstLetter}</div>
         <span>{firstName}</span>
-              <button type="button" onClick={handleLogout}>
-                  <svg width="" height="">
-                   <use href=""></use>
-                  </svg>
+        <button type="button" onClick={handleLogout}>
+            <svg width="" height="">
+                <use href=""></use>
+            </svg>
         </button>
-      </li>
-      <li>
-        <Link to="add-recipe">Add Recipes</Link>
-      </li>
-    </ul>
+    </div>
+
   );
 };

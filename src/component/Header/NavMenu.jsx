@@ -30,10 +30,10 @@ export const NavMenu = () => {
         <Link to="/">Recipes</Link>
       </li>
       <li>
-        <Link to="auth/login">Log in</Link>
+        <Link to="profile">My Profile</Link>
       </li>
       <li>
-        <Link to="auth/register">Register</Link>
+        <Link to="add-recipe">Add Recipes</Link>
       </li>
       <li>
         <ProfileBlock />

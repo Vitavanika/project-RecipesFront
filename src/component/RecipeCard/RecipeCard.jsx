@@ -1,5 +1,7 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import css from './RecipeCard.module.css';
+import sprite from '../../images/icons.svg';
 
 const RecipeCard = ({
   recipe,
@@ -8,21 +10,19 @@ const RecipeCard = ({
   isFavorite,
   onOpenAuthModal,
 }) => {
+  const navigate = useNavigate();
   const handleLearnMoreClick = () => {
-    console.log(`Navigate to /recipes/${recipe._id}`);
+    navigate(`/recipes/${recipe._id}`);
   };
 
   const handleFavoriteClick = async () => {
     if (!isAuthenticated) {
-      // Виклик функції для відкриття модального вікна авторизації
       onOpenAuthModal();
       return;
     }
 
-    // Запит на бекенд для додавання/видалення з обраних
     try {
-      await onToggleFavorite(recipe._id, isFavorite);
-      // Логіка оновлення стану "обраного" відбудеться після успішного запиту
+      await onToggleFavorite(recipe._id, !isFavorite);
     } catch (error) {
       console.error('Помилка при оновленні обраного:', error);
     }
@@ -37,25 +37,34 @@ const RecipeCard = ({
         <div className={css.cardHeader}>
           <h3 className={css.cardTitle}>{recipe.title}</h3>
           <div className={css.cardTime}>
-            <span className={css.cardTimeIcon}>🕐</span>
-            <span>{recipe.time}</span>
+            <svg className={css.cardTimeIcon} aria-label="Time">
+              <use href={`${sprite}#icon-clock`} />
+            </svg>
+            <span>{recipe.time} min</span>
           </div>
         </div>
         <p className={css.cardDescription}>{recipe.description}</p>
-        <p className={css.cardCalories}>
-          {recipe.calories ? `${recipe.calories} cals` : '—'}
-        </p>
+        <div className={css.cardInfo}>
+          <p className={css.cardCalories}>
+            {recipe.calories ? `${recipe.calories} calories` : '—'}
+          </p>
+        </div>
         <div className={css.cardActions}>
-          <button className={css.cardButton} onClick={handleLearnMoreClick}>
+          <button className={css.learnMoreBtn} onClick={handleLearnMoreClick}>
             Learn more
           </button>
           <button
-            className={`${css.cardSaveButton} ${
-              isFavorite ? css.isFavorite : ''
+            className={`${css.favoriteBtn} ${
+              isFavorite ? css.favoriteBtnActive : ''
             }`}
             onClick={handleFavoriteClick}
+            aria-label={
+              isFavorite ? 'Remove from favorites' : 'Add to favorites'
+            }
           >
-            <span className={css.cardSaveIcon}>{isFavorite ? '❤️' : '🤍'}</span>
+            <svg className={css.favoriteIcon} aria-label="Favorite">
+              <use href={`${sprite}#icon-bookmark`} />
+            </svg>
           </button>
         </div>
       </div>

@@ -1,18 +1,42 @@
 .card {
-  width: 300px;
-  background-color: #fcfcfc;
-  border-radius: 12px;
+  position: relative;
+  width: 343px;
+  height: 335px;
+  background: transparent;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  font-family: 'Poppins', sans-serif;
-  border: 1px solid #e0e0e0;
+}
+
+@media screen and (min-width: 768px) {
+  .card {
+    width: 336px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .card {
+    width: 300px;
+  }
 }
 
 .cardImageContainer {
   position: relative;
-  width: 100%;
-  height: 200px;
+  width: 343px;
+  height: 323px;
   overflow: hidden;
+  border-radius: 8px;
+}
+
+@media screen and (min-width: 768px) {
+  .cardImageContainer {
+    width: 336px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .cardImageContainer {
+    width: 300px;
+  }
 }
 
 .cardImage {
@@ -23,104 +47,170 @@
 }
 
 .cardContent {
+  position: absolute;
+  bottom: 26px;
+  left: 18px;
+  right: 18px;
   padding: 16px;
+  background: #ffffff;
+  border-radius: 8px;
 }
 
 .cardHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+  align-items: flex-start;
+  margin-bottom: 14px;
 }
 
 .cardTitle {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: #3e4462;
   margin: 0;
-  color: #333;
+  flex: 1;
+  margin-right: 16px;
+  font-family: 'Poppins', sans-serif;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .cardTime {
   display: flex;
   align-items: center;
   gap: 4px;
-  background-color: #f7f7f7;
-  border-radius: 14px;
-  padding: 4px 10px;
-  font-size: 0.8rem;
+  font-size: 14px;
+  color: #3e4462;
+  white-space: nowrap;
   font-weight: 500;
-  color: #777;
+  font-family: 'Poppins', sans-serif;
 }
 
 .cardTimeIcon {
   width: 14px;
   height: 14px;
-  color: #777;
+  stroke: #3e4462;
+  flex-shrink: 0;
 }
 
 .cardDescription {
-  font-size: 0.9rem;
-  color: #555;
-  line-height: 1.4;
-  margin-bottom: 4px;
+  font-size: 12px;
+  line-height: 1.33;
+  color: #3e4462;
+  margin-bottom: 18px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+  opacity: 0.8;
+}
+
+.cardInfo {
+  margin-bottom: 16px;
 }
 
 .cardCalories {
-  font-size: 0.85rem;
-  color: #888;
-  margin-bottom: 16px;
+  font-size: 12px;
+  color: #3e4462;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
 }
 
 .cardActions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 16px;
+  gap: 8px;
 }
 
-.cardButton {
-  padding: 10px 24px;
-  background-color: transparent;
-  color: #ff9f43;
-  border: 1px solid #ff9f43;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
-}
-
-.cardButton:hover {
-  background-color: #ff9f43;
-  color: #fff;
-  transform: translateY(-2px);
-}
-
-.cardSaveButton {
-  margin-left: 16px;
-  width: 40px;
-  height: 40px;
-  background-color: #f7f7f7;
+.learnMoreBtn {
+  padding: 8px 14px;
+  background-color: #8baa36;
+  color: #fafafa;
   border: none;
-  border-radius: 50%;
+  border-radius: 24px;
+  font-size: 12px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  min-width: 87px;
+  line-height: 1.5;
+}
+
+.learnMoreBtn:hover,
+.learnMoreBtn:focus {
+  background-color: #22252a;
+}
+
+.favoriteBtn {
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  padding: 0;
+  flex-shrink: 0;
 }
 
-.cardSaveButton.isFavorite {
-  background-color: #ff9f43;
+.favoriteBtn:hover {
+  transform: scale(1.1);
 }
 
-.cardSaveIcon {
-  width: 20px;
-  height: 20px;
-  color: #555;
+.favoriteIcon {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: #8baa36;
+  stroke-width: 1.5px;
   transition: all 0.3s ease;
 }
 
-.cardSaveButton.isFavorite .cardSaveIcon {
-  color: #fff;
+.favoriteBtnActive .favoriteIcon {
+  fill: #8baa36;
+  stroke: #8baa36;
+}
+
+@media screen and (min-width: 768px) {
+  .cardContent {
+    padding: 28px;
+  }
+
+  .learnMoreBtn {
+    padding: 12px 32px;
+    font-size: 14px;
+  }
+
+  .cardDescription {
+    font-size: 14px;
+  }
+
+  .cardCalories {
+    font-size: 14px;
+  }
+
+  .cardTitle {
+    font-size: 16px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .cardContent {
+    padding: 24px;
+  }
+
+  .learnMoreBtn {
+    padding: 12px 32px;
+    min-width: 110px;
+  }
 }

@@ -1,12 +1,12 @@
 import { useRef, useEffect, useCallback, useState } from 'react';
-//import { useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { NavLink, useLocation } from 'react-router';
-//import { selectIsLoggedIn } from 'store';
+import { getIsLoggedIn } from '../../redux/auth/selectors';
 import { AuthNavModal } from '../AuthNavModal/AuthNavModal';
 import styles from './FooterNav.module.css';
 
 export const FooterNav = () => {
-  const isLoggedIn = false;
+  const isLoggedIn = useSelector(getIsLoggedIn);
   const location = useLocation();
   const isLoggingIn = /register|login/i.test(location.pathname);
   const modalRef = useRef(null);

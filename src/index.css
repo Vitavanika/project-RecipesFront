@@ -1,52 +1,89 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* Основні кольори */
+  --color-black: #000;
+  --color-gray: #595d62;
+  --color-white: #fff;
+  --color-light-brown: #9b6c43;
+  --color-light-beige: #faf3e0;
+  --color-light-gray: #d9d9d9;
+  --color-dark-brown: #3d2218;
+  --color-background: #fbfcf8;
+  --color-brown: #6d554b;
+  --color-gray-2: #c5c5c5;
+  --color-gray-3: #9f9f9f;
+  --color-social-media: rgba(255, 255, 255, 0);
+  --color-icon-gray: #3a3a3a;
+  --color-dark-gray: #323232;
+  --color-red: #c80000;
+  --color-beige: #e3caa5;
+  --color-beige-2: #edd9aa;
+  
+  /* Кольори з прозорістю */
+  --color-white-55: rgba(255, 255, 255, 0.55);
+  --color-white-80: rgba(255, 255, 255, 0.8);
+  --color-black-60: rgba(0, 0, 0, 0.6);
+  --color-black-50: rgba(0, 0, 0, 0.5);
+  --color-dark-brown-65: rgba(61, 34, 24, 0.65);
+  
+  /* Типографія */
+  --font-family-primary: "Montserrat", sans-serif;
+  --font-family-secondary: "DM Sans", sans-serif;
+}
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+/* Reset CSS */
+html {
+  scroll-behavior: smooth;
+  box-sizing: border-box;
+}
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
 }
 
 body {
-  font-family: sans-serif;
-  line-height: 1.5;
+  margin: 0;
+  font-family: var(--font-family-primary);
+  background-color: var(--color-background);
+  color: var(--color-black);
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p {
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex-grow: 1;
+}
+
+h1, h2, h3, h4, h5, h6, p {
   margin: 0;
 }
 
-ul,
-ol {
-  margin: 0;
-  padding: 0;
-}
-
-img {
-  display: block;
-  max-width: 100%;
-}
-
-li {
+ul, ol {
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
 a {
-  margin: 0;
-  padding: 0;
   text-decoration: none;
+  color: inherit;
+}
+
+button {
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+  background: none;
 }

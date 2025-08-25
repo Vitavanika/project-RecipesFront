@@ -1,20 +1,11 @@
 import css from "./MobileMenu.module.css";
+import { NavMenu } from "./NavMenu";
 
-import { useState } from "react";
-import { Logo } from "./Logo";
-import { BurgerButton } from "./BurgerButton";
-
-export const MobileMenu = ({ onClose }) => {
-    const [isOpen] = useState(true);
-
+export const MobileMenu = () => {
     return (
-        <div>
-            <header className={css.header}>
-                <Logo />
-                <BurgerButton isOpen={isOpen} onClick={onClose} />
-            </header>
+        <div className={css.menuContainer}>
             <nav>
-                <p>NavMenu</p>
+                <NavMenu />
             </nav>
         </div>
     );

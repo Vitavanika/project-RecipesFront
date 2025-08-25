@@ -3,7 +3,7 @@ import css from './Logo.module.css';
 
 export const Logo = () => {
     return (
-      <Link to="/">
+      <Link className={css.container} to="/">
         <svg className={css.logoIcon} width="32" height="30">
           <use href="/src/images/icons.svg#icon-Group-6884"></use>
         </svg>

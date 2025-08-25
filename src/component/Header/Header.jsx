@@ -18,8 +18,10 @@ export const Header = () => {
 
     return (
       <header className={css.header}>
-        <Logo />
-        <BurgerButton isOpen={isMenuOpen} onClick={toggleMenu} />
+        <div className={css.headerWrapper}>
+            <Logo />
+            <BurgerButton isOpen={isMenuOpen} onClick={toggleMenu} />
+        </div>
         {isMenuOpen && <MobileMenu onclose={closeMenu} />}
       </header>
     );

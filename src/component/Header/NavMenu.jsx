@@ -1,4 +1,4 @@
-import css from "./MobileMenu.module.css";
+import css from "./NavMenu.module.css";
 
 import { Link } from "react-router";
 import { useSelector } from "react-redux";
@@ -10,7 +10,7 @@ export const NavMenu = () => {
 
   if (!isAuth) {
     return (
-      <ul className={css.menuList} >
+      <ul className={css.menuList}>
         <li>
           <Link to="/">Recipes</Link>
         </li>
@@ -25,18 +25,18 @@ export const NavMenu = () => {
   }
 
   return (
-    <ul>
+    <ul className={css.navMenuList}>
       <li>
         <Link to="/">Recipes</Link>
       </li>
       <li>
-        <Link to="profile">My Profile</Link>
-      </li>
-      <li>
-        <Link to="add-recipe">Add Recipes</Link>
+        <Link to="profile/:recipeType">My Profile</Link>
       </li>
       <li>
         <ProfileBlock />
+      </li>
+      <li>
+        <Link to="add-recipe">Add Recipes</Link>
       </li>
     </ul>
   );

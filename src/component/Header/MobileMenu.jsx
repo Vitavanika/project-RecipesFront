@@ -4,7 +4,7 @@ import { NavMenu } from "./NavMenu";
 export const MobileMenu = () => {
     return (
         <div className={css.menuContainer}>
-            <nav>
+            <nav >
                 <NavMenu />
             </nav>
         </div>

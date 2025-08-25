@@ -8,7 +8,7 @@ import { selectError, selectFavRecipes, selectLoading, selectOwnRecipes } from "
 import { fetchFavRecipes, fetchOwnRecipes } from "../../redux/recipes/operations";
 
 import ProfileNavigation from "../../component/ProfileNavigation/ProfileNavigation";
-import RecipesList from "../../component/RecipesList/RecipesList";
+// import RecipesList from "../../component/RecipesList/RecipesList";
 import LoadMoreBtn from "../../component/LoadMoreBtn/LoadMoreBtn";
 
 
@@ -39,7 +39,7 @@ const ProfilePage = () => {
       <ProfileNavigation/>
       {loading && <p>Loading...</p>}
       {error && <p>Something went wrong</p>}
-      {!loading && !error && <RecipesList recipes={recipeListToRender}/>}
+      {/* {!loading && !error && <RecipesList recipes={recipeListToRender}/>} */}
       <LoadMoreBtn/>
     </div>
   );

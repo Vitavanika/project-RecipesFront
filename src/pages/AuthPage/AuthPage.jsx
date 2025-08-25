@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router';
 import LoginForm from '../../component/LoginForm/LoginForm.jsx';
 import RegistrationForm from '../../component/RegistrationForm/RegistrationForm.jsx';
 import css from './AuthPage.module.css';

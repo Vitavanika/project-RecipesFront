@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 
-axios.defaults.baseURL = 'https://project-recipesback.onrender.com/';
+axios.defaults.baseURL = 'https://project-recipesback.onrender.com/api'; ;
 
 // Додає токен до заголовка запитів
 const setAuthHeader = token => {

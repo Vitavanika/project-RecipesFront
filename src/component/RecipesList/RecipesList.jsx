@@ -9,9 +9,23 @@ export default function RecipesList({
   onLearnMore,
   onToggleFavorite,
   onDelete,
+  onOpenAuthModal,
+  isAuthenticated = false,
   emptyMessage = 'No recipes found',
 }) {
-  if (!isLoading && items.length === 0) {
+  if (isLoading) {
+    return (
+      <div className={styles.loader} role="status" aria-live="polite">
+        <span className={styles.spinner} /> Loading…
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className={styles.error}>⚠ {error}</div>;
+  }
+
+  if (items.length === 0) {
     return <div className={styles.empty}>{emptyMessage}</div>;
   }
 
@@ -19,29 +33,17 @@ export default function RecipesList({
     <div className={styles.wrap}>
       {items.map(r => (
         <RecipeCard
-          key={r.id}
-          id={r.id}
-          title={r.title}
-          description={r.description}
-          imageUrl={r.imageUrl}
-          calories={r.calories}
-          prepTime={r.prepTime}
-          isFavorite={r.isFavorite}
+          key={r._id || r.id}
+          recipe={r}
           variant={variant}
+          isAuthenticated={isAuthenticated}
           onLearnMore={onLearnMore}
           onToggleFavorite={onToggleFavorite}
           onDelete={onDelete}
+          onOpenAuthModal={onOpenAuthModal}
           disabled={r._pending === true}
         />
       ))}
-
-      {isLoading && (
-        <div className={styles.loader} role="status" aria-live="polite">
-          <span className={styles.spinner} /> Loading…
-        </div>
-      )}
-
-      {!!error && <div className={styles.error}>⚠ {error}</div>}
     </div>
   );
 }

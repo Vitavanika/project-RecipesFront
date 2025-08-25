@@ -5,15 +5,12 @@ import { useNavigate, Link } from 'react-router';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { register } from '../../redux/auth/operations'; 
+import { register } from '../../redux/auth/operations';
 import css from './RegistrationForm.module.css';
 import icons from '../../images/icons.svg';
 
-
 const RegisterSchema = Yup.object().shape({
-  email: Yup.string()
-    .email('Invalid email format')
-    .required('Required field'),
+  email: Yup.string().email('Invalid email format').required('Required field'),
   name: Yup.string()
     .min(2, 'Minimum 2 characters')
     .max(16, 'Maximum 16 characters')
@@ -34,16 +31,26 @@ const RegistrationForm = () => {
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
   const togglePassword = () => setPasswordVisible(!passwordVisible);
-  const toggleConfirmPassword = () => setConfirmPasswordVisible(!confirmPasswordVisible);
+  const toggleConfirmPassword = () =>
+    setConfirmPasswordVisible(!confirmPasswordVisible);
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    const dataToSend = {
+      name: values.name,
+      email: values.email,
+      password: values.password,
+    };
+    console.log('Sending data:', values);
+
     try {
-      await dispatch(register(values)).unwrap();
+      await dispatch(register(dataToSend)).unwrap();
       toast.success('Registration successful!');
       navigate('/');
       resetForm();
     } catch (rejectedValueOrSerializedError) {
-      toast.error(rejectedValueOrSerializedError.message || 'Registration failed');
+      toast.error(
+        rejectedValueOrSerializedError.message || 'Registration failed'
+      );
     } finally {
       setSubmitting(false);
     }
@@ -53,18 +60,22 @@ const RegistrationForm = () => {
     <div className={css.card}>
       <h1 className={css.title}>Register</h1>
       <p className={css.subtitle}>
-        Join our community of culinary enthusiasts, save your favorite
-        recipes, and share your cooking creations
+        Join our community of culinary enthusiasts, save your favorite recipes,
+        and share your cooking creations
       </p>
 
       <Formik
-        initialValues={{ name: '', email: '', password: '', confirmPassword: '' }}
+        initialValues={{
+          name: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+        }}
         validationSchema={RegisterSchema}
         onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
           <Form className={css.form}>
-
             <label className={css.label}>
               <span className={css.labelText}>Enter your email address</span>
               <Field
@@ -74,7 +85,11 @@ const RegistrationForm = () => {
                 placeholder="email@gmail.com"
                 autoComplete="email"
               />
-              <ErrorMessage name="email" component="div" className={css.error} />
+              <ErrorMessage
+                name="email"
+                component="div"
+                className={css.error}
+              />
             </label>
 
             <label className={css.label}>
@@ -99,13 +114,25 @@ const RegistrationForm = () => {
                   placeholder="*********"
                   autoComplete="new-password"
                 />
-                <button type="button" className={css.eyeButton} onClick={togglePassword}>
+                <button
+                  type="button"
+                  className={css.eyeButton}
+                  onClick={togglePassword}
+                >
                   <svg className={css.eyeIcon}>
-                    <use href={`${icons}#${passwordVisible ? 'icon-eye-open' : 'icon-eye-crossed'}`} />
+                    <use
+                      href={`${icons}#${
+                        passwordVisible ? 'icon-eye-open' : 'icon-eye-crossed'
+                      }`}
+                    />
                   </svg>
                 </button>
               </div>
-              <ErrorMessage name="password" component="div" className={css.error} />
+              <ErrorMessage
+                name="password"
+                component="div"
+                className={css.error}
+              />
             </label>
 
             <label className={css.label}>
@@ -118,30 +145,50 @@ const RegistrationForm = () => {
                   placeholder="*********"
                   autoComplete="new-password"
                 />
-                <button type="button" className={css.eyeButton} onClick={toggleConfirmPassword}>
+                <button
+                  type="button"
+                  className={css.eyeButton}
+                  onClick={toggleConfirmPassword}
+                >
                   <svg className={css.eyeIcon}>
-                    <use href={`${icons}#${confirmPasswordVisible ? 'icon-eye-open' : 'icon-eye-crossed'}`} />
+                    <use
+                      href={`${icons}#${
+                        confirmPasswordVisible
+                          ? 'icon-eye-open'
+                          : 'icon-eye-crossed'
+                      }`}
+                    />
                   </svg>
                 </button>
               </div>
-              <ErrorMessage name="confirmPassword" component="div" className={css.error} />
+              <ErrorMessage
+                name="confirmPassword"
+                component="div"
+                className={css.error}
+              />
             </label>
 
             <label className={css.checkboxLabel}>
-              <Field type="checkbox" name="terms" />
-              I agree to the Terms of Service and Privacy Policy
+              <Field type="checkbox" name="terms" />I agree to the Terms of
+              Service and Privacy Policy
             </label>
 
-            <button type="submit" className={css.submitBtn} disabled={isSubmitting}>
+            <button
+              type="submit"
+              className={css.submitBtn}
+              disabled={isSubmitting}
+            >
               Create account
             </button>
-
           </Form>
         )}
       </Formik>
 
       <p className={css.hint}>
-        Already have an account? <Link to="/auth/login" className={css.link}>Log in</Link>
+        Already have an account?{' '}
+        <Link to="/auth/login" className={css.link}>
+          Log in
+        </Link>
       </p>
     </div>
   );

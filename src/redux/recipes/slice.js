@@ -22,7 +22,7 @@ const recipesReducer = createSlice({
         })
         .addCase(fetchOwnRecipes.fulfilled, (state, action) => {
             state.loading = false;
-            state.items = action.payload;
+            state.own.items = action.payload;
         })
         .addCase(fetchOwnRecipes.rejected, (state) => {
             state.loading = false;

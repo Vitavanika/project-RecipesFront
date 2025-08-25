@@ -12,7 +12,7 @@ const setAuthHeader = token => {
 export const fetchOwnRecipes = createAsyncThunk("recipes/getOwn", async (_, thunkAPI) => { 
     try {
         const state = thunkAPI.getState();
-        setAuthHeader (`Bearer ${state.auth.token}`);
+        setAuthHeader (state.auth.token);
         const response = await axios.get("api/recipes");
         return response.data.data;
     } catch (error) {
@@ -25,7 +25,7 @@ export const fetchOwnRecipes = createAsyncThunk("recipes/getOwn", async (_, thun
  export const fetchFavRecipes = createAsyncThunk("recipes/getFavRecipes", async (_, thunkAPI) => { 
     try {
         const state = thunkAPI.getState();
-        setAuthHeader (`Bearer ${state.auth.token}`);
+        setAuthHeader (state.auth.token);
         const response = await axios.get("api/recipes/favorite");
         return response.data.data;
     } catch (error) {

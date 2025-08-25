@@ -1,0 +1,11 @@
+.logoIcon {
+    fill: #fff;
+}
+
+.logoTitle {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: -0.03em;
+    color: #fff;
+}

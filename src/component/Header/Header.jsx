@@ -1,24 +1,26 @@
 import css from './Header.module.css';
-// import { useSelector } from 'react-redux';
 
-// import { getIsLoggedIn } from '../../redux/auth/selectors';
+import { useState } from "react";
+import { Logo } from "./Logo";
+import { BurgerButton } from "./BurgerButton";
+import { MobileMenu } from "./MobileMenu";
 
 export const Header = () => {
-//   const isLoggedIn = useSelector(getIsLoggedIn);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  return (
-    <header className={css.header}>
-      <div className={css.logoContainer}>
-        <svg className={css.logoIcon} width="32" height="30">
-          <use href="/src/images/icons.svg#icon-Group-6884"></use>
-        </svg>
-        <p className={css.logoTitle}>Tasteorama</p>
-      </div>
-      <button className={css.burgerBtn}>
-        <svg className={css.burgerIcon} width="20" height="14">
-          <use href="/src/images/icons.svg#icon-burger-regular"></use>
-        </svg>
-      </button>
-    </header>
-  );
+    const toggleMenu = () => {
+        setIsMenuOpen(prev => !prev);
+    };
+
+    const closeMenu = () => {
+        setIsMenuOpen(false);
+    }
+
+    return (
+      <header className={css.header}>
+        <Logo />
+        <BurgerButton isOpen={isMenuOpen} onClick={toggleMenu} />
+        {isMenuOpen && <MobileMenu onclose={closeMenu} />}
+      </header>
+    );
 }

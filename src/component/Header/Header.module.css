@@ -6,26 +6,3 @@
     background: #3d2218;
 }
 
-.logoContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 4px;
-}
-
-.logoIcon {
-    fill: #fff;
-}
-
-.logoTitle {
-    font-family: "Montserrat", sans-serif;
-    font-weight: 600;
-    font-size: 18px;
-    letter-spacing: -0.03em;
-    color: #fff;
-}
-
-.burgerBtn {
-    stroke-width: 1.33px;
-    stroke: #fff;
-}

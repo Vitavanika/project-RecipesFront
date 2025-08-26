@@ -1,0 +1,164 @@
+/* ===== Base (mobile first) ===== */
+.authContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 120px);
+    background-color: #fbfcf8;
+}
+
+.card {
+    width: 100%;
+    max-width: 362px;
+    background-color: #FAF3E0;
+    border-radius: 20px;
+    padding: 48px 32px;
+}
+
+.title {
+    font-weight: 600;
+    font-size: 32px;
+    text-align: center;
+    color: #000;
+    margin-bottom: 20px;
+}
+
+.subtitle {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.55;
+    text-align: center;
+    color: #000;
+    margin-bottom: 24px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.label {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.labelText {
+    font-weight: 400;
+    font-size: 12px;
+    color: #000;
+}
+
+.input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    font-size: 16px;
+    line-height: 1.55;
+    color: #9f9f9f;
+    background-color: #fff;
+    outline: none;
+}
+
+.input:focus {
+    border: 1.50px solid #9b6c43;
+    box-shadow: 0 0 0 4px rgba(78, 70, 180, 0.2);
+}
+
+.passwordWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+
+.eyeButton {
+    position: absolute;
+    right: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0;
+}
+
+.eyeIcon {
+    width: 16px;
+    height: 14px;
+    stroke-width: 1px;
+    stroke: #000;
+}
+
+.error {
+    font-weight: 400;
+    font-size: 12px;
+    color: red;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #000;
+}
+
+.submitBtn {
+    margin-top: 8px;
+    padding: 12px 16px;
+    width: 100%;
+    background-color: #9b6c43;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.submitBtn:hover:focus {
+    background-color: #6d554b;
+}
+
+.submitBtn:active {
+    box-shadow: 0 0 0 6px rgba(78, 70, 180, 0.12), 0 0 0 2px #fff;
+}
+
+.hint {
+    margin-top: 16px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.55;
+    text-align: center;
+    color: #000;
+}
+
+.link {
+    color: #000;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-skip-ink: none;
+    cursor: pointer;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+/* ===== Tablet ===== */
+@media (min-width: 768px) {
+    .card {
+        max-width: 522px;
+    }
+}
+
+/* ===== Desktop ===== */
+@media (min-width: 1024px) {
+    .card {
+        max-width: 420px;
+    }
+}

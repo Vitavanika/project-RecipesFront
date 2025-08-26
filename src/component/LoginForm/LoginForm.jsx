@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
 import { toast } from 'react-hot-toast';
-import s from '../../pages/AuthPage/AuthPage.module.css';
+import { logIn } from '../../redux/auth/operations';
+import css from '../../pages/AuthPage/AuthPage.module.css';
 import icons from '/sprite.svg';
 
 const LoginSchema = Yup.object().shape({
@@ -22,11 +23,11 @@ export default function LoginForm() {
   const authState = useSelector((state) => state.auth);
   const [passwordVisible, setPasswordVisible] = useState(false);
 
-    const togglePassword = () => setPasswordVisible(!passwordVisible);
+  const togglePassword = () => setPasswordVisible(!passwordVisible);
     
-    const handleSubmit = async (values, { setSubmitting }) => {
+  const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      await dispatch((values)).unwrap();
+      await dispatch(logIn(values)).unwrap();
       toast.success('Login successful!');
       navigate('/');
     } catch (err) {
@@ -37,8 +38,8 @@ export default function LoginForm() {
   };
 
   return (
-    <section className={s.card}>
-      <h1 className={s.title}>Login</h1>
+    <section className={css.card}>
+      <h1 className={css.title}>Login</h1>
 
       <Formik
         initialValues={{ email: '', password: '' }}
@@ -46,11 +47,11 @@ export default function LoginForm() {
         onSubmit={handleSubmit}
       >
         {({ isSubmitting }) => (
-          <Form className={s.form} noValidate>
-            <label className={s.label}>
-              <span className={s.labelText}>Enter your email address</span>
+          <Form className={css.form} noValidate>
+            <label className={css.label}>
+              <span className={css.labelText}>Enter your email address</span>
               <Field
-                className={s.input}
+                className={css.input}
                 type="email"
                 name="email"
                 placeholder="email@gmail.com"
@@ -59,15 +60,15 @@ export default function LoginForm() {
               <ErrorMessage
                 name="email"
                 component="div"
-                className={s.error}
+                className={css.error}
               />
             </label>
 
-            <label className={s.label}>
-              <span className={s.labelText}>Create a strong password</span>
-              <div className={s.passwordWrapper}>
+            <label className={css.label}>
+              <span className={css.labelText}>Create a strong password</span>
+              <div className={css.passwordWrapper}>
                 <Field
-                  className={s.input}
+                  className={css.input}
                   type={passwordVisible ? 'text' : 'password'}
                   name="password"
                   placeholder="*********"
@@ -75,10 +76,10 @@ export default function LoginForm() {
                 />
                 <button
                   type="button"
-                  className={s.eyeButton}
+                  className={css.eyeButton}
                   onClick={togglePassword}
                 >
-                  <svg className={s.eyeIcon}>
+                  <svg className={css.eyeIcon}>
                     <use
                       href={`${icons}#${passwordVisible ? 'icon-eye-open' : 'icon-eye-crossed'}`}
                     />
@@ -88,28 +89,28 @@ export default function LoginForm() {
               <ErrorMessage
                 name="password"
                 component="div"
-                className={s.error}
+                className={css.error}
               />
             </label>
 
             <button
               type="submit"
-              className={s.submitBtn}
+              className={css.submitBtn}
               disabled={isSubmitting || authState.isLoading}
             >
               {authState.isLoading ? 'Logging in...' : 'Login'}
             </button>
 
             {authState.error && (
-              <div className={s.errorServer}>{authState.error}</div>
+              <div className={css.errorServer}>{authState.error}</div>
             )}
           </Form>
         )}
       </Formik>
 
-      <p className={s.hint}>
+      <p className={css.hint}>
         Don’t have an account?{' '}
-        <Link to="/auth/register" className={s.link}>Register</Link>
+        <Link to="/auth/register" className={css.link}>Register</Link>
       </p>
     </section>
   );

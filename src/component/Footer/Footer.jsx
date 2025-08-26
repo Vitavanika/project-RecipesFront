@@ -10,7 +10,7 @@ export const Footer = () => {
         <div className={styles.footerContainer}>
           <NavLink to="/" className={styles.logoContainer}>
             <svg className={styles.logoIcon} width="32" height="32">
-              <use href="/src/images/icons.svg#icon-Group-6884"></use>
+              <use href="/sprite.svg#icon-Group-6884"></use>
             </svg>
             <p className={styles.logoText}>Tasteorama</p>
           </NavLink>

@@ -1,9 +1,7 @@
-import css from "./ProfileBlock.module.css";
-import { Link } from "react-router";
-
-import { useDispatch, useSelector } from "react-redux";
-import { logOut } from "../../redux/auth/operations";
-import { getUserData } from "../../redux/auth/selectors";
+import css from './ProfileBlock.module.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { logOut } from '../../redux/auth/operations';
+import { getUserData } from '../../redux/auth/selectors';
 
 export const ProfileBlock = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -13,7 +11,7 @@ export const ProfileBlock = ({ onClose }) => {
 
   const handleLogout = () => {
     dispatch(logOut());
-    if (onClose) onClose()
+    if (onClose) onClose();
   };
 
   return (
@@ -23,7 +21,7 @@ export const ProfileBlock = ({ onClose }) => {
       <div className={css.vertLine}></div>
       <button type="button" onClick={handleLogout}>
         <svg className={css.logOutIcon} width="24" height="24">
-          <use href="/src/images/icons.svg#icon-log-out"></use>
+          <use href="/sprite.svg#icon-log-out"></use>
         </svg>
       </button>
     </div>

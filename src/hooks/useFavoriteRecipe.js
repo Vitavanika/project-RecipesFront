@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext.jsx';
 
 export const useFavoriteRecipe = (recipeId, initialSaved = false) => {

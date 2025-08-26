@@ -1,19 +1,30 @@
-.container {
+.footer {
+  background-color: var(--color-dark-brown);
+  font-family: 'Monserrat';
+}
+
+.footerContainer {
   display: flex;
   flex-direction: column;
   gap: 32px;
   justify-content: center;
   align-items: center;
   padding: 24px 0;
-  background-color: var(--color-dark-brown);
-  font-family: 'Monserat';
+  max-width: 393px;
+  margin: 0 auto;
 }
 
+@media only screen and (min-width: 768px) {
+  .footerContainer {
+    max-width: 768px;
+  }
+}
 @media only screen and (min-width: 1440px) {
-  .container {
+  .footerContainer {
     flex-direction: row;
     justify-content: space-between;
     padding: 35px 108px;
+    max-width: 1440px;
   }
 }
 

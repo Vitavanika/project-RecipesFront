@@ -37,27 +37,32 @@ export const FooterNav = () => {
 
   return (
     <>
-      <ul className={styles.container}>
+      <ul className={styles.footerNavContainer}>
         <li>
           <NavLink to="/" className={styles.link}>
             Recipes
           </NavLink>
         </li>
-        {!isLoggingIn && (
+        {!isLoggingIn && !isLoggedIn && (
           <li>
-            <p className={styles.link} onClick={toggleModalState}>
+            <button className={styles.link} onClick={toggleModalState}>
               Account
-            </p>
+            </button>
           </li>
         )}
         {isLoggedIn && (
-          <NavLink to="profile" className={styles.link}>
+          <NavLink to="/profile" className={styles.link}>
             Account
           </NavLink>
         )}
       </ul>
       {isModalOpen && (
-        <AuthNavModal ref={modalRef} onClick={toggleModalState} />
+        <AuthNavModal
+          ref={modalRef}
+          onClick={toggleModalState}
+          title={'Unautorized'}
+          description={'Please log in or register to access your account.'}
+        />
       )}
     </>
   );

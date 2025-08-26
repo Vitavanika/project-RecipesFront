@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import css from './RecipeCard.module.css';
-import sprite from '../../images/icons.svg';
 
 const RecipeCard = ({
   recipe,
@@ -42,7 +41,7 @@ const RecipeCard = ({
           <h3 className={css.cardTitle}>{recipe.title}</h3>
           <div className={css.cardTime}>
             <svg className={css.cardTimeIcon} aria-label="Time">
-              <use href={`${sprite}#icon-clock`} />
+              <use href="/sprite.svg#icon-clock" />
             </svg>
             <span>{recipe.time} min</span>
           </div>
@@ -67,7 +66,7 @@ const RecipeCard = ({
             }
           >
             <svg className={css.favoriteIcon} aria-label="Favorite">
-              <use href={`${sprite}#icon-bookmark`} />
+              <use href="/sprite.svg#icon-bookmark" />
             </svg>
           </button>
         </div>

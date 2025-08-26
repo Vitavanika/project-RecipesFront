@@ -1,0 +1,13 @@
+.header {
+    display: flex;
+    flex-direction: column;
+    padding: 14px 0;
+
+    background: #3d2218;
+}
+
+.headerWrapper {
+    display: flex;
+    justify-content: space-between;
+}
+

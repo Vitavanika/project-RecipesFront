@@ -1,0 +1,39 @@
+.navContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: row;
+  gap: 38px;
+  margin-bottom: 16px;
+}
+
+
+.navLink {
+  font-weight: 600;
+  font-size: 18px;
+  color: #000;
+  display: inline-block;
+}
+
+.navLink::after {
+  content: "";                      
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background-color: #000;
+  border-radius: 1px;
+  transform: scaleX(0);      
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.activeLink {
+  position: relative;
+  font-weight: 600;
+}
+
+.activeLink::after {
+  transform: scaleX(1);
+}

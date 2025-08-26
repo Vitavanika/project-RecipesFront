@@ -46,7 +46,7 @@ export default function RecipeGeneralInfo({
           height="17"
           className={saved ? css.unsaveIcon : css.saveIcon}
         >
-          <use href="/src/images/icons.svg#icon-bookmark"></use>
+          <use href="/public/sprite.svg#icon-bookmark"></use>
         </svg>
       </button>
       {showAuthModal && (

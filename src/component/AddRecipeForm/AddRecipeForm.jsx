@@ -1,0 +1,367 @@
+import React, { useState, useEffect } from 'react';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import './AddRecipeForm.module.css';
+
+const AddRecipeForm = () => {
+  const [categories, setCategories] = useState([]);
+  const [ingredients, setIngredients] = useState([]);
+  const [selectedIngredients, setSelectedIngredients] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError('');
+        
+        const [catRes, ingRes] = await Promise.all([
+          axios.get('https://project-recipesback.onrender.com/api/categories'),
+          axios.get('https://project-recipesback.onrender.com/api/ingredients')
+        ]);
+        
+        setCategories(Array.isArray(catRes.data) ? catRes.data : []);
+        setIngredients(Array.isArray(ingRes.data) ? ingRes.data : []);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError('Error loading data. Check the connection to the server.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
+
+  const validationSchema = Yup.object({
+  title: Yup.string()
+    .min(3, 'Title must be at least 3 characters')
+    .required('Title is required'),
+
+  description: Yup.string()
+    .min(10, 'Description must be at least 10 characters')
+    .required('Description is required'),
+
+  time: Yup.number()
+    .positive('Time must be a positive number')
+    .integer('Time must be an integer')
+    .min(1, 'Time must be at least 1 minute')
+    .required('Time is required'),
+
+  calories: Yup.number()
+    .positive('Calories must be a positive number')
+    .integer('Calories must be an integer')
+    .nullable(),
+
+  category: Yup.string()
+    .required('Category is required'),
+
+  instructions: Yup.string()
+    .min(20, 'Instructions must be at least 20 characters')
+    .required('Instructions are required'),
+
+  photo: Yup.mixed()
+    .required('Photo is required'),
+});
+
+
+  const handleSubmit = async (values, { setSubmitting, setStatus }) => {
+    try {
+      setStatus('');
+      
+      if (selectedIngredients.length === 0) {
+        setStatus('Add at least one ingredient');
+        setSubmitting(false);
+        return;
+      }
+
+      const formData = new FormData();
+      
+      Object.entries(values).forEach(([key, val]) => {
+        if (val !== null && val !== '') {
+          formData.append(key, val);
+        }
+      });
+      
+      formData.append('ingredients', JSON.stringify(selectedIngredients));
+
+      const response = await axios.post('https://project-recipesback.onrender.com/api/recipes', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      navigate(`/recipes/${response.data._id || response.data.id}`);
+    } catch (error) {
+      console.error('Error creating recipe:', error);
+      const errorMessage = error.response?.data?.message || 
+                          error.response?.data?.error || 
+                          'Error adding recipe. Try again.';
+      setStatus(errorMessage);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const IngredientSelector = () => {
+    const [ingredientId, setIngredientId] = useState('');
+    const [amount, setAmount] = useState('');
+
+    const addIngredient = () => {
+      if (!ingredientId || !amount.trim()) {
+        alert('Select the ingredient and specify the quantity');
+        return;
+      }
+
+      if (selectedIngredients.some(i => i.id === ingredientId)) {
+        alert('This ingredient has already been added');
+        return;
+      }
+
+      const ingredient = ingredients.find(i => i._id === ingredientId || i.id === ingredientId);
+      if (!ingredient) {
+        alert('Ingredient not found');
+        return;
+      }
+
+      setSelectedIngredients([
+        ...selectedIngredients, 
+        { 
+          id: ingredientId, 
+          name: ingredient.name, 
+          amount: amount.trim() 
+        }
+      ]);
+      
+      setIngredientId('');
+      setAmount('');
+    };
+
+    const removeIngredient = (id) => {
+      setSelectedIngredients(selectedIngredients.filter(i => i.id !== id));
+    };
+
+    const handleKeyPress = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addIngredient();
+      }
+    };
+
+    return (
+      <div className="ingredient-selector">
+        <h2>Ingredients</h2>
+
+        <div className="ingredient-controls">
+          <select 
+            value={ingredientId} 
+            onChange={(e) => setIngredientId(e.target.value)}
+            className="ingredient-select"
+          >
+            <option value="">Name</option>
+            {ingredients.map((ingredient) => (
+              <option key={ingredient._id || ingredient.id} value={ingredient._id || ingredient.id}>
+                {ingredient.name}
+              </option>
+            ))}
+          </select>
+
+          <input
+            type="text"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder="100g"
+            className="ingredient-amount-input"
+          />
+
+          <button type="button" onClick={addIngredient} className="add-ingredient-button">
+            Add new Ingredient
+          </button>
+        </div>
+
+        {selectedIngredients.length > 0 && (
+          <div className="selected-ingredients">
+            <table className="ingredients-table">
+              <thead>
+                <tr>
+                  <th>Name:</th>
+                  <th>Amount:</th>
+                  <th className="actions-column"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedIngredients.map((ingredient) => (
+                  <tr key={ingredient.id}>
+                    <td>{ingredient.name}</td>
+                    <td>{ingredient.amount}</td>
+                    <td className="actions-column">
+                      <button 
+                        type="button" 
+                        onClick={() => removeIngredient(ingredient.id)}
+                        className="remove-ingredient-button"
+                        title="Delete"
+                      >
+                        🗑️
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="add-recipe-form loading-container">
+        <h1>Loading...</h1>
+        <p>Loading data recipe form...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="add-recipe-form error-container">
+        <h1>Error</h1>
+        <p className="error-message">{error}</p>
+        <button onClick={() => window.location.reload()} className="retry-button">
+          Try again!
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="add-recipe-form">
+      <h1>Add Recipe</h1>
+
+      <Formik
+        initialValues={{
+          title: '',
+          description: '',
+          time: '',
+          calories: '',
+          category: '',
+          instructions: '',
+          photo: null
+        }}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ values, setFieldValue, isSubmitting, status }) => (
+          <Form className="recipe-form">
+            {status && (
+              <div className="form-status">
+                {status}
+              </div>
+            )}            
+            
+            <div className="form-field">
+              <h2>Upload Photo</h2>
+              <label htmlFor="photo"> </label>
+              <input
+                type="file"
+                name="photo"
+                id="photo"
+                accept="image/*"
+                onChange={(e) => setFieldValue('photo', e.currentTarget.files[0])}
+                className="file-input"
+              />
+              {values.photo && (
+                <div className="image-preview">
+                  <img
+                    src={URL.createObjectURL(values.photo)}
+                    alt="preview"
+                    className="preview-image"
+                  />
+                </div>
+              )}
+              <ErrorMessage name="photo" component="div" className="field-error" />
+            </div>
+
+            <div className="form-field">
+              <h2>General Information</h2>
+              <label htmlFor="title">Recipe Title</label>
+              <Field name="title" id="title" placeholder="Enter the name of your recipe" />
+              <ErrorMessage name="title" component="div" className="field-error" />
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="description">Recipe Description</label>
+              <Field 
+                as="textarea" 
+                name="description"
+                id="description"
+                placeholder="Enter a brief description of your recipe" 
+                rows={3}
+              />
+              <ErrorMessage name="description" component="div" className="field-error" />
+            </div>
+
+            <div className="form-row">
+              <div className="form-field">
+                <label htmlFor="time">Cooking time in minutes</label>
+                <Field name="time" id="time" type="number" min="1" placeholder="10" />
+                <ErrorMessage name="time" component="div" className="field-error" />
+              </div>
+
+              <div className="form-field">
+                <label htmlFor="calories">Calories</label>
+                <Field name="calories" id="calories" type="number" min="1" placeholder="150 cals" />
+                <ErrorMessage name="calories" component="div" className="field-error" />
+              </div>
+            </div>
+
+            <div className="form-field">
+              <label htmlFor="category">Category</label>
+              <Field as="select" name="category" id="category">
+                <option value="">Soup</option>
+                {categories.map((cat) => (
+                  <option key={cat._id || cat.id} value={cat._id || cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </Field>
+              <ErrorMessage name="category" component="div" className="field-error" />
+            </div>
+
+            <IngredientSelector />
+
+            <div className="form-field">
+              <label htmlFor="instructions">Instructions</label>
+              <Field 
+                as="textarea" 
+                name="instructions"
+                id="instructions"
+                placeholder="Enter a text" 
+                rows={6}
+              />
+              <ErrorMessage name="instructions" component="div" className="field-error" />
+            </div>
+
+
+
+            <button 
+              type="submit" 
+              disabled={isSubmitting}
+              className="submit-button"
+            >
+              {isSubmitting ? 'Published...' : 'Publish Recipe'}
+            </button>
+          </Form>
+        )}
+      </Formik>
+    </div>
+  );
+};
+
+export default AddRecipeForm;

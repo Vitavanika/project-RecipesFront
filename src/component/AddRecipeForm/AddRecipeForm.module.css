@@ -1,0 +1,349 @@
+/* AddRecipeForm.css */
+
+.add-recipe-form {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.add-recipe-form h1 {
+    margin-bottom: 8px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #333;
+}
+
+.add-recipe-form p {
+    margin-bottom: 24px;
+    color: #666;
+    font-size: 1rem;
+}
+
+/* Loading and Error States */
+.loading-container,
+.error-container {
+    text-align: center;
+    padding: 40px;
+}
+
+.error-message {
+    color: red;
+}
+
+.retry-button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.retry-button:hover {
+    background-color: #0056b3;
+}
+
+/* Form Styles */
+.recipe-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-field label {
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.form-field textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-field {
+    flex: 1;
+}
+
+/* Error Messages */
+.field-error {
+    color: red;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.form-status {
+    color: red;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #ffe6e6;
+    border: 1px solid #ff0000;
+    border-radius: 4px;
+}
+
+/* Ingredient Selector */
+.ingredient-selector {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.ingredient-selector h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.ingredient-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    align-items: end;
+}
+
+.ingredient-select {
+    min-width: 200px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.ingredient-amount-input {
+    min-width: 150px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.add-ingredient-button {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.add-ingredient-button:hover {
+    background-color: #218838;
+}
+
+.add-ingredient-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Selected Ingredients */
+.selected-ingredients {
+    margin-top: 15px;
+}
+
+.selected-ingredients h4 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 1rem;
+}
+
+.ingredients-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background-color: white;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ingredients-table th {
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+    padding: 8px;
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.ingredients-table td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.ingredients-table tr:last-child td {
+    border-bottom: none;
+}
+
+.ingredients-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.remove-ingredient-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.remove-ingredient-button:hover {
+    background-color: #ffebee;
+}
+
+.actions-column {
+    text-align: center;
+    width: 60px;
+}
+
+/* File Input */
+.file-input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    cursor: pointer;
+}
+
+.file-input::-webkit-file-upload-button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #6c757d;
+    color: white;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.file-input::-webkit-file-upload-button:hover {
+    background-color: #5a6268;
+}
+
+/* Image Preview */
+.image-preview {
+    margin-top: 10px;
+}
+
+.preview-image {
+    width: 200px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Submit Button */
+.submit-button {
+    padding: 12px 24px;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 20px;
+    transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
+}
+
+.submit-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .add-recipe-form {
+        padding: 15px;
+        margin: 0 10px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .ingredient-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ingredient-select,
+    .ingredient-amount-input {
+        min-width: auto;
+        width: 100%;
+    }
+
+    .ingredients-table {
+        font-size: 14px;
+    }
+
+    .ingredients-table th,
+    .ingredients-table td {
+        padding: 6px;
+    }
+
+    .preview-image {
+        width: 150px;
+        height: 120px;
+    }
+}
+
+@media (max-width: 480px) {
+    .add-recipe-form {
+        padding: 10px;
+    }
+
+    .add-recipe-form h1 {
+        font-size: 1.5rem;
+    }
+
+    .ingredients-table {
+        font-size: 12px;
+    }
+
+    .preview-image {
+        width: 120px;
+        height: 100px;
+    }
+}
+

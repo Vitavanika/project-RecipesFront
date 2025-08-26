@@ -15,9 +15,7 @@ export default function RecipeDetails({ recipe, ingredientsMap }) {
           cookingTime={recipe.time}
           calories={recipe.foodEnergy}
           recipeId={recipe._id}
-          isAuthenticated={false} 
-          onRequireAuth={() => alert("You need to log in to save recipes")}
-        />
+          />
         <RecipeContent
           about={recipe.description}
           ingredients={recipe.ingredients}

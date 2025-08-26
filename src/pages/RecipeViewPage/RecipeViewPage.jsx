@@ -7,17 +7,23 @@ import axios from "axios";
 export default function RecipeViewPage() {
   const { recipeId } = useParams();
   const [recipe, setRecipe] = useState(null);
-  const [ingredients, setIngredients] = useState({});
+  const [ingredients, setIngredients] = useState();
+   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
 
   useEffect(() => {
     
     const fetchRecipe = async () => {
+
+       setIsLoading(true);
+      setError(false);
+
      try {
-        const [ingredientsResponse, recipeResponse] = await Promise.all([
-          axios.get('https://project-recipesback.onrender.com/api/ingredients'),
-          axios.get(`https://project-recipesback.onrender.com/api/recipes/${recipeId}`)
-        ]);
+        const recipeResponse = await axios.get(`https://project-recipesback.onrender.com/api/recipes/${recipeId}`);
+
+        const ingredientIds = recipeResponse.data.data.ingredients.map(ingredient => ingredient.id);
+
+        const ingredientsResponse = await axios.get('https://project-recipesback.onrender.com/api/ingredients', { params: { ids: ingredientIds.join(',') }})
 
         const ingredientsMap = {};
         ingredientsResponse.data.forEach(ingredient => {
@@ -29,14 +35,16 @@ export default function RecipeViewPage() {
       } catch (error) {
         console.error('Error fetching data:', error);
         setError(true);
-    };}
+    } finally {
+        setIsLoading(false);
+      };}
 
     fetchRecipe();
   }, [recipeId]);
 
-  if (error) return <NotFound />;
-  if (!recipe) return <p>Loading...</p>;
-
+  if (isLoading) return <p>Loading...</p>;
+  if (error || !recipe) return <NotFound />;
+  
   return <RecipeDetails recipe={recipe} ingredientsMap={ingredients}/>;
 }
 

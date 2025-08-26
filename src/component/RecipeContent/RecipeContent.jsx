@@ -3,28 +3,31 @@ import css from "./RecipeContent.module.css";
 export default function RecipeContent({ about, ingredients, ingredientsMap, steps }) {
   return (
     <div className={css.container}>
+      {about && (
         <div className={css.wrapper}>
         <h3 className={css.title}>About recipe</h3>
         <p className={css.text}>{about}</p>
-      </div>
+      </div>)}
 
+      {Array.isArray(ingredients) && ingredients.length > 0 && (
       <div className={css.wrapper}>
         <h3 className={css.title}>Ingredients:</h3>
         <ul className={css.list}>
-          {ingredients?.map((item, index) => (
-            <li key={index} className={`${css.text} ${css.item}`}>
-              {ingredientsMap[item.id] || "Unknown ingredient"} — {item.measure}
+          {ingredients?.map((item) => (
+            <li key={item.id} className={`${css.text} ${css.item}`}>
+              {ingredientsMap[item.id] || "Unknown ingredient"} — {item.measure || "N/A"}
             </li>
           ))}
         </ul>
-      </div>
+      </div>)}
 
+      {typeof steps === "string" && (
       <div >
         <h3 className={css.instructionsTitle}>Preparation Steps:</h3>
-        {steps?.split(". ").map((step, index) => (
-          <p key={index} className={css.instructionsText}>{step}</p>
+        {steps?.split(". ").map((step) => (
+          <p key={step} className={css.instructionsText}>{step}</p>
         ))}
-      </div>
+      </div>)}
     </div>
   );
 }

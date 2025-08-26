@@ -1,46 +1,24 @@
-import { useState, useEffect } from "react";
+import { useState } from 'react';
+import { useFavoriteRecipe } from '../../hooks/useFavoriteRecipe';
+import { AuthNavModal } from '../AuthNavModal/AuthNavModal.jsx';
 import css from "./RecipeGeneralInfo.module.css";
 
 export default function RecipeGeneralInfo({
   category,
   cookingTime,
   calories,
-  isAuthenticated,
   recipeId,
-  onRequireAuth,
-   initialIsSaved = false,
+  initialIsSaved = false,
 }) {
-  const [saved, setSaved] = useState(initialIsSaved);
-
-   useEffect(() => {
-    setSaved(initialIsSaved);
-  }, [initialIsSaved]);
+  const { saved, isLoading, toggleSave } = useFavoriteRecipe(recipeId, initialIsSaved);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleToggleSave = async () => {
-    if (!isAuthenticated) {
-      if (onRequireAuth) onRequireAuth();
-      return;
-    }
+    await toggleSave(() => setShowAuthModal(true)); 
+      };
 
-    try {
-      const response = await fetch(`/api/favorites/${recipeId}`, {
-        method: saved ? "DELETE" : "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-
-      if (!response.ok) throw new Error("Failed to update favorites");
-
-      setSaved(!saved);
-
-       alert( saved
-          ? "Recipe removed from favorites"
-          : "Recipe added to favorites",
-      );
-    } catch (error) {
-       alert({
-        message: error.message,
-      });
-    }
+  const handleCloseModal = () => {
+    setShowAuthModal(false);
   };
 
   return (
@@ -61,7 +39,7 @@ export default function RecipeGeneralInfo({
         </ul>
       </div>
 
-      <button onClick={handleToggleSave} className={css.button}>
+      <button onClick={handleToggleSave} className={css.button} disabled={isLoading}>
         {saved ? "Unsave" : "Save"}
         <svg
           width="15"
@@ -71,6 +49,10 @@ export default function RecipeGeneralInfo({
           <use href="/src/images/icons.svg#icon-bookmark"></use>
         </svg>
       </button>
+      {showAuthModal && (
+        <AuthNavModal onClick={handleCloseModal} />
+      )}
     </div>
   );
 }
+

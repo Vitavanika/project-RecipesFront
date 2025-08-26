@@ -1,0 +1,51 @@
+.container {
+  width: 100%;
+  min-width: 0;
+  max-width: 393px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+.title {
+  font-weight: 600;
+  font-size: 40px;
+  line-height:1;
+  margin-bottom: 32px;
+}
+.wrapper{
+  display: flex;
+  flex-direction: column;
+}
+@media only screen and (min-width: 768px) {
+  .container {
+    max-width: 768px;
+    padding: 0 32px;
+  }
+  .title {
+    order: -1;
+    font-size: 48px;
+    line-height: 110%;
+    margin: 48px 0 32px;
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  .container {
+    max-width: 1440px;
+    padding: 0 108px;
+  }
+  .wrapper{
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+.wrapper > :first-child {
+    order: 2; 
+  }
+
+  .wrapper > :last-child {
+    order: 1; 
+  }
+}

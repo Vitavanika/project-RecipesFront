@@ -1,0 +1,216 @@
+.card {
+  position: relative;
+  width: 343px;
+  height: 335px;
+  background: transparent;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+@media screen and (min-width: 768px) {
+  .card {
+    width: 336px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .card {
+    width: 300px;
+  }
+}
+
+.cardImageContainer {
+  position: relative;
+  width: 343px;
+  height: 323px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+@media screen and (min-width: 768px) {
+  .cardImageContainer {
+    width: 336px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .cardImageContainer {
+    width: 300px;
+  }
+}
+
+.cardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.cardContent {
+  position: absolute;
+  bottom: 26px;
+  left: 18px;
+  right: 18px;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 8px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+
+.cardTitle {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.25;
+  color: #3e4462;
+  margin: 0;
+  flex: 1;
+  margin-right: 16px;
+  font-family: 'Poppins', sans-serif;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.cardTime {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: #3e4462;
+  white-space: nowrap;
+  font-weight: 500;
+  font-family: 'Poppins', sans-serif;
+}
+
+.cardTimeIcon {
+  width: 14px;
+  height: 14px;
+  stroke: #3e4462;
+  flex-shrink: 0;
+}
+
+.cardDescription {
+  font-size: 12px;
+  line-height: 1.33;
+  color: #3e4462;
+  margin-bottom: 18px;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+  opacity: 0.8;
+}
+
+.cardInfo {
+  margin-bottom: 16px;
+}
+
+.cardCalories {
+  font-size: 12px;
+  color: #3e4462;
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+.cardActions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.learnMoreBtn {
+  padding: 8px 14px;
+  background-color: #8baa36;
+  color: #fafafa;
+  border: none;
+  border-radius: 24px;
+  font-size: 12px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  min-width: 87px;
+  line-height: 1.5;
+}
+
+.learnMoreBtn:hover,
+.learnMoreBtn:focus {
+  background-color: #22252a;
+}
+
+.favoriteBtn {
+  width: 24px;
+  height: 24px;
+  background: transparent;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.favoriteBtn:hover {
+  transform: scale(1.1);
+}
+
+.favoriteIcon {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: #8baa36;
+  stroke-width: 1.5px;
+  transition: all 0.3s ease;
+}
+
+.favoriteBtnActive .favoriteIcon {
+  fill: #8baa36;
+  stroke: #8baa36;
+}
+
+@media screen and (min-width: 768px) {
+  .cardContent {
+    padding: 28px;
+  }
+
+  .learnMoreBtn {
+    padding: 12px 32px;
+    font-size: 14px;
+  }
+
+  .cardDescription {
+    font-size: 14px;
+  }
+
+  .cardCalories {
+    font-size: 14px;
+  }
+
+  .cardTitle {
+    font-size: 16px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .cardContent {
+    padding: 24px;
+  }
+
+  .learnMoreBtn {
+    padding: 12px 32px;
+    min-width: 110px;
+  }
+}

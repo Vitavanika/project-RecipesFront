@@ -3,10 +3,9 @@ import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import s from './LoginForm.module.css';
-import icons from '../../images/icons.svg';
+import { toast } from 'react-hot-toast';
+import s from '../../pages/AuthPage/AuthPage.module.css';
+import icons from '/sprite.svg';
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string()

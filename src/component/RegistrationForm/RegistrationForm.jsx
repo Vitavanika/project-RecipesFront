@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { register } from '../../redux/auth/operations';
 import css from './RegistrationForm.module.css';
-import icons from '../../images/icons.svg';
+import icons from '/sprite.svg';
 
 const RegisterSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email format').required('Required field'),

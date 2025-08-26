@@ -5,11 +5,11 @@ export const BurgerButton = ({ isOpen, onClick }) => {
       <button type="button" onClick={onClick} aria-label="Menu toggle">
         {isOpen ? (
           <svg className={css.closeIcon} width="20" height="14">
-            <use href="/src/images/icons.svg#icon-close"></use>
+            <use href="/sprite.svg#icon-close"></use>
           </svg>
         ) : (
           <svg className={css.openIcon} width="20" height="14">
-            <use href="/src/images/icons.svg#icon-burger-regular"></use>
+            <use href="/sprite.svg#icon-burger-regular"></use>
           </svg>
         )}
       </button>

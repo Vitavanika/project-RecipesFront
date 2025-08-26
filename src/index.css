@@ -1,3 +1,24 @@
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat-v30-latin-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat-v30-latin-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat-v30-latin-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
 :root {
   /* Основні кольори */
   --color-black: #000;
@@ -17,17 +38,29 @@
   --color-red: #c80000;
   --color-beige: #e3caa5;
   --color-beige-2: #edd9aa;
-  
+
   /* Кольори з прозорістю */
   --color-white-55: rgba(255, 255, 255, 0.55);
   --color-white-80: rgba(255, 255, 255, 0.8);
   --color-black-60: rgba(0, 0, 0, 0.6);
   --color-black-50: rgba(0, 0, 0, 0.5);
   --color-dark-brown-65: rgba(61, 34, 24, 0.65);
-  
+
   /* Типографія */
   --font-family-primary: "Montserrat", sans-serif;
   --font-family-secondary: "DM Sans", sans-serif;
+
+  /* Container paddings */
+  --padding-mobile: 10px;
+  --padding-tablet: 15px;
+
+  /* Container widths */
+  --max-width-mobile: 380px;
+  --max-width-tablet: 735px;
+  --max-width-desktop: 1254px;
+
+  /* Section padding */
+  --section-padding: 48px;
 }
 
 /* Reset CSS */

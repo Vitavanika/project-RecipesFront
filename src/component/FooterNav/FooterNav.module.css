@@ -1,15 +1,19 @@
-.container {
+.footerNavContainer {
   display: flex;
   flex-direction: column;
   gap: 44px;
 }
 
 @media only screen and (min-width: 768px) {
-  .container {
+  .footerNavContainer {
     flex-direction: row;
     align-items: center;
     gap: 32px;
   }
+}
+
+.navlink:focus {
+  outline: none;
 }
 
 .link {
@@ -18,16 +22,23 @@
   font-weight: 600;
   font-size: 16px;
   line-height: 20px;
-  color: #ffffff;
+  color: var(--color-white);
   cursor: pointer;
 }
 
-.link:hover,
+.link:hover {
+  color: var(--color-white-80);
+}
+
 .link:focus {
-  color: #ffffff80;
+  outline: none;
+}
+
+.link:focus-visible {
+  color: var(--color-white-80);
 }
 
 .link:active {
-  color: #ffffff;
+  color: var(--color-white);
   text-decoration: underline;
 }

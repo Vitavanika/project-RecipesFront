@@ -10,15 +10,18 @@ export default function RecipeViewPage() {
   const { recipeId } = useParams();
   const dispatch = useDispatch();
 
-  const { recipe, ingredients } = useSelector(state => state.recipes.current);
+  const current = useSelector(state => state.recipes.current);
   const { loading, error } = useSelector(state => state.recipes);
 
   useEffect(() => {
-    dispatch(fetchRecipeById(recipeId));
-  }, [dispatch, recipeId]);
+     if (recipeId) {
+      dispatch(fetchRecipeById(recipeId));
+    }}, [dispatch, recipeId]);
 
    if (loading) return <p>Loading...</p>;
-  if (error || !recipe) return <NotFound />;
+  if (error || !current?.recipe) return <NotFound />;
 
-  return <RecipeDetails recipe={recipe} ingredientsMap={ingredients} />;
+  return <RecipeDetails
+      recipe={current.recipe}
+    />;
 }

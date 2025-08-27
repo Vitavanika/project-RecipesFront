@@ -50,16 +50,14 @@ const recipesReducer = createSlice({
         state.loading = true;
         state.error = null;
         state.current.recipe = null;
-        state.current.ingredients = {};
       })
       .addCase(fetchRecipeById.fulfilled, (state, action) => {
         state.loading = false;
         state.current.recipe = action.payload.recipe;
-        state.current.ingredients = action.payload.ingredientsMap;
       })
-      .addCase(fetchRecipeById.rejected, state => {
+      .addCase(fetchRecipeById.rejected, (state, action) => {
         state.loading = false;
-        state.error = true;
+        state.error = action.payload;
       }),
 });
 

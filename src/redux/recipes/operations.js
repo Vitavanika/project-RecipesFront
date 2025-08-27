@@ -33,18 +33,7 @@ export const fetchRecipeById = createAsyncThunk(
       const recipeResponse = await apiClient.get(`/recipes/${recipeId}`);
       const recipe = recipeResponse.data.data;
 
-      const ingredientIds = recipe.ingredients.map((ing) => ing.id);
-
-      const ingredientsResponse = await apiClient.get("/ingredients", {
-        params: { ids: ingredientIds.join(",") },
-      });
-
-      const ingredientsMap = {};
-      ingredientsResponse.data.forEach((ingredient) => {
-        ingredientsMap[ingredient._id] = ingredient.name;
-      });
-
-      return { recipe, ingredientsMap };
+      return { recipe };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }

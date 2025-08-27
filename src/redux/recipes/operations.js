@@ -16,12 +16,30 @@ export const fetchOwnRecipes = createAsyncThunk(
 
 export const fetchFavRecipes = createAsyncThunk(
   "recipes/getFavRecipes", 
-  async (_, thunkAPI) => { 
+  'recipes/getFavRecipes',
+  async (_, thunkAPI) => {
     try {
-      const response = await apiClient.get("/recipes/favorite");
+      const response = await apiClient.get('/recipes/favorite');
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
-    } 
+    }
+  }
+);
+
+export const searchRecipes = createAsyncThunk(
+  'recipes/search',
+  async (params, thunkAPI) => {
+    try {
+      const axiosParams = {
+        searchPhrase: params.searchPhrase || null,
+        category: params.category || null,
+        igredient: params.ingredient || null,
+      };
+      const response = await apiClient.get('/recipes', axiosParams);
+      return response.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
   }
 );

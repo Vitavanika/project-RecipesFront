@@ -1,6 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router';
-import { useSelector } from 'react-redux';
-import { getIsLoggedIn } from './redux/auth/selectors.js';
+import { useSelector, useDispatch } from 'react-redux';
+import { getIsLoggedIn, getIsRefreshing } from './redux/auth/selectors.js';
+import { refreshUser } from './redux/auth/operations.js';
+import { useEffect } from 'react';
 
 // Імпорт компонентів
 import { Layout } from './component/Layout/Layout.jsx';
@@ -23,7 +25,17 @@ const PublicRoute = ({ children }) => {
 };
 
 const App = () => {
-  return (
+  const dispatch = useDispatch();
+  const isRefreshing = useSelector(getIsRefreshing);
+
+  useEffect(() => {
+    dispatch(refreshUser());
+  }, [dispatch]);
+
+  // add React loader here
+  return isRefreshing ? (
+    <strong>Loading...</strong>
+  ) : (
     <Routes>
       <Route path="/" element={<Layout />}>
         {/* Публічні маршрути */}

@@ -1,5 +1,126 @@
-const LoginForm = () => {
-    // ...
-};
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router';
+import { toast } from 'react-hot-toast';
+import { logIn } from '../../redux/auth/operations';
+import css from '../../pages/AuthPage/AuthPage.module.css';
+import icons from '/sprite.svg';
 
-export default LoginForm;
+const LoginSchema = Yup.object().shape({
+  email: Yup.string()
+    .email('Invalid email format')
+    .required('Required field'),
+  password: Yup.string()
+    .min(6, 'Minimum 6 characters')
+    .required('Required field'),
+});
+
+export default function LoginForm() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const authState = useSelector((state) => state.auth);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
+  const togglePassword = () => setPasswordVisible(!passwordVisible);
+    
+    const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+      const dataToSend = {
+    email: values.email,
+    password: values.password,
+  };
+console.log('Sending data:', values);
+        
+    try {
+      await dispatch(logIn(dataToSend)).unwrap();
+      toast.success('Login successful!');
+        navigate('/');
+        resetForm();
+    } catch (error) {
+    toast.error(
+      error?.message || String(error) || 'Login failed'
+    );
+} finally {
+  setSubmitting(false);
+}
+  };
+
+  return (
+    <section className={css.card}>
+      <h1 className={css.title}>Login</h1>
+
+      <Formik
+        initialValues={{ email: '', password: '' }}
+        validationSchema={LoginSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting }) => (
+          <Form className={css.form} noValidate>
+            <label className={css.label}>
+              <span className={css.labelText}>Enter your email address</span>
+              <Field
+                className={css.input}
+                type="email"
+                name="email"
+                placeholder="email@gmail.com"
+                autoComplete="email"
+              />
+              <ErrorMessage
+                name="email"
+                component="div"
+                className={css.error}
+              />
+            </label>
+
+            <label className={css.label}>
+              <span className={css.labelText}>Create a strong password</span>
+              <div className={css.passwordWrapper}>
+                <Field
+                  className={css.input}
+                  type={passwordVisible ? 'text' : 'password'}
+                  name="password"
+                  placeholder="*********"
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  className={css.eyeButton}
+                  onClick={togglePassword}
+                >
+                  <svg className={css.eyeIcon}>
+                    <use
+                      href={`${icons}#${passwordVisible ? 'icon-eye-open' : 'icon-eye-crossed'}`}
+                    />
+                  </svg>
+                </button>
+              </div>
+              <ErrorMessage
+                name="password"
+                component="div"
+                className={css.error}
+              />
+            </label>
+
+            <button
+              type="submit"
+              className={css.submitBtn}
+              disabled={isSubmitting || authState.isLoading}
+            >
+              {authState.isLoading ? 'Logging in...' : 'Login'}
+            </button>
+
+            {authState.error && (
+              <div className={css.errorServer}>{authState.error}</div>
+            )}
+          </Form>
+        )}
+      </Formik>
+
+      <p className={css.hint}>
+        Don’t have an account?{' '}
+        <Link to="/auth/register" className={css.link}>Register</Link>
+      </p>
+    </section>
+  );
+}

@@ -5,7 +5,7 @@ import { useNavigate, Link } from 'react-router';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { register } from '../../redux/auth/operations';
-import css from './RegistrationForm.module.css';
+import css from '../../pages/AuthPage/AuthPage.module.css';
 import icons from '/sprite.svg';
 
 const RegisterSchema = Yup.object().shape({

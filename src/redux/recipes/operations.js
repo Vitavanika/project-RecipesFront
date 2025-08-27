@@ -27,14 +27,14 @@ export const fetchFavRecipes = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const state = thunkAPI.getState();
-      setAuthHeader(state.auth.token);
-      const response = await axios.get('api/recipes/favorite');
+        setAuthHeader (state.auth.token);
+        const response = await axios.get("api/recipes/favorite");
       return response.data.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
+        return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    } 
+    
+ });
 
 export const fetchRecipeById = createAsyncThunk(
   'recipes/getById',

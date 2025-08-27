@@ -34,7 +34,7 @@ export const logIn = createAsyncThunk(
       setAuthHeader(response.data.token);
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error.response.data?.message || 'Login failed');
     }
   }
 );

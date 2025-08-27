@@ -1,15 +1,48 @@
-import { useSelector } from 'react-redux';
-import RecipeCard from '../RecipeCard/RecipeCard';
 import styles from './RecipesList.module.css';
-import { selectFilteredRecipes } from '../../redux/recipes/selectors';
+import RecipeCard from '../RecipeCard/RecipeCard';
 
-export default function RecipesList() {
-  const filteredRecipes = useSelector(selectFilteredRecipes);
-  console.log('🚀 ~ RecipesList ~ filteredRecipes:', filteredRecipes.hits);
+export default function RecipesList({
+  items = [],
+  variant = 'default',
+  isLoading = false,
+  error = '',
+  onLearnMore,
+  onToggleFavorite,
+  onDelete,
+  onOpenAuthModal,
+  isAuthenticated = false,
+  emptyMessage = 'No recipes found',
+}) {
+  if (isLoading) {
+    return (
+      <div className={styles.loader} role="status" aria-live="polite">
+        <span className={styles.spinner} /> Loading…
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className={styles.error}>⚠ {error}</div>;
+  }
+
+  if (items.length === 0) {
+    return <div className={styles.empty}>{emptyMessage}</div>;
+  }
+
   return (
-    <div className={styles.container}>
-      {filteredRecipes.hits?.map(recipe => (
-        <RecipeCard recipe={recipe} key={recipe._id} />
+    <div className={styles.wrap}>
+      {items.map(r => (
+        <RecipeCard
+          key={r._id || r.id}
+          recipe={r}
+          variant={variant}
+          isAuthenticated={isAuthenticated}
+          onLearnMore={onLearnMore}
+          onToggleFavorite={onToggleFavorite}
+          onDelete={onDelete}
+          onOpenAuthModal={onOpenAuthModal}
+          disabled={r._pending === true}
+        />
       ))}
     </div>
   );

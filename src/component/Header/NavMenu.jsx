@@ -77,7 +77,7 @@ export const NavMenu = ({ onClose, layout }) => {
   );
 
   return (
-    <ul className={css.navMenuList}>
+    <ul className={css.menuList}>
       {layout === 'tablet-desktop' ? tabletDesktopOrder : mobileOrder}
     </ul>
   );

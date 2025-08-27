@@ -2,10 +2,10 @@ import { createSlice } from '@reduxjs/toolkit';
 import {
   fetchOwnRecipes,
   fetchFavRecipes,
-  getFilteredRecipes,
+  fetchRecipeById,
 } from './operations';
 
-const recipesSlice = createSlice({
+const recipesReducer = createSlice({
   name: 'recipes',
   initialState: {
     own: {
@@ -14,19 +14,19 @@ const recipesSlice = createSlice({
     favorites: {
       items: [],
     },
-    filteredRecipes: {
-      page: 1,
-      perPage: 12,
+    current: {
+      recipe: null,
+      ingredients: {},
     },
     loading: false,
-    error: false,
+    error: null,
   },
 
   extraReducers: builder =>
     builder
       .addCase(fetchOwnRecipes.pending, state => {
         state.loading = true;
-        state.error = false;
+        state.error = null;
       })
       .addCase(fetchOwnRecipes.fulfilled, (state, action) => {
         state.loading = false;
@@ -47,19 +47,19 @@ const recipesSlice = createSlice({
         state.loading = false;
         state.error = true;
       })
-      .addCase(getFilteredRecipes.pending, state => {
+      .addCase(fetchRecipeById.pending, state => {
         state.loading = true;
-        state.error = false;
+        state.error = null;
+        state.current.recipe = null;
       })
-      .addCase(getFilteredRecipes.fulfilled, (state, action) => {
+      .addCase(fetchRecipeById.fulfilled, (state, action) => {
         state.loading = false;
-        state.error = false;
-        state.filteredRecipes = action.payload.data;
+        state.current.recipe = action.payload.recipe;
       })
-      .addCase(getFilteredRecipes.rejected, state => {
+      .addCase(fetchRecipeById.rejected, (state, action) => {
         state.loading = false;
-        state.error = true;
+        state.error = action.payload;
       }),
 });
 
-export default recipesSlice.reducer;
+export default recipesReducer.reducer;

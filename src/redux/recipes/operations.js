@@ -47,20 +47,20 @@ export const getFilteredRecipes = createAsyncThunk(
       .map(ingredient => `ingredients=${ingredient}`)
       .join('&');
     const selectedCategory = state.filters.selectedCategory
-      .map(category => `category=${category}`)
+      .map(category => `category=${encodeURIComponent(category)}`)
       .join('&');
     const currentPage = state.recipes.filteredRecipes.page ?? 1;
     const perPage = state.recipes.filteredRecipes.perPage ?? 12;
 
     const queryParams = [];
-    if (searchPhrase) queryParams.push(`searchPhrase=${searchPhrase}`);
+    if (searchPhrase)
+      queryParams.push(`searchPhrase=${encodeURIComponent(searchPhrase)}`);
     if (selectedIngredients) queryParams.push(selectedIngredients);
     if (selectedCategory) queryParams.push(selectedCategory);
     queryParams.push(`page=${currentPage}`);
     queryParams.push(`perPage=${perPage}`);
 
     const requestPath = `/recipes?${queryParams.join('&')}`;
-    console.log('🚀 ~ requestPath:', requestPath);
 
     try {
       const response = await axios.get(requestPath);

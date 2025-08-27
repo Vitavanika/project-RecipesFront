@@ -1,16 +1,24 @@
 import styles from './Filters.module.css';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import {
+  getSearchPhrase,
   getSelectedCategory,
   getSelectedIngredients,
 } from '../../redux/filters/selectors';
 import {
+  resetFilters,
   setSelectedCategory,
   setSelectedIngredients,
 } from '../../redux/filters/slice';
-import { getCategoriesSlice } from '../../redux/categories/selectors';
-import { getIngredientsSlice } from '../../redux/ingredients/selectors';
+import {
+  getCategoriesSlice,
+  getIsLoadedCategories,
+} from '../../redux/categories/selectors';
+import {
+  getIngredientsSlice,
+  getIsLoadedIngredients,
+} from '../../redux/ingredients/selectors';
 import { getCategories } from '../../redux/categories/operations';
 import { getIngredients } from '../../redux/ingredients/operations';
 import { getFilteredRecipes } from '../../redux/recipes/operations';
@@ -27,34 +35,48 @@ export default function Filters() {
   const selectedIngredients = useSelector(getSelectedIngredients);
   console.log('🚀 ~ Filters ~ selectedIngredients:', selectedIngredients);
   const filteredRecipesTest = useSelector(selectFilteredRecipes);
+  const searchPhrase = useSelector(getSearchPhrase);
   console.log('🚀 ~ Filters ~ filteredRecipesTest:', filteredRecipesTest);
+  const isloadedCategory = useSelector(getIsLoadedCategories);
+  const isloadedIngredients = useSelector(getIsLoadedIngredients);
+
+  const [currentCategory, setCurrentCategory] = useState('');
+  const [currentIngredient, setCurrentIngredient] = useState('');
 
   useEffect(() => {
     dispatch(getCategories());
     dispatch(getIngredients());
-    dispatch(getFilteredRecipes());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (isloadedCategory && isloadedIngredients) dispatch(getFilteredRecipes());
+  }, [
+    dispatch,
+    selectedCategories,
+    selectedIngredients,
+    searchPhrase,
+    isloadedCategory,
+    isloadedIngredients,
+  ]);
+
   const handleCategoryChange = e => {
-    dispatch(
-      setSelectedCategory({
-        name: e.target.value,
-        _id: e.target.id,
-      })
-    );
+    if (e.target.value) {
+      setCurrentCategory(e.target.value);
+      dispatch(setSelectedCategory(e.target.value));
+    }
   };
 
   const handleIngredientChange = e => {
-    dispatch(
-      setSelectedIngredients({
-        name: e.target.value,
-        _id: e.target.id,
-      })
-    );
+    if (e.target.value) {
+      setCurrentIngredient(e.target.value);
+      dispatch(setSelectedIngredients(e.target.value));
+    }
   };
 
   const handleReset = () => {
-    dispatch();
+    setCurrentCategory('');
+    setCurrentIngredient('');
+    dispatch(resetFilters());
   };
 
   return (
@@ -66,10 +88,9 @@ export default function Filters() {
         <select
           name="ingredients"
           id="selectIngredients"
-          value={
-            { ...selectedCategories[selectedCategories.length - 1] }.name || ''
-          }
-          onChange={handleCategoryChange}
+          value={currentIngredient}
+          onChange={handleIngredientChange}
+          key="ingredients"
         >
           <option value="" disabled hidden>
             Please, select ingredient
@@ -81,7 +102,7 @@ export default function Filters() {
               return (
                 <option
                   name={ingredient.name}
-                  value={ingredient.name}
+                  value={ingredient._id}
                   key={ingredient._id}
                 >
                   {ingredient.name}
@@ -93,11 +114,8 @@ export default function Filters() {
         <select
           name="categories"
           id="selectCategories"
-          value={
-            { ...selectedIngredients[selectedIngredients.length - 1] }.name ||
-            ''
-          }
-          onChange={handleIngredientChange}
+          value={currentCategory}
+          onChange={handleCategoryChange}
         >
           <option value="" disabled hidden>
             Please, select category
@@ -110,7 +128,6 @@ export default function Filters() {
                 <option
                   name={category.name}
                   value={category.name}
-                  id={category._id}
                   key={category._id}
                 >
                   {category.name}

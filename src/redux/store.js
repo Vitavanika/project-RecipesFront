@@ -14,6 +14,7 @@ import {
 import storage from 'redux-persist/lib/storage';
 import { ingredientsReducer } from './ingredients/slice';
 import { categoriesReducer } from './categories/slice';
+import { filtersReducer } from './filters/slice';
 
 const authPersistConfig = { key: 'auth', storage, whitelist: ['token'] };
 
@@ -21,6 +22,7 @@ export const store = configureStore({
   reducer: {
     auth: persistReducer(authPersistConfig, authReducer),
     recipes: recipesReducer,
+    filters: filtersReducer,
     ingredients: ingredientsReducer,
     categories: categoriesReducer,
   },

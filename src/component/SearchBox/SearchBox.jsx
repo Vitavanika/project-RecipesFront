@@ -1,37 +1,38 @@
 import { Field, Form, Formik } from 'formik';
-import { useEffect } from 'react';
 import { useSearchParams } from 'react-router';
 import { selectLoading } from '../../redux/recipes/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 import { searchRecipes } from '../../redux/recipes/operations';
 import { toast } from 'react-hot-toast';
 
+import styles from './SearchBox.module.css';
+
 export const SearchBox = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const formInitialValue = searchParams;
+  const formInitialValue = { query: searchParams.get('searchPhrase') || '' };
   const dispatch = useDispatch();
   const isLoading = useSelector(selectLoading);
 
-  const handleSubmit = values => {
-    const searchQuerry = values.query.trim();
-    if (searchQuerry) {
-      setSearchParams({ searchPhrase: searchQuerry });
+  const handleSubmit = async values => {
+    if (!values.query) {
+      return;
+    }
+    const searchQuery = values.query.trim();
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('searchPhrase', searchQuery);
+
+    setSearchParams(newParams);
+
+    try {
+      await dispatch(searchRecipes(Object.fromEntries(newParams))).unwrap();
+      toast.success('Search is done!');
+    } catch (error) {
+      toast.error(error?.message || String(error) || 'Search failed');
     }
   };
 
-  useEffect(() => {
-    async () => {
-      try {
-        await dispatch(searchRecipes(searchParams)).unwrap();
-        toast.success('Search is done!');
-      } catch (error) {
-        toast.error(error?.message || String(error) || 'Login failed');
-      }
-    };
-  }, [searchParams, dispatch]);
-
   return (
-    <div>
+    <div className={styles.container}>
       <Formik initialValues={formInitialValue} onSubmit={handleSubmit}>
         <Form>
           <label>

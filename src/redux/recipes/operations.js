@@ -13,9 +13,8 @@ export const fetchOwnRecipes = createAsyncThunk(
   }
 );
 
-
 export const fetchFavRecipes = createAsyncThunk(
-  "recipes/getFavRecipes", 
+  'recipes/getFavRecipes',
   'recipes/getFavRecipes',
   async (_, thunkAPI) => {
     try {
@@ -27,16 +26,28 @@ export const fetchFavRecipes = createAsyncThunk(
   }
 );
 
+const buildAxiosParams = params => {
+  return Object.fromEntries(
+    Object.entries(params).filter(([_, v]) => v != null && v !== '')
+  );
+};
+
 export const searchRecipes = createAsyncThunk(
   'recipes/search',
   async (params, thunkAPI) => {
     try {
-      const axiosParams = {
+      const rawParams = {
         searchPhrase: params.searchPhrase || null,
         category: params.category || null,
-        igredient: params.ingredient || null,
+        ingredient: params.ingredient || null,
+        page: params.page || 1,
+        perPage: params.perPage || 12,
       };
-      const response = await apiClient.get('/recipes', axiosParams);
+      const axiosParams = buildAxiosParams(rawParams);
+
+      const response = await apiClient.get('/recipes', {
+        params: axiosParams,
+      });
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);

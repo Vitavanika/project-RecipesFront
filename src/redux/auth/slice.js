@@ -1,10 +1,20 @@
-import { register, logIn, logOut, refreshUser } from './operations.js';
 import { createSlice } from '@reduxjs/toolkit';
+import { register, logIn, logOut, refreshUser } from './operations';
+
+const handlePending = state => {
+  state.isLoading = true;
+};
+
+const handleRejected = (state, action) => {
+  state.isLoading = false;
+  state.error = action.payload;
+};
 
 const initialState = {
   user: { name: null, email: null },
   token: null,
   isLoggedIn: false,
+  isLoading: false,
   isRefreshing: false,
   error: null,
 };
@@ -12,72 +22,50 @@ const initialState = {
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
-  extraReducers: builder => {
+  extraReducers: builder =>
     builder
-      // Обробка реєстрації
-      .addCase(register.pending, state => {
-        state.isRefreshing = true;
-        state.error = null;
-      })
+      .addCase(register.pending, handlePending)
       .addCase(register.fulfilled, (state, action) => {
         state.user = action.payload.user;
         state.token = action.payload.token;
         state.isLoggedIn = true;
-        state.isRefreshing = false;
+        state.isLoading = false;
         state.error = null;
+        localStorage.setItem('authToken', action.payload.token);
       })
-      .addCase(register.rejected, (state, action) => {
-        state.isRefreshing = false;
-        state.error = action.payload;
-      })
-      // Обробка входу
-      .addCase(logIn.pending, state => {
-        state.isRefreshing = true;
-        state.error = null;
-      })
+      .addCase(register.rejected, handleRejected)
+      .addCase(logIn.pending, handlePending)
       .addCase(logIn.fulfilled, (state, action) => {
         state.user = action.payload.user;
-        state.token = action.payload.token;
+        state.token = action.payload.accessToken;
         state.isLoggedIn = true;
-        state.isRefreshing = false;
+        state.isLoading = false;
         state.error = null;
+        localStorage.setItem('authToken', action.payload.token);
       })
-      .addCase(logIn.rejected, (state, action) => {
-        state.isRefreshing = false;
-        state.error = action.payload;
-      })
-      // Обробка виходу
-      .addCase(logOut.pending, state => {
-        state.isRefreshing = true;
-      })
+      .addCase(logIn.rejected, handleRejected)
+      .addCase(logOut.pending, handlePending)
       .addCase(logOut.fulfilled, state => {
         state.user = { name: null, email: null };
         state.token = null;
         state.isLoggedIn = false;
-        state.isRefreshing = false;
+        state.isLoading = false;
         state.error = null;
+        localStorage.removeItem('authToken');
       })
-      .addCase(logOut.rejected, state => {
-        state.isRefreshing = false;
-      })
-      // Обробка оновлення токена
+      .addCase(logOut.rejected, handleRejected)
       .addCase(refreshUser.pending, state => {
         state.isRefreshing = true;
-        state.error = null;
       })
       .addCase(refreshUser.fulfilled, (state, action) => {
         state.user = action.payload;
         state.isLoggedIn = true;
         state.isRefreshing = false;
-        state.error = null;
       })
       .addCase(refreshUser.rejected, state => {
         state.isRefreshing = false;
-        state.token = null;
-        state.isLoggedIn = false;
-      });
-  },
+        state.error = 'Refresh failed';
+      }),
 });
 
 export const authReducer = authSlice.reducer;

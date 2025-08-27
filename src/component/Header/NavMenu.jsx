@@ -1,11 +1,11 @@
-import css from "./NavMenu.module.css";
+import css from './NavMenu.module.css';
 
-import { Link } from "react-router";
-import { useSelector } from "react-redux";
-import { getIsLoggedIn } from "../../redux/auth/selectors";
-import { ProfileBlock } from "./ProfileBlock";
+import { Link } from 'react-router';
+import { useSelector } from 'react-redux';
+import { getIsLoggedIn } from '../../redux/auth/selectors';
+import { ProfileBlock } from './ProfileBlock';
 
-export const NavMenu = ({onClose}) => {
+export const NavMenu = ({ onClose, layout }) => {
   const isAuth = useSelector(getIsLoggedIn);
 
   if (!isAuth) {
@@ -30,8 +30,8 @@ export const NavMenu = ({onClose}) => {
     );
   }
 
-  return (
-    <ul className={css.navMenuList}>
+  const mobileOrder = (
+    <>
       <li>
         <Link to="/" onClick={onClose}>
           Recipes
@@ -50,6 +50,35 @@ export const NavMenu = ({onClose}) => {
           Add Recipes
         </Link>
       </li>
+    </>
+  );
+
+  const tabletDesktopOrder = (
+    <>
+      <li>
+        <Link to="/" onClick={onClose}>
+          Recipes
+        </Link>
+      </li>
+      <li>
+        <Link to="profile/:recipeType" onClick={onClose}>
+          My Profile
+        </Link>
+      </li>
+      <li>
+        <Link to="add-recipe" onClick={onClose}>
+          Add Recipes
+        </Link>
+      </li>
+      <li>
+        <ProfileBlock onClose={onClose} />
+      </li>
+    </>
+  );
+
+  return (
+    <ul className={css.navMenuList}>
+      {layout === 'tablet-desktop' ? tabletDesktopOrder : mobileOrder}
     </ul>
   );
 };

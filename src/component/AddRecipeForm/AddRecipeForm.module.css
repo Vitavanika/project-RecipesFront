@@ -1,70 +1,36 @@
-/* AddRecipeForm.css */
-
-.add-recipe-form {
+.addRecipeForm {
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
 }
 
-.add-recipe-form h1 {
-    margin-bottom: 8px;
-    font-size: 2rem;
-    font-weight: bold;
-    color: #333;
-}
-
-.add-recipe-form p {
-    margin-bottom: 24px;
-    color: #666;
-    font-size: 1rem;
-}
-
-/* Loading and Error States */
-.loading-container,
-.error-container {
-    text-align: center;
-    padding: 40px;
-}
-
-.error-message {
-    color: red;
-}
-
-.retry-button {
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-.retry-button:hover {
-    background-color: #0056b3;
+.addRecipeForm h1 {
+    margin-bottom: 16px;
 }
 
 /* Form Styles */
-.recipe-form {
+.recipeForm {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 16px;
 }
 
-.form-field {
+.formField {
     display: flex;
     flex-direction: column;
 }
 
-.form-field label {
+.formField label {
     margin-bottom: 5px;
     font-weight: 500;
     color: #333;
 }
 
-.form-field input,
-.form-field textarea,
-.form-field select {
+.formField input,
+.formField textarea,
+.formField select {
     padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -72,36 +38,36 @@
     font-family: inherit;
 }
 
-.form-field input:focus,
-.form-field textarea:focus,
-.form-field select:focus {
+.formField input:focus,
+.formField textarea:focus,
+.formField select:focus {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
-.form-field textarea {
+.formField textarea {
     resize: vertical;
     min-height: 80px;
 }
 
-.form-row {
+.formRow {
     display: flex;
     gap: 15px;
 }
 
-.form-row .form-field {
+.formRow .formField {
     flex: 1;
 }
 
 /* Error Messages */
-.field-error {
+.fieldError {
     color: red;
     font-size: 14px;
     margin-top: 4px;
 }
 
-.form-status {
+.formStatus {
     color: red;
     margin-bottom: 10px;
     padding: 10px;
@@ -110,8 +76,38 @@
     border-radius: 4px;
 }
 
+/* Loading and Error States */
+.loadingContainer {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.errorContainer {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.errorMessage {
+    color: #dc3545;
+    margin-bottom: 20px;
+}
+
+.retryButton {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.retryButton:hover {
+    background-color: #0056b3;
+}
+
 /* Ingredient Selector */
-.ingredient-selector {
+.ingredientSelector {
     margin-bottom: 20px;
     padding: 15px;
     border: 1px solid #e0e0e0;
@@ -119,14 +115,14 @@
     background-color: #f9f9f9;
 }
 
-.ingredient-selector h3 {
+.ingredientSelector h2 {
     margin-top: 0;
     margin-bottom: 15px;
     color: #333;
     font-size: 1.2rem;
 }
 
-.ingredient-controls {
+.ingredientControls {
     display: flex;
     gap: 10px;
     margin-bottom: 10px;
@@ -134,7 +130,7 @@
     align-items: end;
 }
 
-.ingredient-select {
+.ingredientSelect {
     min-width: 200px;
     padding: 8px 12px;
     border: 1px solid #ddd;
@@ -142,7 +138,7 @@
     font-size: 14px;
 }
 
-.ingredient-amount-input {
+.ingredientAmountInput {
     min-width: 150px;
     padding: 8px 12px;
     border: 1px solid #ddd;
@@ -150,7 +146,7 @@
     font-size: 14px;
 }
 
-.add-ingredient-button {
+.addIngredientButton {
     padding: 8px 16px;
     background-color: #28a745;
     color: white;
@@ -161,27 +157,27 @@
     white-space: nowrap;
 }
 
-.add-ingredient-button:hover {
+.addIngredientButton:hover {
     background-color: #218838;
 }
 
-.add-ingredient-button:disabled {
+.addIngredientButton:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
 
 /* Selected Ingredients */
-.selected-ingredients {
+.selectedIngredients {
     margin-top: 15px;
 }
 
-.selected-ingredients h4 {
+.selectedIngredients h4 {
     margin-bottom: 10px;
     color: #333;
     font-size: 1rem;
 }
 
-.ingredients-table {
+.ingredientsTable {
     width: 100%;
     border-collapse: collapse;
     margin-top: 10px;
@@ -191,7 +187,7 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.ingredients-table th {
+.ingredientsTable th {
     border-bottom: 1px solid #ccc;
     text-align: left;
     padding: 8px;
@@ -199,40 +195,40 @@
     font-weight: 600;
 }
 
-.ingredients-table td {
+.ingredientsTable td {
     padding: 8px;
     border-bottom: 1px solid #eee;
 }
 
-.ingredients-table tr:last-child td {
+.ingredientsTable tr:last-child td {
     border-bottom: none;
 }
 
-.ingredients-table tr:hover {
+.ingredientsTable tr:hover {
     background-color: #f8f9fa;
 }
 
-.remove-ingredient-button {
+.removeIngredientButton {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 18px;
-    padding: 4px;
+    font-size: 16px;
+    padding: 4px 8px;
     border-radius: 4px;
     transition: background-color 0.2s;
 }
 
-.remove-ingredient-button:hover {
+.removeIngredientButton:hover {
     background-color: #ffebee;
 }
 
-.actions-column {
+.actionsColumn {
     text-align: center;
     width: 60px;
 }
 
 /* File Input */
-.file-input {
+.fileInput {
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -240,7 +236,7 @@
     cursor: pointer;
 }
 
-.file-input::-webkit-file-upload-button {
+.fileInput::-webkit-file-upload-button {
     padding: 6px 12px;
     border: none;
     border-radius: 4px;
@@ -250,16 +246,16 @@
     margin-right: 10px;
 }
 
-.file-input::-webkit-file-upload-button:hover {
+.fileInput::-webkit-file-upload-button:hover {
     background-color: #5a6268;
 }
 
 /* Image Preview */
-.image-preview {
+.imagePreview {
     margin-top: 10px;
 }
 
-.preview-image {
+.previewImage {
     width: 200px;
     height: 150px;
     object-fit: cover;
@@ -269,8 +265,9 @@
 }
 
 /* Submit Button */
-.submit-button {
+.submitButton {
     padding: 12px 24px;
+    background-color: #007bff;
     color: white;
     border: none;
     border-radius: 4px;
@@ -281,69 +278,445 @@
     transition: background-color 0.2s;
 }
 
-.submit-button:hover {
+.submitButton:hover {
     background-color: #0056b3;
 }
 
-.submit-button:disabled {
+.submitButton:disabled {
     background-color: #ccc;
     cursor: not-allowed;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .add-recipe-form {
+    .addRecipeForm {
         padding: 15px;
-        margin: 0 10px;
     }
 
-    .form-row {
+    .formRow {
         flex-direction: column;
         gap: 10px;
     }
 
-    .ingredient-controls {
+    .ingredientControls {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .ingredient-select,
-    .ingredient-amount-input {
-        min-width: auto;
-        width: 100%;
-    }
-
-    .ingredients-table {
-        font-size: 14px;
-    }
-
-    .ingredients-table th,
-    .ingredients-table td {
-        padding: 6px;
-    }
-
-    .preview-image {
-        width: 150px;
-        height: 120px;
+    .ingredientSelect,
+    .ingredientAmountInput {
+        min-width: 100%;
     }
 }
 
 @media (max-width: 480px) {
-    .add-recipe-form {
+    .addRecipeForm {
         padding: 10px;
     }
 
-    .add-recipe-form h1 {
-        font-size: 1.5rem;
-    }
-
-    .ingredients-table {
-        font-size: 12px;
-    }
-
-    .preview-image {
-        width: 120px;
-        height: 100px;
+    .previewImage {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
     }
 }
 
+.addRecipeForm {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.addRecipeForm h1 {
+    margin-bottom: 16px;
+}
+
+/* Form Styles */
+.recipeForm {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 16px;
+}
+
+.formField {
+    display: flex;
+    flex-direction: column;
+}
+
+.formField label {
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.formField input,
+.formField textarea,
+.formField select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+.formField input:focus,
+.formField textarea:focus,
+.formField select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+.formField textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.formRow {
+    display: flex;
+    gap: 15px;
+}
+
+.formRow .formField {
+    flex: 1;
+}
+
+/* Error Messages */
+.fieldError {
+    color: red;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.formStatus {
+    color: red;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #ffe6e6;
+    border: 1px solid #ff0000;
+    border-radius: 4px;
+}
+
+/* Loading and Error States */
+.loadingContainer {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.errorContainer {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.errorMessage {
+    color: #dc3545;
+    margin-bottom: 20px;
+}
+
+.retryButton {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.retryButton:hover {
+    background-color: #0056b3;
+}
+
+/* Ingredient Selector */
+.ingredientSelector {
+    margin-bottom: 20px;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.ingredientSelector h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 1.2rem;
+}
+
+.ingredientControls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    align-items: end;
+}
+
+.ingredientSelect {
+    min-width: 200px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.ingredientAmountInput {
+    min-width: 150px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.addIngredientButton {
+    padding: 8px 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.addIngredientButton:hover {
+    background-color: #218838;
+}
+
+.addIngredientButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Selected Ingredients */
+.selectedIngredients {
+    margin-top: 15px;
+}
+
+.selectedIngredients h4 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 1rem;
+}
+
+.ingredientsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background-color: white;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ingredientsTable th {
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+    padding: 8px;
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.ingredientsTable td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.ingredientsTable tr:last-child td {
+    border-bottom: none;
+}
+
+.ingredientsTable tr:hover {
+    background-color: #f8f9fa;
+}
+
+.removeIngredientButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.removeIngredientButton:hover {
+    background-color: #ffebee;
+}
+
+.actionsColumn {
+    text-align: center;
+    width: 60px;
+}
+
+/* Photo Upload Container */
+.photoUploadContainer {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    height: 250px;
+    border-radius: 8px;
+    background-color: #9e9e9e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.photoUploadContainer:hover {
+    background-color: #888;
+}
+
+.photoUploadContainer.hasImage {
+    background-color: transparent;
+    padding: 0;
+}
+
+/* Hidden file input */
+.fileInput {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+/* Upload placeholder content */
+.uploadPlaceholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    pointer-events: none;
+}
+
+.uploadIcon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 12px;
+    opacity: 0.8;
+}
+
+.uploadText {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.uploadSubtext {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Image Preview */
+.imagePreview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.previewImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    transition: transform 0.3s ease;
+}
+
+.previewImage:hover {
+    transform: scale(1.02);
+}
+
+/* Remove/Change button overlay */
+.imageOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 8px;
+}
+
+.imagePreview:hover .imageOverlay {
+    opacity: 1;
+}
+
+.overlayText {
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    pointer-events: none;
+}
+
+/* Submit Button */
+.submitButton {
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    margin-top: 20px;
+    transition: background-color 0.2s;
+}
+
+.submitButton:hover {
+    background-color: #0056b3;
+}
+
+.submitButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .addRecipeForm {
+        padding: 15px;
+    }
+
+    .formRow {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .ingredientControls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ingredientSelect,
+    .ingredientAmountInput {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .addRecipeForm {
+        padding: 10px;
+    }
+
+    .previewImage {
+        width: 100%;
+        max-width: 200px;
+        height: auto;
+    }
+}

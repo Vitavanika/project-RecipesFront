@@ -13,7 +13,7 @@ import {
   selectError
 } from '../../redux/recipes/selectors';
 
-import './AddRecipeForm.module.css';
+import styles from './AddRecipeForm.module.css';
 
 const AddRecipeForm = () => {
   const dispatch = useDispatch();
@@ -148,14 +148,14 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     };
 
     return (
-      <div className="ingredient-selector">
+      <div className={styles.ingredientSelector}>
         <h2>Ingredients</h2>
 
-        <div className="ingredient-controls">
+        <div className={styles.ingredientControls}>
           <select 
             value={ingredientId} 
             onChange={(e) => setIngredientId(e.target.value)}
-            className="ingredient-select"
+            className={styles.ingredientSelect}
           >
             <option value="">Name</option>
             {ingredients.map((ingredient) => (
@@ -171,22 +171,22 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
             onChange={(e) => setAmount(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="100g"
-            className="ingredient-amount-input"
+            className={styles.ingredientAmountInput}
           />
 
-          <button type="button" onClick={addIngredient} className="add-ingredient-button">
+          <button type="button" onClick={addIngredient} className={styles.addIngredientButton}>
             Add new Ingredient
           </button>
         </div>
 
         {selectedIngredients.length > 0 && (
-          <div className="selected-ingredients">
-            <table className="ingredients-table">
+          <div className={styles.selectedIngredients}>
+            <table className={styles.ingredientsTable}>
               <thead>
                 <tr>
                   <th>Name:</th>
                   <th>Amount:</th>
-                  <th className="actions-column"></th>
+                  <th className={styles.actionsColumn}></th>
                 </tr>
               </thead>
               <tbody>
@@ -194,11 +194,11 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
                   <tr key={ingredient.id}>
                     <td>{ingredient.name}</td>
                     <td>{ingredient.amount}</td>
-                    <td className="actions-column">
+                    <td className={styles.actionsColumn}>
                       <button 
                         type="button" 
                         onClick={() => removeIngredient(ingredient.id)}
-                        className="remove-ingredient-button"
+                        className={styles.removeIngredientButton}
                         title="Delete"
                       >
                         🗑️
@@ -216,7 +216,7 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
 
   if (loading) {
     return (
-      <div className="add-recipe-form loading-container">
+      <div className={`${styles.addRecipeForm} ${styles.loadingContainer}`}>
         <h1>Loading...</h1>
         <p>Loading data recipe form...</p>
       </div>
@@ -225,10 +225,10 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
 
   if (error) {
     return (
-      <div className="add-recipe-form error-container">
+      <div className={`${styles.addRecipeForm} ${styles.errorContainer}`}>
         <h1>Error</h1>
-        <p className="error-message">{error}</p>
-        <button onClick={() => window.location.reload()} className="retry-button">
+        <p className={styles.errorMessage}>{error}</p>
+        <button onClick={() => window.location.reload()} className={styles.retryButton}>
           Try again!
         </button>
       </div>
@@ -236,7 +236,7 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
   }
 
   return (
-    <div className="add-recipe-form">
+    <div className={styles.addRecipeForm}>
       <h1>Add Recipe</h1>
 
       <Formik
@@ -253,44 +253,60 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
         onSubmit={handleSubmit}
       >
         {({ values, setFieldValue, isSubmitting, status }) => (
-          <Form className="recipe-form">
+          <Form className={styles.recipeForm}>
             {status && (
-              <div className="form-status">
+              <div className={styles.formStatus}>
                 {status}
               </div>
             )}            
-            
-            <div className="form-field">
-              <h2>Upload Photo</h2>
-              <label htmlFor="photo"> </label>
-              <input
-                type="file"
-                name="photo"
-                id="photo"
-                accept="image/*"
-                onChange={(e) => setFieldValue('photo', e.currentTarget.files[0])}
-                className="file-input"
-              />
-              {values.photo && (
-                <div className="image-preview">
-                  <img
-                    src={URL.createObjectURL(values.photo)}
-                    alt="preview"
-                    className="preview-image"
-                  />
-                </div>
-              )}
-              <ErrorMessage name="photo" component="div" className="field-error" />
-            </div>
+            <div className={styles.formField}>
+  <h2>Upload Photo</h2>
+  
+  <div 
+    className={`${styles.photoUploadContainer} ${values.photo ? styles.hasImage : ''} `}
+  >
+    <input
+      type="file"
+      name="photo"
+      id="photo"
+      accept="image/*"
+      onChange={(e) => setFieldValue('photo', e.currentTarget.files[0])}
+      className={styles.fileInput}
+    />
+    
+    {!values.photo ? (
+      <div className={styles.uploadPlaceholder}>
+        <svg className={styles.uploadIcon} viewBox="0 0 24 24" fill="currentColor">
+          <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
+        </svg>
+        <div className={styles.uploadText}>Click to upload photo</div>
+        <div className={styles.uploadSubtext}>PNG, JPG up to 10MB</div>
+      </div>
+    ) : (
+      <div className={styles.imagePreview}>
+        <img
+          src={URL.createObjectURL(values.photo)}
+          alt="Recipe preview"
+          className={styles.previewImage}
+        />
+        <div className={styles.imageOverlay}>
+          <div className={styles.overlayText}>Click to change photo</div>
+        </div>
+      </div>
+    )}
+  </div>
+  
+  <ErrorMessage name="photo" component="div" className={styles.fieldError} />
+</div>
 
-            <div className="form-field">
+            <div className={styles.formField}>
               <h2>General Information</h2>
               <label htmlFor="title">Recipe Title</label>
               <Field name="title" id="title" placeholder="Enter the name of your recipe" />
-              <ErrorMessage name="title" component="div" className="field-error" />
+              <ErrorMessage name="title" component="div" className={styles.fieldError} />
             </div>
 
-            <div className="form-field">
+            <div className={styles.formField}>
               <label htmlFor="description">Recipe Description</label>
               <Field 
                 as="textarea" 
@@ -299,24 +315,24 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
                 placeholder="Enter a brief description of your recipe" 
                 rows={3}
               />
-              <ErrorMessage name="description" component="div" className="field-error" />
+              <ErrorMessage name="description" component="div" className={styles.fieldError} />
             </div>
 
-            <div className="form-row">
-              <div className="form-field">
+            <div className={styles.formRow}>
+              <div className={styles.formField}>
                 <label htmlFor="time">Cooking time in minutes</label>
                 <Field name="time" id="time" type="number" min="1" placeholder="10" />
-                <ErrorMessage name="time" component="div" className="field-error" />
+                <ErrorMessage name="time" component="div" className={styles.fieldError} />
               </div>
 
-              <div className="form-field">
+              <div className={styles.formField}>
                 <label htmlFor="calories">Calories</label>
                 <Field name="calories" id="calories" type="number" min="1" placeholder="150 cals" />
-                <ErrorMessage name="calories" component="div" className="field-error" />
+                <ErrorMessage name="calories" component="div" className={styles.fieldError} />
               </div>
             </div>
 
-            <div className="form-field">
+            <div className={styles.formField}>
               <label htmlFor="category">Category</label>
               <Field as="select" name="category" id="category">
                 <option value="" disabled>-- Select category --</option>
@@ -326,12 +342,12 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
                   </option>
                 ))}
               </Field>
-              <ErrorMessage name="category" component="div" className="field-error" />
+              <ErrorMessage name="category" component="div" className={styles.fieldError} />
             </div>
 
             <IngredientSelector />
 
-            <div className="form-field">
+            <div className={styles.formField}>
               <label htmlFor="instructions">Instructions</label>
               <Field 
                 as="textarea" 
@@ -340,14 +356,13 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
                 placeholder="Enter a text" 
                 rows={6}
               />
-              <ErrorMessage name="instructions" component="div" className="field-error" />
+              <ErrorMessage name="instructions" component="div" className={styles.fieldError} />
             </div>
-
 
             <button 
               type="submit" 
               disabled={isSubmitting}
-              className="submit-button"
+              className={styles.submitButton}
             >
               {isSubmitting ? 'Published...' : 'Publish Recipe'}
             </button>

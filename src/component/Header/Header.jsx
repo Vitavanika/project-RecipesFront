@@ -1,28 +1,40 @@
 import css from './Header.module.css';
 
-import { useState } from "react";
-import { Logo } from "./Logo";
-import { BurgerButton } from "./BurgerButton";
-import { MobileMenu } from "./MobileMenu";
+import { useState, useEffect } from 'react';
+import { Logo } from './Logo';
+import { BurgerButton } from './BurgerButton';
+import { MobileMenu } from './MobileMenu';
+import { NavMenu } from './NavMenu';
 
 export const Header = () => {
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 
-    const toggleMenu = () => {
-        setIsMenuOpen(prev => !prev);
-    };
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
-    const closeMenu = () => {
-        setIsMenuOpen(false);
-    }
+  const toggleMenu = () => setIsMenuOpen(prev => !prev);
+  const closeMenu = () => setIsMenuOpen(false);
 
-    return (
-      <header className={css.header}>
-        <div className={css.headerWrapper}>
-            <Logo />
-            <BurgerButton isOpen={isMenuOpen} onClick={toggleMenu} />
-        </div>
-        {isMenuOpen && <MobileMenu onClose={closeMenu} />}
-      </header>
-    );
-}
+  const isMobile = windowWidth < 768;
+  const isTabletDesktop = windowWidth >= 768;
+
+  return (
+    <header className={css.header}>
+      <div className={css.headerWrapper}>
+        <Logo />
+        {isMobile && <BurgerButton isOpen={isMenuOpen} onClick={toggleMenu} />}
+
+        {isTabletDesktop && (
+          <nav>
+            <NavMenu layout="tablet-desktop" />
+          </nav>
+        )}
+      </div>
+      {isMobile && isMenuOpen && <MobileMenu onClose={closeMenu} />}
+    </header>
+  );
+};

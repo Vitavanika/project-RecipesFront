@@ -3,7 +3,7 @@ import RecipeGeneralInfo from "../RecipeGeneralInfo/RecipeGeneralInfo";
 import RecipeContent from "../RecipeContent/RecipeContent";
 import css from "./RecipeDetails.module.css";
 
-export default function RecipeDetails({ recipe, ingredientsMap }) {
+export default function RecipeDetails({ recipe }) {
 
   return (
     <div className={css.container}>
@@ -19,7 +19,6 @@ export default function RecipeDetails({ recipe, ingredientsMap }) {
         <RecipeContent
           about={recipe.description}
           ingredients={recipe.ingredients}
-          ingredientsMap={ingredientsMap}
           steps={recipe.instructions}
         />
       </div>

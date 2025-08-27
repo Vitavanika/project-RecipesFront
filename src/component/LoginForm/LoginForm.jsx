@@ -8,6 +8,7 @@ import { logIn } from '../../redux/auth/operations';
 import css from '../../pages/AuthPage/AuthPage.module.css';
 import icons from '/sprite.svg';
 
+
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
     .email('Invalid email format')
@@ -25,16 +26,25 @@ export default function LoginForm() {
 
   const togglePassword = () => setPasswordVisible(!passwordVisible);
     
-  const handleSubmit = async (values, { setSubmitting }) => {
+    const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+      const dataToSend = {
+    email: values.email,
+    password: values.password,
+  };
+console.log('Sending data:', values);
+        
     try {
-      await dispatch(logIn(values)).unwrap();
+      await dispatch(logIn(dataToSend)).unwrap();
       toast.success('Login successful!');
-      navigate('/');
-    } catch (err) {
-      toast.error(err?.message || err?.error || 'Login failed');
-    } finally {
-      setSubmitting(false);
-    }
+        navigate('/');
+        resetForm();
+    } catch (error) {
+    toast.error(
+      error?.message || String(error) || 'Login failed'
+    );
+} finally {
+  setSubmitting(false);
+}
   };
 
   return (

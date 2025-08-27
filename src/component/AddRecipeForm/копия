@@ -1,42 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-hot-toast';
-import { fetchRecipeMeta } from '../../redux/recipes/operations';
-import { fetchAddRecipe } from '../../redux/recipes/operations';
-import {
-  selectCategories,
-  selectIngredients,
-  selectLoading,
-  selectError
-} from '../../redux/recipes/selectors';
-
+import { useDispatch } from 'react-redux';
+import { addRecipe } from '../../redux/recipes/slice'; 
 import './AddRecipeForm.module.css';
 
 const AddRecipeForm = () => {
+  const [selectedIngredients, setSelectedIngredients] = useState([]);
+  const [status, setStatus] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const categories = useSelector(selectCategories);
-  const ingredients = useSelector(selectIngredients);
-  const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
-
-  const [selectedIngredients, setSelectedIngredients] = useState([]);
-
-  useEffect(() => {
-    const loadMeta = async () => {
-      try {
-        await dispatch(fetchRecipeMeta()).unwrap();
-      } catch (err) {
-        toast.error(err || 'Failed to load recipe data');
-      }
-    };
-
-    loadMeta();
-  }, [dispatch]);
 
   const validationSchema = Yup.object({
   title: Yup.string()
@@ -69,171 +45,154 @@ const AddRecipeForm = () => {
     .required('Photo is required'),
 });
 
-const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-  setSubmitting(true);
 
-  if (selectedIngredients.length === 0) {
-    toast.error('Add at least one ingredient');
-    setSubmitting(false);
-    return;
-  }
-
-  const formData = new FormData();
-
-  Object.entries(values).forEach(([key, val]) => {
-    if (val !== null && val !== '') {
-      formData.append(key, val);
-    }
-  });
-
-  formData.append('ingredients', JSON.stringify(selectedIngredients));
-
+  const handleSubmit = async (values, { setSubmitting, setStatus }) => {
   try {
-    const response = await dispatch(fetchAddRecipe(formData)).unwrap();
-    toast.success('Recipe added successfully!');
+    setStatus('');
+    if (selectedIngredients.length === 0) {
+      setStatus('Add at least one ingredient');
+      setSubmitting(false);
+      return;
+    }
+
+    const formData = new FormData();
+    Object.entries(values).forEach(([key, val]) => {
+      if (val !== null && val !== '') {
+        formData.append(key, val);
+      }
+    });
+    formData.append('ingredients', JSON.stringify(selectedIngredients));
+
+    const response = await dispatch(addRecipe(formData)).unwrap();
     navigate(`/recipes/${response._id || response.id}`);
-    resetForm();
   } catch (error) {
+    console.error('Error creating recipe:', error);
     const errorMessage =
-      error?.message || error?.response?.data?.message || 'Error adding recipe';
-    toast.error(errorMessage);
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      'Error adding recipe. Try again.';
+    setStatus(errorMessage);
   } finally {
     setSubmitting(false);
   }
 };
 
-  const IngredientSelector = () => {
-    const [ingredientId, setIngredientId] = useState('');
-    const [amount, setAmount] = useState('');
+const IngredientSelector = ({
+  ingredients, // отримано з бекенду через пропси
+  selectedIngredients,
+  setSelectedIngredients,
+}) => {
+  const [ingredientId, setIngredientId] = useState('');
+  const [amount, setAmount] = useState('');
 
-    const addIngredient = () => {
-      if (!ingredientId || !amount.trim()) {
-        alert('Select the ingredient and specify the quantity');
-        return;
-      }
+  const addIngredient = () => {
+    if (!ingredientId || !amount.trim()) {
+      alert('Select the ingredient and specify the quantity');
+      return;
+    }
 
-      if (selectedIngredients.some(i => i.id === ingredientId)) {
-        alert('This ingredient has already been added');
-        return;
-      }
+    if (selectedIngredients.some(i => i.id === ingredientId)) {
+      alert('This ingredient has already been added');
+      return;
+    }
 
-      const ingredient = ingredients.find(i => i._id === ingredientId || i.id === ingredientId);
-      if (!ingredient) {
-        alert('Ingredient not found');
-        return;
-      }
+    const ingredient = ingredients.find(i => i._id === ingredientId || i.id === ingredientId);
+    if (!ingredient) {
+      alert('Ingredient not found');
+      return;
+    }
 
-      setSelectedIngredients([
-        ...selectedIngredients, 
-        { 
-          id: ingredientId, 
-          name: ingredient.name, 
-          amount: amount.trim() 
-        }
-      ]);
-      
-      setIngredientId('');
-      setAmount('');
-    };
+    setSelectedIngredients([
+      ...selectedIngredients,
+      {
+        id: ingredientId,
+        name: ingredient.name,
+        amount: amount.trim(),
+      },
+    ]);
 
-    const removeIngredient = (id) => {
-      setSelectedIngredients(selectedIngredients.filter(i => i.id !== id));
-    };
-
-    const handleKeyPress = (e) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        addIngredient();
-      }
-    };
-
-    return (
-      <div className="ingredient-selector">
-        <h2>Ingredients</h2>
-
-        <div className="ingredient-controls">
-          <select 
-            value={ingredientId} 
-            onChange={(e) => setIngredientId(e.target.value)}
-            className="ingredient-select"
-          >
-            <option value="">Name</option>
-            {ingredients.map((ingredient) => (
-              <option key={ingredient._id || ingredient.id} value={ingredient._id || ingredient.id}>
-                {ingredient.name}
-              </option>
-            ))}
-          </select>
-
-          <input
-            type="text"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="100g"
-            className="ingredient-amount-input"
-          />
-
-          <button type="button" onClick={addIngredient} className="add-ingredient-button">
-            Add new Ingredient
-          </button>
-        </div>
-
-        {selectedIngredients.length > 0 && (
-          <div className="selected-ingredients">
-            <table className="ingredients-table">
-              <thead>
-                <tr>
-                  <th>Name:</th>
-                  <th>Amount:</th>
-                  <th className="actions-column"></th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedIngredients.map((ingredient) => (
-                  <tr key={ingredient.id}>
-                    <td>{ingredient.name}</td>
-                    <td>{ingredient.amount}</td>
-                    <td className="actions-column">
-                      <button 
-                        type="button" 
-                        onClick={() => removeIngredient(ingredient.id)}
-                        className="remove-ingredient-button"
-                        title="Delete"
-                      >
-                        🗑️
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-    );
+    setIngredientId('');
+    setAmount('');
   };
 
-  if (loading) {
-    return (
-      <div className="add-recipe-form loading-container">
-        <h1>Loading...</h1>
-        <p>Loading data recipe form...</p>
-      </div>
-    );
-  }
+  const removeIngredient = (id) => {
+    setSelectedIngredients(selectedIngredients.filter(i => i.id !== id));
+  };
 
-  if (error) {
-    return (
-      <div className="add-recipe-form error-container">
-        <h1>Error</h1>
-        <p className="error-message">{error}</p>
-        <button onClick={() => window.location.reload()} className="retry-button">
-          Try again!
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addIngredient();
+    }
+  };
+
+  return (
+    <div className="ingredient-selector">
+      <h2>Ingredients</h2>
+
+      <div className="ingredient-controls">
+        <select
+          value={ingredientId}
+          onChange={(e) => setIngredientId(e.target.value)}
+          className="ingredient-select"
+        >
+          <option value="">Name</option>
+          {ingredients.map((ingredient) => (
+            <option key={ingredient._id || ingredient.id} value={ingredient._id || ingredient.id}>
+              {ingredient.name}
+            </option>
+          ))}
+        </select>
+
+        <input
+          type="text"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          onKeyPress={handleKeyPress}
+          placeholder="100g"
+          className="ingredient-amount-input"
+        />
+
+        <button type="button" onClick={addIngredient} className="add-ingredient-button">
+          Add new Ingredient
         </button>
       </div>
-    );
-  }
+
+      {selectedIngredients.length > 0 && (
+        <div className="selected-ingredients">
+          <table className="ingredients-table">
+            <thead>
+              <tr>
+                <th>Name:</th>
+                <th>Amount:</th>
+                <th className="actions-column"></th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedIngredients.map((ingredient) => (
+                <tr key={ingredient.id}>
+                  <td>{ingredient.name}</td>
+                  <td>{ingredient.amount}</td>
+                  <td className="actions-column">
+                    <button
+                      type="button"
+                      onClick={() => removeIngredient(ingredient.id)}
+                      className="remove-ingredient-button"
+                      title="Delete"
+                    >
+                      🗑️
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
+
 
   return (
     <div className="add-recipe-form">
@@ -319,7 +278,7 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
             <div className="form-field">
               <label htmlFor="category">Category</label>
               <Field as="select" name="category" id="category">
-                <option value="" disabled>-- Select category --</option>
+                <option value="">Soup</option>
                 {categories.map((cat) => (
                   <option key={cat._id || cat.id} value={cat._id || cat.id}>
                     {cat.name}
@@ -342,6 +301,7 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
               />
               <ErrorMessage name="instructions" component="div" className="field-error" />
             </div>
+
 
 
             <button 

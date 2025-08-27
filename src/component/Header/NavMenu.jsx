@@ -30,55 +30,52 @@ export const NavMenu = ({ onClose, layout }) => {
     );
   }
 
-  const mobileOrder = (
-    <>
-      <li>
-        <Link to="/" onClick={onClose}>
-          Recipes
-        </Link>
-      </li>
-      <li>
-        <Link to="profile/:recipeType" onClick={onClose}>
-          My Profile
-        </Link>
-      </li>
-      <li>
-        <ProfileBlock onClose={onClose} />
-      </li>
-      <li>
-        <Link to="add-recipe" onClick={onClose}>
-          Add Recipes
-        </Link>
-      </li>
-    </>
-  );
-
-  const tabletDesktopOrder = (
-    <>
-      <li>
-        <Link to="/" onClick={onClose}>
-          Recipes
-        </Link>
-      </li>
-      <li>
-        <Link to="profile/:recipeType" onClick={onClose}>
-          My Profile
-        </Link>
-      </li>
-      <li>
-        <Link to="add-recipe" onClick={onClose}>
-          Add Recipes
-        </Link>
-      </li>
-      <li>
-        <ProfileBlock onClose={onClose} />
-      </li>
-    </>
-  );
-
   return (
     <ul className={css.menuList}>
-      {layout === 'tablet-desktop' ? tabletDesktopOrder : mobileOrder}
+      {layout === 'mobile' && (
+        <>
+          <li>
+            <Link to="/" onClick={onClose}>
+              Recipes
+            </Link>
+          </li>
+          <li>
+            <Link to="profile/:recipeType" onClick={onClose}>
+              My Profile
+            </Link>
+          </li>
+          <li>
+            <ProfileBlock onClose={onClose} />
+          </li>
+          <li>
+            <Link to="add-recipe" onClick={onClose}>
+              Add Recipes
+            </Link>
+          </li>
+        </>
+      )}
+
+      {layout === 'tablet-desktop' && (
+        <>
+          <li>
+            <Link to="/" onClick={onClose}>
+              Recipes
+            </Link>
+          </li>
+          <li>
+            <Link to="profile/:recipeType" onClick={onClose}>
+              My Profile
+            </Link>
+          </li>
+          <li>
+            <Link to="add-recipe" onClick={onClose}>
+              Add Recipes
+            </Link>
+          </li>
+          <li>
+            <ProfileBlock onClose={onClose} />
+          </li>
+        </>
+      )}
     </ul>
-  );
-};
+  )}

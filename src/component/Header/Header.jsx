@@ -20,21 +20,25 @@ export const Header = () => {
   const closeMenu = () => setIsMenuOpen(false);
 
   const isMobile = windowWidth < 768;
-  const isTabletDesktop = windowWidth >= 768;
 
   return (
     <header className={css.header}>
       <div className={css.headerWrapper}>
         <Logo />
-        {isMobile && <BurgerButton isOpen={isMenuOpen} onClick={toggleMenu} />}
-
-        {isTabletDesktop && (
+        {isMobile ? (
+          <BurgerButton isOpen={isMenuOpen} onClick={toggleMenu} />
+        ) : (
           <nav>
-            <NavMenu layout="tablet-desktop" />
+            <NavMenu
+              layout={isMobile ? 'mobile' : 'tablet-desktop'}
+              onClose={closeMenu}
+            />
           </nav>
         )}
       </div>
-      {isMobile && isMenuOpen && <MobileMenu onClose={closeMenu} />}
+      {isMobile && isMenuOpen && (
+        <MobileMenu layout="mobile" onClose={closeMenu} />
+      )}
     </header>
   );
 };

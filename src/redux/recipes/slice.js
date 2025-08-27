@@ -3,6 +3,7 @@ import {
   fetchOwnRecipes,
   fetchFavRecipes,
   fetchRecipeById,
+  getFilteredRecipes,
 } from './operations';
 
 const recipesReducer = createSlice({
@@ -18,15 +19,19 @@ const recipesReducer = createSlice({
       recipe: null,
       ingredients: {},
     },
+    filteredRecipes: {
+      page: 1,
+      perPage: 12,
+    },
     loading: false,
-    error: null,
+    error: false,
   },
 
   extraReducers: builder =>
     builder
       .addCase(fetchOwnRecipes.pending, state => {
         state.loading = true;
-        state.error = null;
+        state.error = false;
       })
       .addCase(fetchOwnRecipes.fulfilled, (state, action) => {
         state.loading = false;
@@ -59,6 +64,19 @@ const recipesReducer = createSlice({
       .addCase(fetchRecipeById.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(getFilteredRecipes.pending, state => {
+        state.loading = true;
+        state.error = false;
+      })
+      .addCase(getFilteredRecipes.fulfilled, (state, action) => {
+        state.loading = false;
+        state.error = false;
+        state.filteredRecipes = action.payload.data;
+      })
+      .addCase(getFilteredRecipes.rejected, state => {
+        state.loading = false;
+        state.error = true;
       }),
 });
 

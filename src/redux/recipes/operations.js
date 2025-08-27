@@ -1,22 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-// import setAuthHeader from "../auth/operations";
-
-axios.defaults.baseURL = 'https://project-recipesback.onrender.com/api/';
-
-// тимчасово
-
-const setAuthHeader = token => {
-  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-};
+import apiClient from '../../api/apiClient.js';
 
 export const fetchOwnRecipes = createAsyncThunk(
   'recipes/getOwn',
   async (_, thunkAPI) => {
     try {
-      const state = thunkAPI.getState();
-      setAuthHeader(state.auth.token);
-      const response = await axios.get('/recipes');
+      const response = await apiClient.get('/recipes');
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
@@ -28,9 +17,7 @@ export const fetchFavRecipes = createAsyncThunk(
   'recipes/getFavRecipes',
   async (_, thunkAPI) => {
     try {
-      const state = thunkAPI.getState();
-      setAuthHeader(state.auth.token);
-      const response = await axios.get('/recipes/favorite');
+      const response = await apiClient.get('/recipes/favorite');
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
@@ -63,7 +50,7 @@ export const getFilteredRecipes = createAsyncThunk(
     const requestPath = `/recipes?${queryParams.join('&')}`;
 
     try {
-      const response = await axios.get(requestPath);
+      const response = await apiClient.get(requestPath);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -72,7 +59,7 @@ export const getFilteredRecipes = createAsyncThunk(
 );
 
 export const fetchRecipeById = createAsyncThunk(
-  "recipes/getById",
+  'recipes/getById',
   async (recipeId, thunkAPI) => {
     try {
       const recipeResponse = await apiClient.get(`/recipes/${recipeId}`);

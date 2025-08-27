@@ -34,7 +34,6 @@ const filtersSlice = createSlice({
       };
     },
   },
-  extraReducers: {},
 });
 
 export const filtersReducer = filtersSlice.reducer;

@@ -13,6 +13,8 @@ import { getCategoriesSlice } from '../../redux/categories/selectors';
 import { getIngredientsSlice } from '../../redux/ingredients/selectors';
 import { getCategories } from '../../redux/categories/operations';
 import { getIngredients } from '../../redux/ingredients/operations';
+import { getFilteredRecipes } from '../../redux/recipes/operations';
+import { selectFilteredRecipes } from '../../redux/recipes/selectors';
 
 export default function Filters() {
   const dispatch = useDispatch();
@@ -24,10 +26,13 @@ export default function Filters() {
   console.log('🚀 ~ Filters ~ selectedCategories:', selectedCategories);
   const selectedIngredients = useSelector(getSelectedIngredients);
   console.log('🚀 ~ Filters ~ selectedIngredients:', selectedIngredients);
+  const filteredRecipesTest = useSelector(selectFilteredRecipes);
+  console.log('🚀 ~ Filters ~ filteredRecipesTest:', filteredRecipesTest);
 
   useEffect(() => {
     dispatch(getCategories());
     dispatch(getIngredients());
+    dispatch(getFilteredRecipes());
   }, [dispatch]);
 
   const handleCategoryChange = e => {

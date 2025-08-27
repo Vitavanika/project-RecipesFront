@@ -10,6 +10,7 @@ const RecipeCard = ({
   isFavorite,
   onOpenAuthModal,
 }) => {
+  console.log('🚀 ~ RecipeCard ~ recipe:', recipe);
   const navigate = useNavigate();
   const handleLearnMoreClick = () => {
     navigate(`/recipes/${recipe._id}`);
@@ -34,7 +35,13 @@ const RecipeCard = ({
   return (
     <div className={css.card}>
       <div className={css.cardImageContainer}>
-        <img src={recipe.image} alt={recipe.title} className={css.cardImage} />
+        {recipe.thumb ?? (
+          <img
+            src={recipe.thumb}
+            alt={recipe.title}
+            className={css.cardImage}
+          />
+        )}
       </div>
       <div className={css.cardContent}>
         <div className={css.cardHeader}>

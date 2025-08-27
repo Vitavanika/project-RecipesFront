@@ -15,7 +15,6 @@ export const fetchOwnRecipes = createAsyncThunk(
 
 export const fetchFavRecipes = createAsyncThunk(
   'recipes/getFavRecipes',
-  'recipes/getFavRecipes',
   async (_, thunkAPI) => {
     try {
       const response = await apiClient.get('/recipes/favorite');

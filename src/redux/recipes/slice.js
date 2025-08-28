@@ -4,7 +4,7 @@ import {
   fetchFavRecipes,
   fetchRecipeById,
   getFilteredRecipes,
-  searchRecipes,
+  // searchRecipes,
 } from './operations';
 
 const initialState = {
@@ -16,13 +16,6 @@ const initialState = {
   },
   favorites: {
     items: [],
-    isLoading: false,
-    error: null,
-    errorData: null,
-  },
-  recipes: {
-    items: [],
-    totalPages: null,
     isLoading: false,
     error: null,
     errorData: null,
@@ -50,7 +43,18 @@ const initialState = {
 const recipesSlice = createSlice({
   name: 'recipes',
   initialState,
-  reducers: {},
+  reducers: {
+    setPerPage(state, action) {
+      state.filteredRecipes.perPage = action.payload.perPage;
+    },
+    setPage(state, action) {
+      state.filteredRecipes.page = action.payload.page;
+    },
+    setPaginationParams(state, action) {
+      state.filteredRecipes.perPage = action.payload.perPage;
+      state.filteredRecipes.page = action.payload.page;
+    },
+  },
   extraReducers: builder =>
     builder
       // Own recipes
@@ -117,37 +121,6 @@ const recipesSlice = createSlice({
         state.errorData = action.payload ?? null;
       })
 
-      // Search
-      .addCase(searchRecipes.pending, state => {
-        state.recipes.isLoading = true;
-        state.recipes.error = null;
-        state.recipes.errorData = null;
-
-        state.loading = true;
-        state.error = false;
-        state.errorData = null;
-      })
-      .addCase(searchRecipes.fulfilled, (state, action) => {
-        state.recipes.isLoading = false;
-        state.recipes.items = action.payload?.hits ?? [];
-        state.recipes.totalPages = action.payload?.totalPages ?? null;
-
-        state.loading = false;
-        state.error = false;
-      })
-      .addCase(searchRecipes.rejected, (state, action) => {
-        state.recipes.isLoading = false;
-        state.recipes.error =
-          action.payload?.message ||
-          action.error?.message ||
-          'Failed to search recipes';
-        state.recipes.errorData = action.payload ?? null;
-
-        state.loading = false;
-        state.error = true;
-        state.errorData = action.payload ?? null;
-      })
-
       // Current recipe
       .addCase(fetchRecipeById.pending, state => {
         state.current.isLoading = true;
@@ -191,7 +164,9 @@ const recipesSlice = createSlice({
       })
       .addCase(getFilteredRecipes.fulfilled, (state, action) => {
         state.filteredRecipes.isLoading = false;
-        state.filteredRecipes.items = action.payload?.data ?? [];
+        const hits = state.filteredRecipes.hits;
+        state.filteredRecipes = action.payload?.data ?? [];
+        state.filteredRecipes.hits = { ...hits, ...action.payload.hits };
 
         state.loading = false;
         state.error = false;
@@ -211,3 +186,6 @@ const recipesSlice = createSlice({
 });
 
 export default recipesSlice.reducer;
+
+export const { setPage, setPerPage, setPaginationParams } =
+  recipesSlice.actions;

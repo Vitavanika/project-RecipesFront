@@ -21,10 +21,24 @@ const filtersSlice = createSlice({
       state.searchPhrase = action.payload;
     },
     setSelectedCategory(state, action) {
-      state.selectedCategory.push(action.payload);
+      state.selectedCategory = action.payload;
     },
     setSelectedIngredients(state, action) {
-      state.selectedIngredients.push(action.payload);
+      state.selectedIngredients = action.payload;
+    },
+    setAllFilters(state, action) {
+      state.searchPhrase = action.payload.searchPhrase ?? '';
+      state.selectedCategory = Array.isArray(action.payload.category)
+        ? action.payload.category
+        : action.payload.category
+        ? [action.payload.category]
+        : [];
+
+      state.selectedIngredients = Array.isArray(action.payload.ingredients)
+        ? action.payload.ingredients
+        : action.payload.ingredients
+        ? [action.payload.ingredients]
+        : [];
     },
     resetFilters() {
       return {
@@ -42,4 +56,5 @@ export const {
   setSelectedCategory,
   setSelectedIngredients,
   resetFilters,
+  setAllFilters,
 } = filtersSlice.actions;

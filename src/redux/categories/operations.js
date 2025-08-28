@@ -1,13 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-
-axios.defaults.baseURL = 'https://project-recipesback.onrender.com/api/';
+import apiClient from '../../api/apiClient.js';
 
 export const getCategories = createAsyncThunk(
   'filters/getCategories',
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get('/categories');
+      const response = await apiClient.get('/categories');
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);

@@ -1,9 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
+
 import {
   fetchOwnRecipes,
   fetchFavRecipes,
   fetchRecipeById,
   getFilteredRecipes,
+  searchRecipes,
 } from './operations';
 
 const recipesReducer = createSlice({
@@ -15,6 +17,10 @@ const recipesReducer = createSlice({
     favorites: {
       items: [],
     },
+    recipes: {
+      items: [],
+      totalPages: null,
+    },
     current: {
       recipe: null,
       ingredients: {},
@@ -25,6 +31,7 @@ const recipesReducer = createSlice({
     },
     loading: false,
     error: false,
+    errorData: { data: null },
   },
 
   extraReducers: builder =>
@@ -40,9 +47,8 @@ const recipesReducer = createSlice({
       .addCase(fetchOwnRecipes.rejected, state => {
         state.loading = false;
         state.error = true;
-      })
-      .addCase(fetchFavRecipes.pending, state => {
-        state.loading = true;
+        state.loading = false;
+        state.error = true;
       })
       .addCase(fetchFavRecipes.fulfilled, (state, action) => {
         state.loading = false;
@@ -51,6 +57,19 @@ const recipesReducer = createSlice({
       .addCase(fetchFavRecipes.rejected, state => {
         state.loading = false;
         state.error = true;
+      })
+      .addCase(searchRecipes.pending, state => {
+        state.loading = true;
+      })
+      .addCase(searchRecipes.fulfilled, (state, action) => {
+        state.loading = false;
+        state.recipes.items = action.payload.hits;
+        state.recipes.totalPages = action.payload.totalPages;
+      })
+      .addCase(searchRecipes.rejected, (state, action) => {
+        state.loading = false;
+        state.error = true;
+        state.errorData.data = action.payload;
       })
       .addCase(fetchRecipeById.pending, state => {
         state.loading = true;

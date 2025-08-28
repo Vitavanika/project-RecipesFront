@@ -68,7 +68,7 @@
 }
 
 .inputError {
-    border: 1.5px solid red !important;
+    border: 1.5px solid red;
 }
 
 .passwordWrapper {

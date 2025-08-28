@@ -1,36 +1,41 @@
-import { createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-// import setAuthHeader from "../auth/operations";
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import apiClient from '../../api/apiClient';
 
-// тимчасово
-
-const setAuthHeader = token => {
-  axios.defaults.headers.common.Authorization = `Bearer ${token}`;
-};
-
-
-export const fetchOwnRecipes = createAsyncThunk("recipes/getOwn", async (_, thunkAPI) => { 
+export const fetchOwnRecipes = createAsyncThunk(
+  'recipes/getOwn',
+  async (_, thunkAPI) => {
     try {
-        const state = thunkAPI.getState();
-        setAuthHeader (state.auth.token);
-        const response = await axios.get("api/recipes");
-        return response.data.data;
+      const response = await apiClient.get('/recipes');
+      return response.data.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response?.data || error.message);
-    } 
-    
- });
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
 
 
- export const fetchFavRecipes = createAsyncThunk("recipes/getFavRecipes", async (_, thunkAPI) => { 
+export const fetchFavRecipes = createAsyncThunk(
+  "recipes/getFavRecipes", 
+  async (_, thunkAPI) => { 
     try {
-        const state = thunkAPI.getState();
-        setAuthHeader (state.auth.token);
-        const response = await axios.get("api/recipes/favorite");
-        return response.data.data;
+      const response = await apiClient.get("/recipes/favorite");
+      return response.data.data;
     } catch (error) {
-        return thunkAPI.rejectWithValue(error.response?.data || error.message);
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
     } 
-    
- });
+  }
+);
 
+export const fetchRecipeById = createAsyncThunk(
+  "recipes/getById",
+  async (recipeId, thunkAPI) => {
+    try {
+      const recipeResponse = await apiClient.get(`/recipes/${recipeId}`);
+      const recipe = recipeResponse.data.data;
+
+      return { recipe };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

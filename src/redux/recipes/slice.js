@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit';
-
 import {
   fetchOwnRecipes,
   fetchFavRecipes,
@@ -58,6 +57,8 @@ const recipesReducer = createSlice({
         state.loading = false;
         state.error = true;
       })
+
+      // Search
       .addCase(searchRecipes.pending, state => {
         state.loading = true;
       })
@@ -72,9 +73,14 @@ const recipesReducer = createSlice({
         state.errorData.data = action.payload;
       })
       .addCase(fetchRecipeById.pending, state => {
-        state.loading = true;
-        state.error = null;
+        state.current.isLoading = true;
+        state.current.error = null;
+        state.current.errorData = null;
         state.current.recipe = null;
+
+        state.loading = true;
+        state.error = false;
+        state.errorData = null;
       })
       .addCase(fetchRecipeById.fulfilled, (state, action) => {
         state.loading = false;
@@ -99,4 +105,4 @@ const recipesReducer = createSlice({
       }),
 });
 
-export default recipesReducer.reducer;
+export default recipesSlice.reducer;

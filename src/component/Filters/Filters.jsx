@@ -22,7 +22,10 @@ import {
 import { getCategories } from '../../redux/categories/operations';
 import { getIngredients } from '../../redux/ingredients/operations';
 import { getFilteredRecipes } from '../../redux/recipes/operations';
-import { selectFilteredRecipes } from '../../redux/recipes/selectors';
+import {
+  getTotalRecipes,
+  selectFilteredRecipes,
+} from '../../redux/recipes/selectors';
 
 export default function Filters() {
   const dispatch = useDispatch();
@@ -42,6 +45,8 @@ export default function Filters() {
 
   const [currentCategory, setCurrentCategory] = useState('');
   const [currentIngredient, setCurrentIngredient] = useState('');
+
+  const totalRecipes = useSelector(getTotalRecipes);
 
   useEffect(() => {
     dispatch(getCategories());
@@ -81,6 +86,7 @@ export default function Filters() {
 
   return (
     <>
+      <p>{`${totalRecipes ?? 0} recipes`}</p>
       <form action="setFilters">
         <button type="button" onClick={handleReset}>
           Reset filters

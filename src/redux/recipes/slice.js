@@ -28,9 +28,12 @@ const initialState = {
     errorData: null,
   },
   filteredRecipes: {
-    items: [],
+    hits: [],
     page: 1,
     perPage: 12,
+    totalPages: 0,
+    hasPreviousPage: false,
+    hasNextPage: false,
     isLoading: false,
     error: null,
     errorData: null,
@@ -163,14 +166,20 @@ const recipesSlice = createSlice({
         state.errorData = null;
       })
       .addCase(getFilteredRecipes.fulfilled, (state, action) => {
+        state.filteredRecipes.hits = [
+          ...state.filteredRecipes.hits,
+          ...action.payload.hits,
+        ];
+        state.filteredRecipes.page = action.payload.page;
+        state.filteredRecipes.perPage = action.payload.perPage;
+        state.filteredRecipes.totalPages = action.payload.totalPages;
+        state.filteredRecipes.hasPreviousPage = action.payload.hasPreviousPage;
+        state.filteredRecipes.hasNextPage = action.payload.hasNextPage;
+        state.filteredRecipes.totalItems = action.payload.totalItems;
         state.filteredRecipes.isLoading = false;
-        const hits = state.filteredRecipes.hits;
-        state.filteredRecipes = action.payload?.data ?? [];
-        state.filteredRecipes.hits = { ...hits, ...action.payload.hits };
-
-        state.loading = false;
-        state.error = false;
+        state.filteredRecipes.error = false;
       })
+
       .addCase(getFilteredRecipes.rejected, (state, action) => {
         state.filteredRecipes.isLoading = false;
         state.filteredRecipes.error =

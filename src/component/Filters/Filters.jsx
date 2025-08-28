@@ -23,10 +23,7 @@ import {
 import { getCategories } from '../../redux/categories/operations';
 import { getIngredients } from '../../redux/ingredients/operations';
 import { getFilteredRecipes } from '../../redux/recipes/operations';
-import {
-  getTotalRecipes,
-  selectFilteredRecipes,
-} from '../../redux/recipes/selectors';
+import { getRecipes, getTotalRecipes } from '../../redux/recipes/selectors';
 import { setAllFilters } from '../../redux/filters/slice.js';
 import { setPaginationParams } from '../../redux/recipes/slice.js';
 
@@ -37,20 +34,19 @@ export default function Filters() {
   const ingredients = useSelector(getIngredientsSlice);
 
   const selectedCategories = useSelector(getSelectedCategory);
-  console.log('🚀 ~ Filters ~ selectedCategories:', selectedCategories);
   const selectedIngredients = useSelector(getSelectedIngredients);
-  console.log('🚀 ~ Filters ~ selectedIngredients:', selectedIngredients);
-  const filteredRecipesTest = useSelector(selectFilteredRecipes);
   const searchPhrase = useSelector(getSearchPhrase);
-  console.log('🚀 ~ Filters ~ filteredRecipesTest:', filteredRecipesTest);
   const isloadedCategory = useSelector(getIsLoadedCategories);
   const isloadedIngredients = useSelector(getIsLoadedIngredients);
   const isMultiselect = false;
 
+  // Потрібні для встановлення у селектах опшина з "Виберіть категорію"
   const [currentCategory, setCurrentCategory] = useState('');
   const [currentIngredient, setCurrentIngredient] = useState('');
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const totalRecipes = useSelector(getTotalRecipes);
+  const Recipes = useSelector(getRecipes);
 
   useEffect(() => {
     dispatch(getCategories());
@@ -68,10 +64,10 @@ export default function Filters() {
     isloadedIngredients,
   ]);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-
   useEffect(() => {
-    const category = searchParams.get('category') || '';
+    if (!isloadedCategory || !isloadedIngredients) return;
+
+    const category = searchParams.getAll('category');
     const ingredients = searchParams.getAll('ingredients');
     const searchPhrase = searchParams.get('searchPhrase') || '';
     const page = Number(searchParams.get('page')) || 1;
@@ -79,7 +75,10 @@ export default function Filters() {
 
     dispatch(setAllFilters({ searchPhrase, category, ingredients }));
     dispatch(setPaginationParams({ page, perPage }));
-  }, [searchParams, dispatch]);
+    setCurrentCategory(category[0] || '');
+    setCurrentIngredient(ingredients[0] || '');
+    dispatch(getFilteredRecipes());
+  }, [searchParams, isloadedCategory, isloadedIngredients, dispatch]);
 
   const handleCategoryChange = e => {
     if (e.target.value) {
@@ -91,7 +90,11 @@ export default function Filters() {
       }
       setSearchParams(prev => {
         const next = new URLSearchParams(prev);
-        next.set('category', e.target.value);
+        if (isMultiselect) {
+          next.append('category', e.target.value);
+        } else {
+          next.set('category', e.target.value);
+        }
         return next;
       });
     }
@@ -109,7 +112,11 @@ export default function Filters() {
       }
       setSearchParams(prev => {
         const next = new URLSearchParams(prev);
-        next.set('ingredient', e.target.value);
+        if (isMultiselect) {
+          next.append('ingredients', e.target.value);
+        } else {
+          next.set('ingredients', e.target.value);
+        }
         return next;
       });
     }
@@ -117,9 +124,9 @@ export default function Filters() {
 
   const handleReset = () => {
     setSearchParams({});
-    setCurrentCategory([]);
-    setCurrentIngredient([]);
-    dispatch(resetFilters());
+    dispatch(resetFilters([]));
+    setCurrentCategory('');
+    setCurrentIngredient('');
   };
 
   return (
@@ -158,7 +165,7 @@ export default function Filters() {
         <select
           name="categories"
           id="selectCategories"
-          value={selectedCategories[0]}
+          value={currentCategory}
           onChange={handleCategoryChange}
         >
           <option value="" disabled hidden>

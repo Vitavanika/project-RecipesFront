@@ -52,7 +52,7 @@ export const getFilteredRecipes = createAsyncThunk(
 
     try {
       const response = await apiClient.get(requestPath);
-      return response.data;
+      return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }

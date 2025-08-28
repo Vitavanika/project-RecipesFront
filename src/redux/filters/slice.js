@@ -40,12 +40,9 @@ const filtersSlice = createSlice({
         ? [action.payload.ingredients]
         : [];
     },
-    resetFilters() {
-      return {
-        ...initialState,
-        selectedCategory: [],
-        selectedIngredients: [],
-      };
+    resetFilters(state, action) {
+      state.selectedCategory = action.payload;
+      state.selectedIngredients = action.payload;
     },
   },
 });

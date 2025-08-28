@@ -34,11 +34,16 @@ export const SearchBox = () => {
   return (
     <div className={styles.container}>
       <Formik initialValues={formInitialValue} onSubmit={handleSubmit}>
-        <Form>
-          <label>
-            <Field type="text" name="query" placeholder="Search recipes" />
+        <Form className={styles.form}>
+          <label className={styles.label}>
+            <Field
+              type="text"
+              name="query"
+              placeholder="Search recipes"
+              className={styles.input}
+            />
           </label>
-          <button type="submit" disabled={isLoading}>
+          <button type="submit" disabled={isLoading} className={styles.button}>
             {
               /* add a loader? */
               isLoading ? 'Searching...' : 'Search'

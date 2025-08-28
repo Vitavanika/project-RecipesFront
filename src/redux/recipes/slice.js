@@ -18,10 +18,9 @@ const recipesSlice = createSlice({
   name: 'recipes',
   initialState,
   reducers: {},
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
-
-      .addCase(fetchOwnRecipes.pending, state => {
+      .addCase(fetchOwnRecipes.pending, (state) => {
         state.own.isLoading = true;
         state.own.error = null;
       })
@@ -33,28 +32,21 @@ const recipesSlice = createSlice({
       .addCase(fetchOwnRecipes.rejected, (state, action) => {
         state.own.isLoading = false;
         state.own.error =
-          action.payload?.message ||
-          action.error?.message ||
-          'Failed to load own recipes';
+          action.payload?.message || action.error?.message || 'Failed to load own recipes';
       })
-
-      .addCase(fetchFavRecipes.pending, state => {
+      .addCase(fetchFavRecipes.pending, (state) => {
         state.favorites.isLoading = true;
         state.favorites.error = null;
       })
       .addCase(fetchFavRecipes.fulfilled, (state, action) => {
         state.favorites.isLoading = false;
-        state.favorites.items = Array.isArray(action.payload)
-          ? action.payload
-          : [];
+        state.favorites.items = Array.isArray(action.payload) ? action.payload : [];
         state.favorites.error = null;
       })
       .addCase(fetchFavRecipes.rejected, (state, action) => {
         state.favorites.isLoading = false;
         state.favorites.error =
-          action.payload?.message ||
-          action.error?.message ||
-          'Failed to load favorites';
+          action.payload?.message || action.error?.message || 'Failed to load favorites';
       });
   },
 });

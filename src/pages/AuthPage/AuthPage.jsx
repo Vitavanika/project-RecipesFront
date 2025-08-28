@@ -7,7 +7,7 @@ const AuthPage = () => {
   const { authType } = useParams();
 
   return (
-    <div className={css.authContainer}>
+    <div className={css.authContainer} data-auth={authType}>
       {authType === 'login' ? <LoginForm /> : <RegistrationForm />}
     </div>
   );

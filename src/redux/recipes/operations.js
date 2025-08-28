@@ -53,3 +53,17 @@ export const searchRecipes = createAsyncThunk(
     }
   }
 );
+
+export const fetchRecipeById = createAsyncThunk(
+  "recipes/getById",
+  async (recipeId, thunkAPI) => {
+    try {
+      const recipeResponse = await apiClient.get(`/recipes/${recipeId}`);
+      const recipe = recipeResponse.data.data;
+
+      return { recipe };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

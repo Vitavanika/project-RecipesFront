@@ -1,8 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchOwnRecipes, fetchFavRecipes, searchRecipes } from './operations';
+
+import {
+  fetchOwnRecipes,
+  fetchFavRecipes,
+  fetchRecipeById,
+} from './operations';
 
 const recipesReducer = createSlice({
-  name: 'recipes',
+    name: "recipes",
   initialState: {
     own: {
       items: [],
@@ -13,13 +18,16 @@ const recipesReducer = createSlice({
     recipes: {
       items: [],
     },
+    current: {
+      recipe: null,
+      ingredients: {},
+    },
     loading: false,
     error: null,
   },
 
-  extraReducers: builder =>
-    builder
-      .addCase(fetchOwnRecipes.pending, state => {
+    extraReducers: (builder) => builder
+        .addCase(fetchOwnRecipes.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
@@ -27,11 +35,11 @@ const recipesReducer = createSlice({
         state.loading = false;
         state.own.items = action.payload;
       })
-      .addCase(fetchOwnRecipes.rejected, state => {
+      .addCase(fetchOwnRecipes.rejected, (state) => {
         state.loading = false;
         state.error = true;
       })
-      .addCase(fetchFavRecipes.pending, state => {
+      .addCase(fetchFavRecipes.pending, (state) => {
         state.loading = true;
       })
       .addCase(fetchFavRecipes.fulfilled, (state, action) => {
@@ -52,6 +60,19 @@ const recipesReducer = createSlice({
       .addCase(searchRecipes.rejected, state => {
         state.loading = false;
         state.error = true;
+      })
+      .addCase(fetchRecipeById.pending, state => {
+        state.loading = true;
+        state.error = null;
+        state.current.recipe = null;
+      })
+      .addCase(fetchRecipeById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.current.recipe = action.payload.recipe;
+      })
+      .addCase(fetchRecipeById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
       }),
 });
 

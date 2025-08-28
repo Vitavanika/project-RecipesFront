@@ -1,11 +1,15 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styles from './RecipesList.module.css';
 import RecipeCard from '../RecipeCard/RecipeCard';
+import {
+  fetchOwnRecipes,
+  fetchFavRecipes,
+} from '../../redux/recipes/operations';
 
 export default function RecipesList({
-  items = [],
-  variant = 'default',
-  isLoading = false,
-  error = '',
+  variant = 'own',
+
   onLearnMore,
   onToggleFavorite,
   onDelete,
@@ -13,6 +17,34 @@ export default function RecipesList({
   isAuthenticated = false,
   emptyMessage = 'No recipes found',
 }) {
+  const dispatch = useDispatch();
+
+  const items = useSelector(s =>
+    variant === 'favorites'
+      ? s?.recipes?.favorites?.items ?? []
+      : s?.recipes?.own?.items ?? []
+  );
+
+  const isLoading = useSelector(s =>
+    variant === 'favorites'
+      ? Boolean(s?.recipes?.favorites?.isLoading)
+      : Boolean(s?.recipes?.own?.isLoading)
+  );
+
+  const error = useSelector(s =>
+    variant === 'favorites'
+      ? s?.recipes?.favorites?.error ?? ''
+      : s?.recipes?.own?.error ?? ''
+  );
+
+  useEffect(() => {
+    if (variant === 'favorites') {
+      if (!items.length) dispatch(fetchFavRecipes());
+    } else {
+      if (!items.length) dispatch(fetchOwnRecipes());
+    }
+  }, [dispatch, variant]);
+
   if (isLoading) {
     return (
       <div className={styles.loader} role="status" aria-live="polite">
@@ -22,10 +54,10 @@ export default function RecipesList({
   }
 
   if (error) {
-    return <div className={styles.error}>⚠ {error}</div>;
+    return <div className={styles.error}>⚠ {String(error)}</div>;
   }
 
-  if (items.length === 0) {
+  if (!items.length) {
     return <div className={styles.empty}>{emptyMessage}</div>;
   }
 

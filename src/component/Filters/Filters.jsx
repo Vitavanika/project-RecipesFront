@@ -158,7 +158,7 @@ export default function Filters() {
         <select
           name="categories"
           id="selectCategories"
-          value={currentCategory}
+          value={selectedCategories[0]}
           onChange={handleCategoryChange}
         >
           <option value="" disabled hidden>

@@ -25,24 +25,17 @@ export const fetchFavRecipes = createAsyncThunk(
   }
 );
 
-const buildAxiosParams = params => {
-  return Object.fromEntries(
-    Object.entries(params).filter(([_, v]) => v != null && v !== '')
-  );
-};
-
 export const searchRecipes = createAsyncThunk(
   'recipes/search',
   async (params, thunkAPI) => {
     try {
-      const rawParams = {
+      const axiosParams = {
         searchPhrase: params.searchPhrase || null,
         category: params.category || null,
         ingredient: params.ingredient || null,
         page: params.page || 1,
         perPage: params.perPage || 12,
       };
-      const axiosParams = buildAxiosParams(rawParams);
 
       const response = await apiClient.get('/recipes', {
         params: axiosParams,

@@ -4,10 +4,11 @@ import {
   fetchOwnRecipes,
   fetchFavRecipes,
   fetchRecipeById,
+  searchRecipes,
 } from './operations';
 
 const recipesReducer = createSlice({
-    name: "recipes",
+  name: 'recipes',
   initialState: {
     own: {
       items: [],
@@ -17,6 +18,7 @@ const recipesReducer = createSlice({
     },
     recipes: {
       items: [],
+      totalPages: null,
     },
     current: {
       recipe: null,
@@ -24,6 +26,7 @@ const recipesReducer = createSlice({
     },
     loading: false,
     error: null,
+    errorData: { data: null },
   },
 
     extraReducers: (builder) => builder
@@ -55,11 +58,13 @@ const recipesReducer = createSlice({
       })
       .addCase(searchRecipes.fulfilled, (state, action) => {
         state.loading = false;
-        state.favorites.items = action.payload;
+        state.recipes.items = action.payload.hits;
+        state.recipes.totalPages = action.payload.totalPages;
       })
-      .addCase(searchRecipes.rejected, state => {
+      .addCase(searchRecipes.rejected, (state, action) => {
         state.loading = false;
         state.error = true;
+        state.errorData.data = action.payload;
       })
       .addCase(fetchRecipeById.pending, state => {
         state.loading = true;

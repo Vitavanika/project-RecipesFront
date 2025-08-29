@@ -48,7 +48,6 @@ export const getFilteredRecipes = createAsyncThunk(
     queryParams.push(`perPage=${perPage}`);
 
     const requestPath = `/recipes?${queryParams.join('&')}`;
-    console.log('🚀 ~ requestPath:', requestPath);
 
     try {
       const response = await apiClient.get(requestPath);

@@ -31,7 +31,6 @@ export default function RecipesList({
         return s?.recipes?.filteredRecipes?.hits;
     }
   });
-  console.log('🚀 ~ RecipesList ~ items:', items);
 
   const isLoading = useSelector(s =>
     variant === 'favorites'

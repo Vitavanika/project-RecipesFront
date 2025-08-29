@@ -1,30 +1,24 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  fetchOwnRecipes,
-  fetchFavRecipes,
-} from '../../redux/recipes/operations';
+import { getCurrentPage, getTotalPages, selectLoading } from '../../redux/recipes/selectors';
+import { setPage } from '../../redux/recipes/slice';
+import { getFilteredRecipes } from '../../redux/recipes/operations';
 import css from './LoadMoreBtn.module.css';
 
-const LoadMoreBtn = ({ recipeType = 'own' }) => {
+const LoadMoreBtn = () => {
   const dispatch = useDispatch();
 
-  const { currentPage, totalPages, loading } = useSelector(state => ({
-    ...state.recipes[recipeType],
-    loading: state.recipes.loading,
-  }));
+  const currentPage = useSelector(getCurrentPage);
+  const totalPages = useSelector(getTotalPages);
+  const loading = useSelector(selectLoading);
 
   const handleLoadMore = () => {
-    const nextPage = currentPage + 1;
-    const action = recipeType === 'own' ? fetchOwnRecipes : fetchFavRecipes;
-    dispatch(action({ page: nextPage }));
+    const nextPage = (currentPage ?? 1) + 1;
+    dispatch(setPage({ page: nextPage }));
+    dispatch(getFilteredRecipes());
   };
 
-  // Не показываем кнопку если:
-  // 1. Это последняя страница
-  // 2. Идет загрузка
-  // 3. Нет страниц вообще
-  if (currentPage >= totalPages || loading || totalPages === 0) {
+  if (!totalPages || currentPage >= totalPages || loading) {
     return null;
   }
 

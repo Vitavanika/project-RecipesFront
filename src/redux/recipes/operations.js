@@ -48,13 +48,29 @@ export const searchRecipes = createAsyncThunk(
 );
 
 export const fetchRecipeById = createAsyncThunk(
-  "recipes/getById",
+  'recipes/getById',
   async (recipeId, thunkAPI) => {
     try {
       const recipeResponse = await apiClient.get(`/recipes/${recipeId}`);
       const recipe = recipeResponse.data.data;
 
       return { recipe };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);
+
+export const toggleFavoriteRecipe = createAsyncThunk(
+  'recipes/toggleFavorite',
+  async ({ recipeId, isFavorite }, thunkAPI) => {
+    try {
+      if (isFavorite) {
+        await apiClient.delete(`/recipes/favorite/${recipeId}`);
+      } else {
+        await apiClient.post(`/recipes/favorite/${recipeId}`);
+      }
+      return { recipeId, isFavorite: !isFavorite };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }

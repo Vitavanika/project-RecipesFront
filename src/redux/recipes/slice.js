@@ -5,6 +5,7 @@ import {
   fetchFavRecipes,
   fetchRecipeById,
   searchRecipes,
+  toggleFavoriteRecipe,
 } from './operations';
 
 const recipesReducer = createSlice({
@@ -29,8 +30,9 @@ const recipesReducer = createSlice({
     errorData: { data: null },
   },
 
-    extraReducers: (builder) => builder
-        .addCase(fetchOwnRecipes.pending, (state) => {
+  extraReducers: builder =>
+    builder
+      .addCase(fetchOwnRecipes.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -38,11 +40,11 @@ const recipesReducer = createSlice({
         state.loading = false;
         state.own.items = action.payload;
       })
-      .addCase(fetchOwnRecipes.rejected, (state) => {
+      .addCase(fetchOwnRecipes.rejected, state => {
         state.loading = false;
         state.error = true;
       })
-      .addCase(fetchFavRecipes.pending, (state) => {
+      .addCase(fetchFavRecipes.pending, state => {
         state.loading = true;
       })
       .addCase(fetchFavRecipes.fulfilled, (state, action) => {
@@ -77,6 +79,27 @@ const recipesReducer = createSlice({
       })
       .addCase(fetchRecipeById.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(toggleFavoriteRecipe.fulfilled, (state, action) => {
+        const { recipeId, isFavorite } = action.payload;
+        if (isFavorite) {
+          const recipe = action.payload.recipe;
+          if (recipe) {
+            const alreadyInFav = state.favorites.items.some(
+              r => r._id === recipeId
+            );
+            if (!alreadyInFav) {
+              state.favorites.items.push(recipe);
+            }
+          }
+        } else {
+          state.favorites.items = state.favorites.items.filter(
+            r => r._id !== recipeId
+          );
+        }
+      })
+      .addCase(toggleFavoriteRecipe.rejected, (state, action) => {
         state.error = action.payload;
       }),
 });

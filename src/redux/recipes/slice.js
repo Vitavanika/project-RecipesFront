@@ -3,6 +3,7 @@ import {
   fetchOwnRecipes,
   fetchFavRecipes,
   fetchRecipeById,
+  toggleFavoriteRecipe,
   getFilteredRecipes,
   // searchRecipes,
 } from './operations';
@@ -154,6 +155,28 @@ const recipesSlice = createSlice({
         state.current.errorData = action.payload ?? null;
 
         state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(toggleFavoriteRecipe.fulfilled, (state, action) => {
+        const { recipeId, isFavorite } = action.payload;
+        if (isFavorite) {
+          const recipe = action.payload.recipe;
+          if (recipe) {
+            const alreadyInFav = state.favorites.items.some(
+              r => r._id === recipeId
+            );
+            if (!alreadyInFav) {
+              state.favorites.items.push(recipe);
+            }
+          }
+        } else {
+          state.favorites.items = state.favorites.items.filter(
+            r => r._id !== recipeId
+          );
+        }
+      })
+      .addCase(toggleFavoriteRecipe.rejected, (state, action) => {
+        state.error = action.payload;
         state.error = true;
         state.errorData = action.payload ?? null;
       })

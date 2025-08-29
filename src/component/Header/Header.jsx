@@ -33,9 +33,7 @@ export const Header = () => {
           </nav>
         )}
       </div>
-      {isMobile && (
-        <MobileMenu onClose={closeMenu} isOpen={isMenuOpen} />
-      )}
+      {isMobile && <MobileMenu onClose={closeMenu} isOpen={isMenuOpen} />}
     </header>
   );
 };

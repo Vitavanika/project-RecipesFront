@@ -66,7 +66,7 @@ export default function RecipesList({
     }
   }, [dispatch, variant, items.length, isLoading]);
 
-  if (isLoading) {
+  if (isLoading && items.length === 0) {
     return (
       <div className={styles.loader} role="status" aria-live="polite">
         <span className={styles.spinner} /> Loading…
@@ -74,7 +74,7 @@ export default function RecipesList({
     );
   }
 
-  if (error) {
+  if (error && items.length === 0) {
     return <div className={styles.error}>⚠ {String(error)}</div>;
   }
 

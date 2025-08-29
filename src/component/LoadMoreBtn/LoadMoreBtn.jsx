@@ -1,6 +1,10 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getCurrentPage, getTotalPages, selectLoading } from '../../redux/recipes/selectors';
+import {
+  getCurrentPage,
+  getTotalPages,
+  selectLoading,
+} from '../../redux/recipes/selectors';
 import { setPage } from '../../redux/recipes/slice';
 import { getFilteredRecipes } from '../../redux/recipes/operations';
 import css from './LoadMoreBtn.module.css';
@@ -18,7 +22,6 @@ const LoadMoreBtn = () => {
     dispatch(getFilteredRecipes());
   };
 
- 
   if (!totalPages || currentPage >= totalPages) {
     return null;
   }
@@ -30,11 +33,7 @@ const LoadMoreBtn = () => {
       type="button"
       disabled={loading}
     >
-      {loading ? (
-        <div className={css.spinner}></div>
-      ) : (
-        'Load more'
-      )}
+      {loading ? <div className={css.spinner}></div> : 'Load more'}
     </button>
   );
 };

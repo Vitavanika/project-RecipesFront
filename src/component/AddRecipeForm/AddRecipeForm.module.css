@@ -1,584 +1,124 @@
 .addRecipeForm {
-    max-width: 800px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 16px;
+    background: #fbfcf8;
+    min-height: 100vh;
 }
 
 .addRecipeForm h1 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-size: 40px;
+    color: #000;
     margin-bottom: 16px;
-}
-
-/* Form Styles */
-.recipeForm {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 16px;
-}
-
-.formField {
-    display: flex;
-    flex-direction: column;
-}
-
-.formField label {
-    margin-bottom: 5px;
-    font-weight: 500;
-    color: #333;
-}
-
-.formField input,
-.formField textarea,
-.formField select {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    font-family: inherit;
-}
-
-.formField input:focus,
-.formField textarea:focus,
-.formField select:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-.formField textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
-.formRow {
-    display: flex;
-    gap: 15px;
-}
-
-.formRow .formField {
-    flex: 1;
-}
-
-/* Error Messages */
-.fieldError {
-    color: red;
-    font-size: 14px;
-    margin-top: 4px;
-}
-
-.formStatus {
-    color: red;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #ffe6e6;
-    border: 1px solid #ff0000;
-    border-radius: 4px;
+    text-align: left;
 }
 
 /* Loading and Error States */
-.loadingContainer {
-    text-align: center;
-    padding: 40px 20px;
-}
-
+.loadingContainer,
 .errorContainer {
-    text-align: center;
-    padding: 40px 20px;
-}
-
-.errorMessage {
-    color: #dc3545;
-    margin-bottom: 20px;
-}
-
-.retryButton {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.retryButton:hover {
-    background-color: #0056b3;
-}
-
-/* Ingredient Selector */
-.ingredientSelector {
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-}
-
-.ingredientSelector h2 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #333;
-    font-size: 1.2rem;
-}
-
-.ingredientControls {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-    align-items: end;
-}
-
-.ingredientSelect {
-    min-width: 200px;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.ingredientAmountInput {
-    min-width: 150px;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.addIngredientButton {
-    padding: 8px 16px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    white-space: nowrap;
-}
-
-.addIngredientButton:hover {
-    background-color: #218838;
-}
-
-.addIngredientButton:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-/* Selected Ingredients */
-.selectedIngredients {
-    margin-top: 15px;
-}
-
-.selectedIngredients h4 {
-    margin-bottom: 10px;
-    color: #333;
-    font-size: 1rem;
-}
-
-.ingredientsTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    background-color: white;
-    border-radius: 4px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.ingredientsTable th {
-    border-bottom: 1px solid #ccc;
-    text-align: left;
-    padding: 8px;
-    background-color: #f8f9fa;
-    font-weight: 600;
-}
-
-.ingredientsTable td {
-    padding: 8px;
-    border-bottom: 1px solid #eee;
-}
-
-.ingredientsTable tr:last-child td {
-    border-bottom: none;
-}
-
-.ingredientsTable tr:hover {
-    background-color: #f8f9fa;
-}
-
-.removeIngredientButton {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-}
-
-.removeIngredientButton:hover {
-    background-color: #ffebee;
-}
-
-.actionsColumn {
-    text-align: center;
-    width: 60px;
-}
-
-/* File Input */
-.fileInput {
-    padding: 8px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background-color: white;
-    cursor: pointer;
-}
-
-.fileInput::-webkit-file-upload-button {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    background-color: #6c757d;
-    color: white;
-    cursor: pointer;
-    margin-right: 10px;
-}
-
-.fileInput::-webkit-file-upload-button:hover {
-    background-color: #5a6268;
-}
-
-/* Image Preview */
-.imagePreview {
-    margin-top: 10px;
-}
-
-.previewImage {
-    width: 200px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* Submit Button */
-.submitButton {
-    padding: 12px 24px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    margin-top: 20px;
-    transition: background-color 0.2s;
-}
-
-.submitButton:hover {
-    background-color: #0056b3;
-}
-
-.submitButton:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-    .addRecipeForm {
-        padding: 15px;
-    }
-
-    .formRow {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .ingredientControls {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .ingredientSelect,
-    .ingredientAmountInput {
-        min-width: 100%;
-    }
-}
-
-@media (max-width: 480px) {
-    .addRecipeForm {
-        padding: 10px;
-    }
-
-    .previewImage {
-        width: 100%;
-        max-width: 200px;
-        height: auto;
-    }
-}
-
-.addRecipeForm {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-.addRecipeForm h1 {
-    margin-bottom: 16px;
-}
-
-/* Form Styles */
-.recipeForm {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
-    gap: 16px;
-}
-
-.formField {
-    display: flex;
-    flex-direction: column;
-}
-
-.formField label {
-    margin-bottom: 5px;
-    font-weight: 500;
-    color: #333;
-}
-
-.formField input,
-.formField textarea,
-.formField select {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    font-family: inherit;
-}
-
-.formField input:focus,
-.formField textarea:focus,
-.formField select:focus {
-    outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-}
-
-.formField textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
-.formRow {
-    display: flex;
-    gap: 15px;
-}
-
-.formRow .formField {
-    flex: 1;
-}
-
-/* Error Messages */
-.fieldError {
-    color: red;
-    font-size: 14px;
-    margin-top: 4px;
-}
-
-.formStatus {
-    color: red;
-    margin-bottom: 10px;
-    padding: 10px;
-    background-color: #ffe6e6;
-    border: 1px solid #ff0000;
-    border-radius: 4px;
-}
-
-/* Loading and Error States */
-.loadingContainer {
-    text-align: center;
-    padding: 40px 20px;
-}
-
-.errorContainer {
-    text-align: center;
-    padding: 40px 20px;
-}
-
-.errorMessage {
-    color: #dc3545;
-    margin-bottom: 20px;
-}
-
-.retryButton {
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.retryButton:hover {
-    background-color: #0056b3;
-}
-
-/* Ingredient Selector */
-.ingredientSelector {
-    margin-bottom: 20px;
-    padding: 15px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    background-color: #f9f9f9;
-}
-
-.ingredientSelector h2 {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #333;
-    font-size: 1.2rem;
-}
-
-.ingredientControls {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-    align-items: end;
-}
-
-.ingredientSelect {
-    min-width: 200px;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.ingredientAmountInput {
-    min-width: 150px;
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.addIngredientButton {
-    padding: 8px 16px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 14px;
-    white-space: nowrap;
-}
-
-.addIngredientButton:hover {
-    background-color: #218838;
-}
-
-.addIngredientButton:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
-
-/* Selected Ingredients */
-.selectedIngredients {
-    margin-top: 15px;
-}
-
-.selectedIngredients h4 {
-    margin-bottom: 10px;
-    color: #333;
-    font-size: 1rem;
-}
-
-.ingredientsTable {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    background-color: white;
-    border-radius: 4px;
-    overflow: hidden;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.ingredientsTable th {
-    border-bottom: 1px solid #ccc;
-    text-align: left;
-    padding: 8px;
-    background-color: #f8f9fa;
-    font-weight: 600;
-}
-
-.ingredientsTable td {
-    padding: 8px;
-    border-bottom: 1px solid #eee;
-}
-
-.ingredientsTable tr:last-child td {
-    border-bottom: none;
-}
-
-.ingredientsTable tr:hover {
-    background-color: #f8f9fa;
-}
-
-.removeIngredientButton {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-}
-
-.removeIngredientButton:hover {
-    background-color: #ffebee;
-}
-
-.actionsColumn {
-    text-align: center;
-    width: 60px;
-}
-
-/* Photo Upload Container */
-.photoUploadContainer {
-    position: relative;
-    width: 100%;
-    max-width: 400px;
-    height: 250px;
-    border-radius: 8px;
-    background-color: #9e9e9e;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    min-height: 50vh;
+    text-align: center;
+}
+
+.errorMessage {
+    color: #dc3545;
+    margin: 10px 0;
+}
+
+.retryButton {
+    background-color: #8b4513;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.recipeForm {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.formColumn {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.photoColumn {
+    display: none;
+}
+
+.mobileTabletOnly {
+    display: block;
+}
+
+.formStatus {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+
+/* Section Headers */
+.formField h2 {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    color: #000;
+}
+
+.uploadHead {
+    margin-bottom: 4px;
+}
+
+.generalHead {
+    margin-bottom: 16px;
+}
+
+.ingredientHead {
+    margin-bottom: 32px;
+    margin-top: 40px;
+}
+
+.instrHead {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    color: #000;
+}
+
+/* Photo Upload Section */
+.photoUploadContainer {
+    position: relative;
+    width: 100%;
+    height: 280px;
+    background-color: #9F9F9F;
+    border-radius: 12px;
     overflow: hidden;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
 }
 
 .photoUploadContainer:hover {
-    background-color: #888;
+    background-color: #a8a8a8;
 }
 
-.photoUploadContainer.hasImage {
-    background-color: transparent;
-    padding: 0;
-}
-
-/* Hidden file input */
 .fileInput {
     position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     opacity: 0;
@@ -586,73 +126,52 @@
     z-index: 2;
 }
 
-/* Upload placeholder content */
 .uploadPlaceholder {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    color: white;
-    pointer-events: none;
+    width: 100%;
+    height: 100%;
 }
 
 .uploadIcon {
-    width: 48px;
-    height: 48px;
-    margin-bottom: 12px;
-    opacity: 0.8;
+    width: 52px;
+    height: 52px;
+    fill: none;
+    stroke: #000;
 }
 
-.uploadText {
-    font-size: 16px;
-    font-weight: 500;
-    margin-bottom: 4px;
+.hasImage .uploadPlaceholder {
+    display: none;
 }
 
-.uploadSubtext {
-    font-size: 14px;
-    opacity: 0.8;
-}
-
-/* Image Preview */
 .imagePreview {
     position: relative;
     width: 100%;
     height: 100%;
-    border-radius: 8px;
-    overflow: hidden;
 }
 
 .previewImage {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 8px;
-    transition: transform 0.3s ease;
 }
 
-.previewImage:hover {
-    transform: scale(1.02);
-}
-
-/* Remove/Change button overlay */
 .imageOverlay {
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 8px;
+    transition: opacity 0.2s ease;
 }
 
-.imagePreview:hover .imageOverlay {
+.photoUploadContainer:hover .imageOverlay {
     opacity: 1;
 }
 
@@ -660,26 +179,291 @@
     color: white;
     font-size: 14px;
     font-weight: 500;
-    text-align: center;
-    pointer-events: none;
 }
 
-/* Submit Button */
-.submitButton {
-    padding: 12px 24px;
-    background-color: #007bff;
+/* Form Fields */
+.labelText {
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.instrHead {
+    font-weight: 600;
+    font-size: 24px;
+    color: #000;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.formField input,
+.formField textarea,
+.formField select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #d9d9d9;
+    border-radius: 8px;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    background: #fff;
+    color: #595d62;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease;
+}
+
+.formField input:focus,
+.formField textarea:focus,
+.formField select:focus {
+    outline: none;
+    border-color: #9b6c43;
+}
+
+.formField input::placeholder,
+.formField textarea::placeholder {
+    color: #999;
+}
+
+.formField textarea {
+    resize: none;
+    min-height: 80px;
+}
+
+.selectWithArrow {
+    position: relative;
+}
+
+.selectWithArrow select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 44px;
+}
+
+.selectArrow {
+   fill: none;
+    stroke: #000;
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 24px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.formRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.caloriesCategoryRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.timeField {
+    grid-column: 1 / -1;
+}
+
+/* Error Messages */
+.fieldError {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+.ingredientSelector {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.ingredientControls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.ingredientField {
+    position: relative;
+}
+
+.ingredientSelect,
+.ingredientAmountInput {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: white;
+    color: #333;
+    box-sizing: border-box;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.ingredientSelect {
+    padding-right: 44px;
+}
+
+.ingredientSelect:focus,
+.ingredientAmountInput:focus {
+    outline: none;
+    border-color: #8b4513;
+}
+
+.ingredientAmountInput::placeholder {
+    color: #999;
+}
+
+.addIngredientButton {
+    width: 100%;
+    background-color: #9b6c43;
     color: white;
     border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 14px;
     font-weight: 500;
-    margin-top: 20px;
-    transition: background-color 0.2s;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-.submitButton:hover {
-    background-color: #0056b3;
+.addIngredientButton:hover {
+    background-color: #7a3d0f;
+}
+
+.addIngredientButton:active {
+    background-color: #6b350d;
+}
+
+.selectedIngredients {
+    margin-top: 0;
+}
+
+@media (max-width: 767px) {
+    .selectedIngredients {
+        display: none;
+    }
+
+    .selectedIngredients:has(tbody tr:not(.emptyRow)) {
+        display: block;
+    }
+}
+
+.ingredientsTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: transparent;
+    border: none;
+}
+
+.ingredientsTable thead {
+    background-color: transparent;
+}
+
+.ingredientsTable th {
+    padding: 8px 0;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.ingredientsTable th:first-child {
+    border-radius: 0;
+    width: 40%;
+}
+
+.ingredientsTable th:nth-child(2) {
+    width: 40%;
+}
+
+.ingredientsTable th:last-child {
+    border-radius: 0;
+    text-align: center;
+    width: 20%;
+}
+
+.ingredientsTable td {
+    padding: 12px 0;
+    font-size: 14px;
+    color: #555;
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+}
+
+.ingredientsTable tbody tr:last-child td {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.ingredientsTable tbody tr:last-child td:first-child {
+    border-radius: 0;
+}
+
+.ingredientsTable tbody tr:last-child td:last-child {
+    border-radius: 0;
+}
+
+.actionsColumn {
+    width: 20%;
+    text-align: center;
+    padding: 12px 0;
+}
+
+.removeIngredientButton {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+    border-radius: 6px;
+    color: #999;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+}
+
+.removeIngredientButton:hover {
+    background-color: #ff4757;
+    color: white;
+    transform: scale(1.1);
+}
+
+.submitButton {
+    width: 100%;
+    background-color: #9b6c43;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 8px;
+}
+
+.submitButton:hover:not(:disabled) {
+    background-color: #7a3d0f;
+}
+
+.submitButton:active:not(:disabled) {
+    background-color: #6b350d;
 }
 
 .submitButton:disabled {
@@ -687,36 +471,142 @@
     cursor: not-allowed;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
+/* TABLET STYLES */
+@media (min-width: 768px) and (max-width: 1023px) {
     .addRecipeForm {
-        padding: 15px;
+        max-width: 740px;
+        margin: 0 auto;
+        padding: 32px;
     }
 
-    .formRow {
+    .recipeForm {
+        display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 24px;
+    }
+
+    .timeField {
+        grid-column: 1 / -1;
+    }
+
+    .caloriesCategoryRow {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
     }
 
     .ingredientControls {
-        flex-direction: column;
-        align-items: stretch;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        align-items: end;
+        margin-bottom: 16px;
     }
 
-    .ingredientSelect,
-    .ingredientAmountInput {
-        min-width: 100%;
+    .addIngredientButton {
+        grid-column: 2;
+        width: 100%;
+        margin-top: 12px;
+    }
+
+    .selectedIngredients {
+        display: block;
+        margin-top: 0;
+    }
+
+    .ingredientsTable {
+        display: table;
+    }
+
+    .ingredientsTable thead {
+        display: table-header-group;
     }
 }
 
-@media (max-width: 480px) {
+/* DESKTOP STYLES */
+@media (min-width: 1024px) {
     .addRecipeForm {
-        padding: 10px;
+        max-width: 1200px;
+        padding: 40px;
     }
 
-    .previewImage {
-        width: 100%;
-        max-width: 200px;
-        height: auto;
+    .addRecipeForm h1 {
+        margin-bottom: 32px;
     }
+
+    .recipeForm {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 40px;
+        align-items: start;
+    }
+
+    .formColumn {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .formColumn .formField:has(.photoUploadContainer) {
+        display: none;
+    }
+
+    .mobileTabletOnly {
+        display: none;
+    }
+
+    .photoColumn {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        top: 20px;
+    }
+
+    .photoUploadContainer {
+        width: 400px;
+        height: 320px;
+    }
+
+    .timeField {
+        grid-column: 1 / -1;
+    }
+
+    .caloriesCategoryRow {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .ingredientControls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        align-items: end;
+        margin-bottom: 16px;
+    }
+
+    .addIngredientButton {
+        grid-column: 2;
+        width: 100%;
+        margin-top: 12px;
+        border-radius: 8px;
+        padding: 4px 8px;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+    .ingredientsTable th:last-child,
+    .ingredientsTable td:last-child {
+        text-align: center;
+    }
+
+    .selectedIngredients {
+        display: block;
+    }
+
+    .emptyRow td {
+        font-style: italic;
+        color: #999;
+    }
+
 }

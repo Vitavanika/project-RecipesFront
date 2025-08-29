@@ -149,48 +149,61 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
 
     return (
       <div className={styles.ingredientSelector}>
-        <h2>Ingredients</h2>
+        <h2 className={styles.ingredientHead}>Ingredients</h2>
 
         <div className={styles.ingredientControls}>
-          <select 
-            value={ingredientId} 
-            onChange={(e) => setIngredientId(e.target.value)}
-            className={styles.ingredientSelect}
-          >
-            <option value="">Name</option>
-            {ingredients.map((ingredient) => (
-              <option key={ingredient._id || ingredient.id} value={ingredient._id || ingredient.id}>
-                {ingredient.name}
-              </option>
-            ))}
-          </select>
+          <div className={styles.ingredientField}>
+            <label htmlFor="ingredientSelect" className={styles.labelText}>Name</label>
+            <div className={styles.selectWithArrow}>
+              <select
+                id="ingredientSelect"
+                value={ingredientId}
+                onChange={(e) => setIngredientId(e.target.value)}
+                className={styles.ingredientSelect}
+              >
+                <option value="">Broccoli</option>
+                {ingredients.map((ingredient) => (
+                  <option key={ingredient._id || ingredient.id} value={ingredient._id || ingredient.id}>
+                    {ingredient.name}
+                  </option>
+                ))}
+              </select>
+              <svg className={styles.selectArrow} width="24" height="24">
+                  <use svg href="/sprite.svg#icon-chevron-down" />
+              </svg>
+            </div>
+          </div>
 
-          <input
-            type="text"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="100g"
-            className={styles.ingredientAmountInput}
-          />
+          <div className={styles.ingredientField}>
+            <label htmlFor="ingredientAmount" className={styles.labelText}>Amount</label>
+            <input
+              id="ingredientAmount"
+              type="text"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="100g"
+              className={styles.ingredientAmountInput}
+            />
+          </div>
 
           <button type="button" onClick={addIngredient} className={styles.addIngredientButton}>
             Add new Ingredient
           </button>
         </div>
 
-        {selectedIngredients.length > 0 && (
-          <div className={styles.selectedIngredients}>
-            <table className={styles.ingredientsTable}>
-              <thead>
-                <tr>
-                  <th>Name:</th>
-                  <th>Amount:</th>
-                  <th className={styles.actionsColumn}></th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedIngredients.map((ingredient) => (
+        <div className={styles.selectedIngredients}>
+          <table className={styles.ingredientsTable}>
+            <thead>
+              <tr>
+                <th>Name:</th>
+                <th>Amount:</th>
+                <th className={styles.actionsColumn}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedIngredients.length > 0 ? (
+                selectedIngredients.map((ingredient) => (
                   <tr key={ingredient.id}>
                     <td>{ingredient.name}</td>
                     <td>{ingredient.amount}</td>
@@ -201,18 +214,65 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
                         className={styles.removeIngredientButton}
                         title="Delete"
                       >
-                        🗑️
+                        <svg className={styles.uploadIcon} width="52" height="52">
+                          <use svg href="/sprite.svg#icon-delete" />
+                       </svg>
                       </button>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                ))
+              ) : (
+                <tr className={styles.emptyRow}>
+                  <td colSpan="3" style={{ textAlign: 'center', color: '#999', padding: '20px' }}>
+                    
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   };
+
+  const PhotoUpload = ({ values, setFieldValue }) => (
+    <div className={styles.formField}>
+      <h2 className={styles.uploadHead}>Upload Photo</h2>
+      <div 
+        className={`${styles.photoUploadContainer} ${values.photo ? styles.hasImage : ''} `}
+      >
+        <input
+          type="file"
+          name="photo"
+          id="photo"
+          accept="image/*"
+          onChange={(e) => setFieldValue('photo', e.currentTarget.files[0])}
+          className={styles.fileInput}
+        />
+        
+        {!values.photo ? (
+          <div className={styles.uploadPlaceholder}>
+            <svg className={styles.uploadIcon} width="52" height="52">
+              <use svg href="/sprite.svg#icon-photo" />
+            </svg>
+          </div>
+        ) : (
+          <div className={styles.imagePreview}>
+            <img
+              src={URL.createObjectURL(values.photo)}
+              alt="Recipe preview"
+              className={styles.previewImage}
+            />
+            <div className={styles.imageOverlay}>
+              <div className={styles.overlayText}>Click to change photo</div>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      <ErrorMessage name="photo" component="div" className={styles.fieldError} />
+    </div>
+  );
 
   if (loading) {
     return (
@@ -258,114 +318,96 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
               <div className={styles.formStatus}>
                 {status}
               </div>
-            )}            
-            <div className={styles.formField}>
-  <h2>Upload Photo</h2>
-  
-  <div 
-    className={`${styles.photoUploadContainer} ${values.photo ? styles.hasImage : ''} `}
-  >
-    <input
-      type="file"
-      name="photo"
-      id="photo"
-      accept="image/*"
-      onChange={(e) => setFieldValue('photo', e.currentTarget.files[0])}
-      className={styles.fileInput}
-    />
-    
-    {!values.photo ? (
-      <div className={styles.uploadPlaceholder}>
-        <svg className={styles.uploadIcon} viewBox="0 0 24 24" fill="currentColor">
-          <path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/>
-        </svg>
-        <div className={styles.uploadText}>Click to upload photo</div>
-        <div className={styles.uploadSubtext}>PNG, JPG up to 10MB</div>
-      </div>
-    ) : (
-      <div className={styles.imagePreview}>
-        <img
-          src={URL.createObjectURL(values.photo)}
-          alt="Recipe preview"
-          className={styles.previewImage}
-        />
-        <div className={styles.imageOverlay}>
-          <div className={styles.overlayText}>Click to change photo</div>
-        </div>
-      </div>
-    )}
-  </div>
-  
-  <ErrorMessage name="photo" component="div" className={styles.fieldError} />
-</div>
+            )}
 
-            <div className={styles.formField}>
-              <h2>General Information</h2>
-              <label htmlFor="title">Recipe Title</label>
-              <Field name="title" id="title" placeholder="Enter the name of your recipe" />
-              <ErrorMessage name="title" component="div" className={styles.fieldError} />
-            </div>
+            <div className={styles.formColumn}>
+              <PhotoUpload values={values} setFieldValue={setFieldValue} />
 
-            <div className={styles.formField}>
-              <label htmlFor="description">Recipe Description</label>
-              <Field 
-                as="textarea" 
-                name="description"
-                id="description"
-                placeholder="Enter a brief description of your recipe" 
-                rows={3}
-              />
-              <ErrorMessage name="description" component="div" className={styles.fieldError} />
-            </div>
-
-            <div className={styles.formRow}>
               <div className={styles.formField}>
-                <label htmlFor="time">Cooking time in minutes</label>
+                <h2 className={styles.generalHead}>General Information</h2>
+                <label className={styles.labelText} htmlFor="title">Recipe Title</label>
+                <Field name="title" id="title" placeholder="Enter the name of your recipe" />
+                <ErrorMessage name="title" component="div" className={styles.fieldError} />
+              </div>
+
+              <div className={styles.formField}>
+                <label className={styles.labelText} htmlFor="description">Recipe Description</label>
+                <Field 
+                  as="textarea" 
+                  name="description"
+                  id="description"
+                  placeholder="Enter a brief description of your recipe" 
+                  rows={3}
+                />
+                <ErrorMessage name="description" component="div" className={styles.fieldError} />
+              </div>
+
+              <div className={`${styles.formField} ${styles.timeField}`}>
+                <label className={styles.labelText} htmlFor="time">Cooking time in minutes</label>
                 <Field name="time" id="time" type="number" min="1" placeholder="10" />
                 <ErrorMessage name="time" component="div" className={styles.fieldError} />
               </div>
 
-              <div className={styles.formField}>
-                <label htmlFor="calories">Calories</label>
-                <Field name="calories" id="calories" type="number" min="1" placeholder="150 cals" />
-                <ErrorMessage name="calories" component="div" className={styles.fieldError} />
+              <div className={styles.caloriesCategoryRow}>
+                <div className={styles.formField}>
+                  <label className={styles.labelText} htmlFor="calories">Calories</label>
+                  <Field name="calories" id="calories" type="number" min="1" placeholder="150 cals" />
+                  <ErrorMessage name="calories" component="div" className={styles.fieldError} />
+                </div>
+
+                <div className={styles.formField}>
+                  <label className={styles.labelText} htmlFor="category">Category</label>
+                  <div className={styles.selectWithArrow}>
+                    <Field as="select" name="category" id="category">
+                      <option value="" disabled>Soup</option>
+                      {categories.map((cat) => (
+                        <option key={cat._id || cat.id} value={cat._id || cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </Field>
+                    <svg className={styles.selectArrow} width="24" height="24">
+                      <use svg href="/sprite.svg#icon-chevron-down" />
+                    </svg>
+                  </div>
+                  <ErrorMessage name="category" component="div" className={styles.fieldError} />
+                </div>
               </div>
+
+              <IngredientSelector />
+
+              <div className={styles.formField}>
+                <label className={styles.instrHead} htmlFor="instructions">Instructions</label>
+                <Field 
+                  as="textarea" 
+                  name="instructions"
+                  id="instructions"
+                  placeholder="Enter a text" 
+                  rows={6}
+                />
+                <ErrorMessage name="instructions" component="div" className={styles.fieldError} />
+              </div>
+
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className={`${styles.submitButton} ${styles.mobileTabletOnly}`}
+              >
+                {isSubmitting ? 'Published...' : 'Publish Recipe'}
+              </button>
             </div>
 
-            <div className={styles.formField}>
-              <label htmlFor="category">Category</label>
-              <Field as="select" name="category" id="category">
-                <option value="" disabled>-- Select category --</option>
-                {categories.map((cat) => (
-                  <option key={cat._id || cat.id} value={cat._id || cat.id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </Field>
-              <ErrorMessage name="category" component="div" className={styles.fieldError} />
+            <div className={styles.photoColumn}>
+              <PhotoUpload values={values} setFieldValue={setFieldValue} />
+
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className={styles.submitButton}
+              >
+                {isSubmitting ? 'Published...' : 'Publish Recipe'}
+              </button>
             </div>
-
-            <IngredientSelector />
-
-            <div className={styles.formField}>
-              <label htmlFor="instructions">Instructions</label>
-              <Field 
-                as="textarea" 
-                name="instructions"
-                id="instructions"
-                placeholder="Enter a text" 
-                rows={6}
-              />
-              <ErrorMessage name="instructions" component="div" className={styles.fieldError} />
-            </div>
-
-            <button 
-              type="submit" 
-              disabled={isSubmitting}
-              className={styles.submitButton}
-            >
-              {isSubmitting ? 'Published...' : 'Publish Recipe'}
-            </button>
           </Form>
         )}
       </Formik>

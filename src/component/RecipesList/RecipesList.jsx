@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './RecipesList.module.css';
 import RecipeCard from '../RecipeCard/RecipeCard';
+import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
+import { hasNextPage } from '../../redux/recipes/selectors';
 import {
   fetchOwnRecipes,
   fetchFavRecipes,
 } from '../../redux/recipes/operations';
-import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
-import { hasNextPage } from '../../redux/recipes/selectors';
 
 export default function RecipesList({
   variant,
@@ -19,7 +19,6 @@ export default function RecipesList({
   emptyMessage = 'No recipes found',
 }) {
   const dispatch = useDispatch();
-  const isNextpage = useSelector(hasNextPage);
 
   const items = useSelector(s => {
     switch (variant) {
@@ -28,29 +27,44 @@ export default function RecipesList({
       case 'own':
         return s?.recipes?.own?.items ?? [];
       default:
-        return s?.recipes?.filteredRecipes?.hits;
+        return s?.recipes?.filteredRecipes?.hits ?? [];
     }
   });
 
-  const isLoading = useSelector(s =>
-    variant === 'favorites'
-      ? Boolean(s?.recipes?.favorites?.isLoading)
-      : Boolean(s?.recipes?.own?.isLoading)
-  );
+  const isLoading = useSelector(s => {
+    switch (variant) {
+      case 'favorites':
+        return !!s?.recipes?.favorites?.isLoading;
+      case 'own':
+        return !!s?.recipes?.own?.isLoading;
+      default:
+        return !!s?.recipes?.filteredRecipes?.isLoading;
+    }
+  });
 
-  const error = useSelector(s =>
-    variant === 'favorites'
-      ? s?.recipes?.favorites?.error ?? ''
-      : s?.recipes?.own?.error ?? ''
-  );
+  const error = useSelector(s => {
+    switch (variant) {
+      case 'favorites':
+        return s?.recipes?.favorites?.error ?? '';
+      case 'own':
+        return s?.recipes?.own?.error ?? '';
+      default:
+        return s?.recipes?.filteredRecipes?.error ?? '';
+    }
+  });
+
+  const isNextpage = useSelector(hasNextPage);
 
   useEffect(() => {
-    if (variant === 'favorites') {
-      if (!items.length) dispatch(fetchFavRecipes());
-    } else {
-      if (!items.length) dispatch(fetchOwnRecipes());
+    if (isLoading) return;
+    if (items.length === 0) {
+      if (variant === 'favorites') {
+        dispatch(fetchFavRecipes());
+      } else if (variant === 'own') {
+        dispatch(fetchOwnRecipes());
+      }
     }
-  }, [dispatch, variant]);
+  }, [dispatch, variant, items.length, isLoading]);
 
   if (isLoading) {
     return (
@@ -73,7 +87,7 @@ export default function RecipesList({
       {items.map(r => (
         <RecipeCard
           key={r._id || r.id}
-          recipe={r} // передаємо весь об’єкт
+          recipe={r}
           variant={variant}
           isAuthenticated={isAuthenticated}
           onLearnMore={onLearnMore}

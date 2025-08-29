@@ -15,6 +15,7 @@ import storage from 'redux-persist/lib/storage';
 import { ingredientsReducer } from './ingredients/slice';
 import { categoriesReducer } from './categories/slice';
 import { filtersReducer } from './filters/slice';
+import { miscReducer } from './misc/slice';
 
 const authPersistConfig = { key: 'auth', storage, whitelist: ['token'] };
 
@@ -25,6 +26,7 @@ export const store = configureStore({
     filters: filtersReducer,
     ingredients: ingredientsReducer,
     categories: categoriesReducer,
+    misc: miscReducer,
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

@@ -62,7 +62,7 @@ const RecipeCard = ({
 
   return (
     <div className={css.card}>
-        <img src={recipe.image} alt={recipe.title} className={css.cardImage} />
+        <img src={recipe.thumb} alt={recipe.title} className={css.cardImage} />
         <div className={css.cardHeader}>
           <h3 className={css.cardTitle}>{recipe.title}</h3>
           <div className={css.cardTime}>

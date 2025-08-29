@@ -1,3 +1,5 @@
+import Filters from '../../component/Filters/Filters';
+import RecipesList from '../../component/RecipesList/RecipesList';
 import { SearchBox } from '../../component/SearchBox/SearchBox';
 
 // маршрут "/"
@@ -7,6 +9,8 @@ const HomePage = () => {
       <h1>Home page</h1>
       <p>Ця сторінка в розробці.</p>
       <SearchBox />
+      <Filters />
+      <RecipesList />
     </div>
   );
 };

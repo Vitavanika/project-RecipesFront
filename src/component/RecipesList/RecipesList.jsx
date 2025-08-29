@@ -7,6 +7,7 @@ import {
   fetchFavRecipes,
 } from '../../redux/recipes/operations';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
+import { hasNextPage } from '../../redux/recipes/selectors';
 
 export default function RecipesList({
   variant,
@@ -18,6 +19,7 @@ export default function RecipesList({
   emptyMessage = 'No recipes found',
 }) {
   const dispatch = useDispatch();
+  const isNextpage = useSelector(hasNextPage);
 
   const items = useSelector(s => {
     switch (variant) {
@@ -82,7 +84,7 @@ export default function RecipesList({
           disabled={r._pending === true}
         />
       ))}
-      <LoadMoreBtn />
+      {isNextpage && <LoadMoreBtn />}
     </div>
   );
 }

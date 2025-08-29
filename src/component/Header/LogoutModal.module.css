@@ -1,0 +1,122 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 100;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 300ms ease;
+}
+
+.overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal {
+    position: relative;
+    border-radius: 32px;
+    padding: 56px 24px 32px;
+    width: 362px;
+    height: 316px;
+    background: #faf3e0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    text-align: center;
+
+    transform: translateY(-20px);
+    opacity: 0;
+    transition: opacity 2s ease, transform 2s ease;
+}
+
+.overlay.open .modal {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.closeBtn {
+    position: absolute;
+    top: 21px;
+    right: 21px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.title {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-size: 32px;
+    color: #000;
+}
+
+.subtitle {
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 155%;
+    color: #000;
+}
+
+.btnWrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 16px;
+}
+
+.cancelBtn,
+.logoutBtn {
+    flex: 1;
+    border-radius: 8px;
+    padding: 16px;
+    width: 314px;
+    height: 54px;
+}
+
+.cancelBtn {
+    border: 1px solid #000;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: #000;
+}
+
+.cancelBtn:hover,
+.cancelBtn:focus {
+    background: #f2f2f2;
+}
+
+.cancelBtn:active {
+    background: #e0e0e0;
+}
+
+.logoutBtn {
+    background: #c80000;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    color: #fff;
+}
+
+.logoutBtn:hover,
+.logoutBtn:focus {
+    background: #a50000;
+    outline: none;
+}
+
+.logoutBtn:active {
+    background: #8f0000;
+}
+

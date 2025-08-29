@@ -39,9 +39,8 @@ console.log('Sending data:', values);
         navigate('/');
         resetForm();
     } catch (error) {
-    toast.error(
-      error?.message || String(error) || 'Login failed'
-    );
+  console.error('Login error:', error);
+  toast.error('Login failed');
 } finally {
   setSubmitting(false);
 }
@@ -56,12 +55,14 @@ console.log('Sending data:', values);
         validationSchema={LoginSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, errors, touched }) => (
           <Form className={css.form} noValidate>
             <label className={css.label}>
               <span className={css.labelText}>Enter your email address</span>
               <Field
-                className={css.input}
+                className={`${css.input} ${
+            errors.email && touched.email ? css.inputError : ''
+          }`}
                 type="email"
                 name="email"
                 placeholder="email@gmail.com"
@@ -78,7 +79,9 @@ console.log('Sending data:', values);
               <span className={css.labelText}>Create a strong password</span>
               <div className={css.passwordWrapper}>
                 <Field
-                  className={css.input}
+                  className={`${css.input} ${
+              errors.password && touched.password ? css.inputError : ''
+            }`}
                   type={passwordVisible ? 'text' : 'password'}
                   name="password"
                   placeholder="*********"
@@ -110,10 +113,6 @@ console.log('Sending data:', values);
             >
               {authState.isLoading ? 'Logging in...' : 'Login'}
             </button>
-
-            {authState.error && (
-              <div className={css.errorServer}>{authState.error}</div>
-            )}
           </Form>
         )}
       </Formik>

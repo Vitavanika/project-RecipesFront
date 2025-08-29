@@ -1,6 +1,6 @@
 import css from "./RecipeContent.module.css";
 
-export default function RecipeContent({ about, ingredients, ingredientsMap, steps }) {
+export default function RecipeContent({ about, ingredients, steps }) {
   return (
     <div className={css.container}>
       {about && (
@@ -14,8 +14,8 @@ export default function RecipeContent({ about, ingredients, ingredientsMap, step
         <h3 className={css.title}>Ingredients:</h3>
         <ul className={css.list}>
           {ingredients?.map((item) => (
-            <li key={item.id} className={`${css.text} ${css.item}`}>
-              {ingredientsMap[item.id] || "Unknown ingredient"} — {item.measure || "N/A"}
+            <li key={item._id?.name} className={`${css.text} ${css.item}`}>
+              {item._id?.name || "Unknown ingredient"} — {item.quantity || "N/A"}
             </li>
           ))}
         </ul>

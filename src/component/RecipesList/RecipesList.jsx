@@ -1,11 +1,16 @@
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styles from './RecipesList.module.css';
 import RecipeCard from '../RecipeCard/RecipeCard';
+import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
+import { hasNextPage } from '../../redux/recipes/selectors';
+import {
+  fetchOwnRecipes,
+  fetchFavRecipes,
+} from '../../redux/recipes/operations';
 
 export default function RecipesList({
-  items = [],
-  variant = 'default',
-  isLoading = false,
-  error = '',
+  variant,
   onLearnMore,
   onToggleFavorite,
   onDelete,
@@ -13,6 +18,54 @@ export default function RecipesList({
   isAuthenticated = false,
   emptyMessage = 'No recipes found',
 }) {
+  const dispatch = useDispatch();
+
+  const items = useSelector(s => {
+    switch (variant) {
+      case 'favorites':
+        return s?.recipes?.favorites?.items ?? [];
+      case 'own':
+        return s?.recipes?.own?.items ?? [];
+      default:
+        return s?.recipes?.filteredRecipes?.hits ?? [];
+    }
+  });
+
+  const isLoading = useSelector(s => {
+    switch (variant) {
+      case 'favorites':
+        return !!s?.recipes?.favorites?.isLoading;
+      case 'own':
+        return !!s?.recipes?.own?.isLoading;
+      default:
+        return !!s?.recipes?.filteredRecipes?.isLoading;
+    }
+  });
+
+  const error = useSelector(s => {
+    switch (variant) {
+      case 'favorites':
+        return s?.recipes?.favorites?.error ?? '';
+      case 'own':
+        return s?.recipes?.own?.error ?? '';
+      default:
+        return s?.recipes?.filteredRecipes?.error ?? '';
+    }
+  });
+
+  const isNextpage = useSelector(hasNextPage);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (items.length === 0) {
+      if (variant === 'favorites') {
+        dispatch(fetchFavRecipes());
+      } else if (variant === 'own') {
+        dispatch(fetchOwnRecipes());
+      }
+    }
+  }, [dispatch, variant, items.length, isLoading]);
+
   if (isLoading) {
     return (
       <div className={styles.loader} role="status" aria-live="polite">
@@ -22,10 +75,10 @@ export default function RecipesList({
   }
 
   if (error) {
-    return <div className={styles.error}>⚠ {error}</div>;
+    return <div className={styles.error}>⚠ {String(error)}</div>;
   }
 
-  if (items.length === 0) {
+  if (!items.length) {
     return <div className={styles.empty}>{emptyMessage}</div>;
   }
 
@@ -44,6 +97,7 @@ export default function RecipesList({
           disabled={r._pending === true}
         />
       ))}
+      {isNextpage && <LoadMoreBtn />}
     </div>
   );
 }

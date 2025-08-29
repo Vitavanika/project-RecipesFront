@@ -1,8 +1,7 @@
 .loadMoreBtn {
-  /* (ширина до 767px) */
-  width: 289px; /* Mobile: Fixed (289px) */
-  height: 54px; /* Hug (54px) */
-  background-color: #a45a36; /* Цвет взят с изображения */
+  width: 289px;
+  height: 54px;
+  background-color: #a45a36;
   color: #fafafa;
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
@@ -10,17 +9,17 @@
   line-height: 1.29;
   text-align: center;
   border: none;
-  border-radius: 16px; /* Interactive border radius = 16px */
+  border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
   display: block;
-  margin: 40px auto; /* Margin  */
-  padding: 14px; /* Padding  */
+  margin: 40px auto;
+  padding: 14px;
 }
 
 .loadMoreBtn:hover,
 .loadMoreBtn:focus {
-  background-color: #22252a; /*  наведении/фокусе */
+  background-color: #22252a;
 }
 
 .loadMoreBtn:active {

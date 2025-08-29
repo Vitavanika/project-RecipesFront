@@ -6,8 +6,12 @@ import { getUserData } from '../../redux/auth/selectors';
 export const ProfileBlock = ({ onClose }) => {
   const dispatch = useDispatch();
   const user = useSelector(getUserData);
-  const firstName = user?.name?.split(' ')[0] || 'User';
-  const firstLetter = firstName[0]?.toUpperCase() || 'U';
+  const isAuth = useSelector(state => state.auth.isLoggedIn);
+
+  if (!isAuth) return null;
+
+  const firstName = user?.name?.split(' ')[0] || "User";
+  const firstLetter = firstName[0]?.toUpperCase() || "U";
 
   const handleLogout = () => {
     dispatch(logOut());

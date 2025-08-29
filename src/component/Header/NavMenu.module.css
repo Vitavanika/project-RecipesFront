@@ -4,22 +4,71 @@
     gap: 36px;
     justify-content: center;
     align-items: center;
-
     font-family: "Montserrat", sans-serif;
     font-weight: 600;
     font-size: 16px;
     color: #fff;
 }
 
-.navMenuList {
-    display: flex;
-    flex-direction: column;
-    gap: 36px;
-    justify-content: center;
-    align-items: center;
+li > .item {   
+    display: block; 
+    text-align: center;
+    border-radius: 8px;
+    padding: 12px 16px;
+    min-width: 288px;
+    
+    height: 44px;
+    background: #9b6c43;
+}
 
+.link {
     font-family: "Montserrat", sans-serif;
     font-weight: 600;
     font-size: 16px;
     color: #fff;
+    position: relative;
+    display: inline-block;
 }
+
+.active {
+    font-weight: 600;
+}
+
+@media (min-width: 768px) {
+    .menuList {
+        flex-direction: row;
+        gap: 32px;
+        font-size: 12px;
+    }  
+
+    li>.item {
+        min-width: 101px;
+        font-size: 16px;
+    }
+
+    .link {
+        font-size: 12px;
+    }
+
+    .link::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -4px;
+        width: 100%;
+        height: 1px;
+        background-color: #fff;
+        border-radius: 1px;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+    }
+
+    .active::after {
+        transform: scaleX(1);
+    }
+}
+
+
+
+

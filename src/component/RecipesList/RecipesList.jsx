@@ -4,10 +4,13 @@ import styles from './RecipesList.module.css';
 import RecipeCard from '../RecipeCard/RecipeCard';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import { hasNextPage } from '../../redux/recipes/selectors';
-import { fetchOwnRecipes, fetchFavRecipes } from '../../redux/recipes/operations';
+import {
+  fetchOwnRecipes,
+  fetchFavRecipes,
+} from '../../redux/recipes/operations';
 
 export default function RecipesList({
-  variant = 'own',
+  variant,
   onLearnMore,
   onToggleFavorite,
   onDelete,

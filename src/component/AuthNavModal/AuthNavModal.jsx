@@ -12,7 +12,7 @@ export const AuthNavModal = forwardRef(({ onClick }, ref) => {
       <div ref={ref} className={styles.container}>
         <button onClick={onClick} className={styles.closeModalButton}>
           <svg className={styles.closeIcon} width="24" height="24">
-            <use href="/sprite.svg#icon-close-2"></use>
+            <use href="/sprite.svg#icon-close"></use>
           </svg>
         </button>
         <h2 className={styles.title}>{data.title}</h2>

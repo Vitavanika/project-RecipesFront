@@ -18,7 +18,8 @@ const LoadMoreBtn = () => {
     dispatch(getFilteredRecipes());
   };
 
-  if (!totalPages || currentPage >= totalPages || loading) {
+ 
+  if (!totalPages || currentPage >= totalPages) {
     return null;
   }
 
@@ -29,7 +30,11 @@ const LoadMoreBtn = () => {
       type="button"
       disabled={loading}
     >
-      {loading ? 'Loading...' : 'Load more'}
+      {loading ? (
+        <div className={css.spinner}></div>
+      ) : (
+        'Load more'
+      )}
     </button>
   );
 };

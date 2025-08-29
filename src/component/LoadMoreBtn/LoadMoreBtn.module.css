@@ -1,7 +1,7 @@
 .loadMoreBtn {
   width: 289px;
   height: 54px;
-  background-color: #a45a36;
+  background-color: #9b6c43;
   color: #fafafa;
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
@@ -13,10 +13,10 @@
   cursor: pointer;
   transition: all 0.3s ease;
   display: block;
-  margin: 40px auto;
   max-width: 335px;
   padding: 14px;
   position: relative;
+  margin: 0 auto;
 }
 
 .loadMoreBtn:hover,
@@ -29,24 +29,29 @@
 }
 
 .loadMoreBtn:disabled {
-  background-color: #ccc;
+  background-color: #a45a36;
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 .spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid transparent;
-  border-top: 2px solid #fafafa;
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(250, 250, 250, 0.3);
+  border-top: 3px solid #fafafa;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto;
+  display: block;
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @media screen and (min-width: 768px) {

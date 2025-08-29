@@ -5,7 +5,7 @@ export const BurgerButton = ({ isOpen, onClick }) => {
       <button type="button" onClick={onClick} aria-label="Menu toggle">
         {isOpen ? (
           <svg className={css.closeIcon} width="32" height="32">
-            <use href="/sprite.svg#icon-close"></use>
+            <use href="/sprite.svg#icon-close-circle"></use>
           </svg>
         ) : (
           <svg className={css.openIcon} width="20" height="14">

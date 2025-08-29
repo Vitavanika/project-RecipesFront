@@ -53,13 +53,18 @@ const ProfilePage = () => {
 };
 
   return (
-    <div>
+    <div className={css.pageContainer}>
       <h1 className={css.title}>My profile</h1>
       <ProfileNavigation/>
       {loading && <p>Loading...</p>}
       {!loading && currentError && <p>Something went wrong</p>}
       {!loading && !currentError && hasNoRecipes && <p>{getEmptyMessage()}</p>}
-      {!loading && !currentError && !hasNoRecipes && <RecipesList recipes={recipeListToRender}/>}
+      {!loading && !currentError && !hasNoRecipes && <RecipesList 
+        items={recipeListToRender}
+        variant={recipeType}
+        isLoading={loading}
+        error={currentError}
+        emptyMessage={getEmptyMessage()}/>}
       {/* <LoadMoreBtn/> */}
     </div>
   );

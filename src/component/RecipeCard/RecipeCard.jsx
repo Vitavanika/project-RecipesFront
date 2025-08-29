@@ -6,7 +6,14 @@ import css from './RecipeCard.module.css';
 import { toggleFavoriteRecipe } from '../../redux/recipes/operations';
 import { AuthNavModal } from '../AuthNavModal/AuthNavModal';
 
-const RecipeCard = ({ recipe, isAuthenticated, isFavorite }) => {
+const RecipeCard = ({
+  recipe,
+  isAuthenticated,
+  isFavorite = false,
+  onLearnMore,
+  onToggleFavorite,
+  onOpenAuthModal,
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -14,20 +21,33 @@ const RecipeCard = ({ recipe, isAuthenticated, isFavorite }) => {
   const [loading, setLoading] = useState(false);
 
   const handleLearnMoreClick = () => {
-    navigate(`/recipes/${recipe._id}`);
+    if (onLearnMore) {
+      onLearnMore(recipe);
+    } else {
+      navigate(`/recipes/${recipe._id}`);
+    }
   };
 
   const handleFavoriteClick = async () => {
     if (!isAuthenticated) {
-      setShowAuthModal(true);
+      if (onOpenAuthModal) {
+        onOpenAuthModal();
+      } else {
+        setShowAuthModal(true);
+      }
       return;
     }
 
     try {
       setLoading(true);
-      await dispatch(
-        toggleFavoriteRecipe({ recipeId: recipe._id, isFavorite })
-      ).unwrap();
+      if (onToggleFavorite) {
+        await onToggleFavorite(recipe);
+      } else {
+        await dispatch(
+          toggleFavoriteRecipe({ recipeId: recipe._id, isFavorite })
+        ).unwrap();
+      }
+
       toast.success(
         isFavorite
           ? 'Recipe removed from favorites'

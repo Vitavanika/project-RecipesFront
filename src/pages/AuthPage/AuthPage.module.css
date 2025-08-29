@@ -1,4 +1,12 @@
 /* ===== Base (mobile first) ===== */
+.authContainer[data-auth='login'] {
+    padding: 91px 16px;
+}
+
+.authContainer[data-auth='register'] {
+    padding: 56px 16px;
+}
+
 .authContainer {
     display: flex;
     justify-content: center;
@@ -152,6 +160,16 @@
 
 /* ===== Tablet ===== */
 @media (min-width: 768px) {
+    .authContainer[data-auth='login'] {
+        padding-top: 262px;
+        padding-bottom: 262px;
+    }
+
+    .authContainer[data-auth='register'] {
+        padding-top: 152px;
+        padding-bottom: 152px;
+    }
+
     .card {
         max-width: 522px;
     }
@@ -159,6 +177,16 @@
 
 /* ===== Desktop ===== */
 @media (min-width: 1024px) {
+    .authContainer[data-auth='login'] {
+        padding-top: 176.5px;
+        padding-bottom: 176.5px;
+    }
+
+    .authContainer[data-auth='register'] {
+        padding-top: 52px;
+        padding-bottom: 52px;
+    }
+    
     .card {
         max-width: 420px;
     }

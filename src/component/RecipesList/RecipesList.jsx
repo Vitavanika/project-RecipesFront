@@ -2,10 +2,9 @@ import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './RecipesList.module.css';
 import RecipeCard from '../RecipeCard/RecipeCard';
-import {
-  fetchOwnRecipes,
-  fetchFavRecipes,
-} from '../../redux/recipes/operations';
+import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
+import { hasNextPage } from '../../redux/recipes/selectors';
+import { fetchOwnRecipes, fetchFavRecipes } from '../../redux/recipes/operations';
 
 export default function RecipesList({
   variant = 'own',
@@ -18,30 +17,47 @@ export default function RecipesList({
 }) {
   const dispatch = useDispatch();
 
-  const items = useSelector(s =>
-    variant === 'favorites'
-      ? s?.recipes?.favorites?.items ?? []
-      : s?.recipes?.own?.items ?? []
-  );
+  const items = useSelector(s => {
+    switch (variant) {
+      case 'favorites':
+        return s?.recipes?.favorites?.items ?? [];
+      case 'own':
+        return s?.recipes?.own?.items ?? [];
+      default:
+        return s?.recipes?.filteredRecipes?.hits ?? [];
+    }
+  });
 
-  const isLoading = useSelector(s =>
-    variant === 'favorites'
-      ? Boolean(s?.recipes?.favorites?.isLoading)
-      : Boolean(s?.recipes?.own?.isLoading)
-  );
+  const isLoading = useSelector(s => {
+    switch (variant) {
+      case 'favorites':
+        return !!s?.recipes?.favorites?.isLoading;
+      case 'own':
+        return !!s?.recipes?.own?.isLoading;
+      default:
+        return !!s?.recipes?.filteredRecipes?.isLoading;
+    }
+  });
 
-  const error = useSelector(s =>
-    variant === 'favorites'
-      ? s?.recipes?.favorites?.error ?? ''
-      : s?.recipes?.own?.error ?? ''
-  );
+  const error = useSelector(s => {
+    switch (variant) {
+      case 'favorites':
+        return s?.recipes?.favorites?.error ?? '';
+      case 'own':
+        return s?.recipes?.own?.error ?? '';
+      default:
+        return s?.recipes?.filteredRecipes?.error ?? '';
+    }
+  });
+
+  const isNextpage = useSelector(hasNextPage);
 
   useEffect(() => {
     if (isLoading) return;
     if (items.length === 0) {
       if (variant === 'favorites') {
         dispatch(fetchFavRecipes());
-      } else {
+      } else if (variant === 'own') {
         dispatch(fetchOwnRecipes());
       }
     }
@@ -68,7 +84,7 @@ export default function RecipesList({
       {items.map(r => (
         <RecipeCard
           key={r._id || r.id}
-          recipe={r} // передаємо весь об’єкт
+          recipe={r}
           variant={variant}
           isAuthenticated={isAuthenticated}
           onLearnMore={onLearnMore}
@@ -78,6 +94,7 @@ export default function RecipesList({
           disabled={r._pending === true}
         />
       ))}
+      {isNextpage && <LoadMoreBtn />}
     </div>
   );
 }

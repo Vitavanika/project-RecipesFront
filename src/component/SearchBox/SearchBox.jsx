@@ -2,29 +2,44 @@ import { Field, Form, Formik } from 'formik';
 import { useSearchParams } from 'react-router';
 import { selectLoading } from '../../redux/recipes/selectors';
 import { useSelector, useDispatch } from 'react-redux';
-import { searchRecipes } from '../../redux/recipes/operations';
+import { getFilteredRecipes } from '../../redux/recipes/operations';
 import { toast } from 'react-hot-toast';
 
 import styles from './SearchBox.module.css';
+import { setSearchPhrase } from '../../redux/filters/slice';
+import { getSearchPhrase } from '../../redux/filters/selectors';
 
 export const SearchBox = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const formInitialValue = { query: searchParams.get('searchPhrase') || '' };
+  const [, setSearchParams] = useSearchParams();
+  const searchPhrase = useSelector(getSearchPhrase);
+  const formInitialValue = { query: searchPhrase || '' };
   const dispatch = useDispatch();
   const isLoading = useSelector(selectLoading);
 
-  const handleSubmit = async values => {
-    if (!values.query) {
-      return;
-    }
+  const handleSubmit = values => {
     const searchQuery = values.query.trim();
-    const newParams = new URLSearchParams(searchParams);
-    newParams.set('searchPhrase', searchQuery);
+    if (!searchQuery) {
+      setSearchParams(prev => {
+        const next = new URLSearchParams(prev);
+        next.delete('searchPhrase');
+        return next;
+      });
+    } else {
+      setSearchParams(prev => {
+        const next = new URLSearchParams(prev);
+        next.set('searchPhrase', searchQuery);
+        return next;
+      });
+    }
 
-    setSearchParams(newParams);
+    dispatch(setSearchPhrase(searchQuery));
 
+    dispatchSearch();
+  };
+
+  const dispatchSearch = async () => {
     try {
-      await dispatch(searchRecipes(Object.fromEntries(newParams))).unwrap();
+      await dispatch(getFilteredRecipes()).unwrap();
       toast.success('Search is done!');
     } catch (error) {
       toast.error(error?.message || String(error) || 'Search failed');
@@ -33,7 +48,11 @@ export const SearchBox = () => {
 
   return (
     <div className={styles.container}>
-      <Formik initialValues={formInitialValue} onSubmit={handleSubmit}>
+      <Formik
+        initialValues={formInitialValue}
+        onSubmit={handleSubmit}
+        enableReinitialize
+      >
         <Form>
           <label>
             <Field type="text" name="query" placeholder="Search recipes" />

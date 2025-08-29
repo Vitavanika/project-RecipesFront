@@ -1,15 +1,14 @@
+import { Hero } from '../../component/Hero/Hero';
 import Filters from '../../component/Filters/Filters';
 import RecipesList from '../../component/RecipesList/RecipesList';
-import { SearchBox } from '../../component/SearchBox/SearchBox';
 
 // маршрут "/"
 const HomePage = () => {
   return (
     <div>
-      <SearchBox />
+      <Hero />
       <Filters />
-      <RecipesList 
-      />
+      <RecipesList />
     </div>
   );
 };

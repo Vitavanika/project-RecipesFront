@@ -24,7 +24,7 @@ export default function NotFound() {
       <p className={css.text}>Recipe not found</p>
       <Link to="/" className={css.link}> 
       <svg width="11" height="10"  stroke="currentColor" className={css.icon}> 
-      <use href="/public/sprite.svg#icon-left-short" />
+      <use href="/sprite.svg#icon-left-short" />
     </svg> Back to Home</Link>
     </div>
   );

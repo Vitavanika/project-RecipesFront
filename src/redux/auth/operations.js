@@ -8,7 +8,7 @@ export const register = createAsyncThunk(
       const response = await apiClient.post('/auth/register', credentials);
       return response.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+      return thunkAPI.rejectWithValue(error.response?.data?.message || 'Registration failed');
     }
   }
 );
@@ -50,4 +50,4 @@ export const refreshUser = createAsyncThunk(
       return thunkAPI.rejectWithValue(error.message);
     }
   }
-)
+);

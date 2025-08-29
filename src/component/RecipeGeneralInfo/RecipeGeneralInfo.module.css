@@ -5,9 +5,11 @@
   gap: 24px;
 }
 .wrapper {
+  width: 100%;
+  min-width: 0;
+  max-width: 393px;
   border-radius: 16px;
   padding: 16px;
-  width: 361px;
   height: 100%;
   background-color: #faf3e0;
 }
@@ -31,7 +33,9 @@
   border-radius: 8px;
   border: none;
   padding: 16px;
-  width: 361px;
+  width: 100%;
+  min-width: 0;
+  max-width: 361px;
   height: 56px;
   background-color: var(--color-light-brown);
 
@@ -68,8 +72,9 @@
     gap: 24px;
   }
   .wrapper {
+
     padding: 24px;
-    width: 431px;
+      max-width: 431px;
     height: 100%;
   }
   .button {

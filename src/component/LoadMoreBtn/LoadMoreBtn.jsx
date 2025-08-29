@@ -1,21 +1,43 @@
 import React from 'react';
-import styles from './LoadMoreBtn.module.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPaginationParams } from '../../redux/recipes/slice';
-import { getCurrentPage, getPerPage } from '../../redux/recipes/selectors';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  fetchOwnRecipes,
+  fetchFavRecipes,
+} from '../../redux/recipes/operations';
+import css from './LoadMoreBtn.module.css';
 
-export default function LoadMoreBtn() {
+const LoadMoreBtn = ({ recipeType = 'own' }) => {
   const dispatch = useDispatch();
-  const page = useSelector(getCurrentPage);
-  const perPage = useSelector(getPerPage);
 
-  const handleClick = () => {
-    dispatch(setPaginationParams({ page: page + 1, perPage }));
+  const { currentPage, totalPages, loading } = useSelector(state => ({
+    ...state.recipes[recipeType],
+    loading: state.recipes.loading,
+  }));
+
+  const handleLoadMore = () => {
+    const nextPage = currentPage + 1;
+    const action = recipeType === 'own' ? fetchOwnRecipes : fetchFavRecipes;
+    dispatch(action({ page: nextPage }));
   };
 
+  // Не показываем кнопку если:
+  // 1. Это последняя страница
+  // 2. Идет загрузка
+  // 3. Нет страниц вообще
+  if (currentPage >= totalPages || loading || totalPages === 0) {
+    return null;
+  }
+
   return (
-    <button className={styles.loadMoreBtn} onClick={handleClick}>
-      Load More
+    <button
+      className={css.loadMoreBtn}
+      onClick={handleLoadMore}
+      type="button"
+      disabled={loading}
+    >
+      {loading ? 'Loading...' : 'Load more'}
     </button>
   );
-}
+};
+
+export default LoadMoreBtn;

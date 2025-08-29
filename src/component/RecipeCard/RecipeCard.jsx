@@ -10,7 +10,6 @@ const RecipeCard = ({
   isFavorite,
   onOpenAuthModal,
 }) => {
-  console.log('🚀 ~ RecipeCard ~ recipe:', recipe);
   const navigate = useNavigate();
   const handleLearnMoreClick = () => {
     navigate(`/recipes/${recipe._id}`);

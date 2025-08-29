@@ -25,7 +25,7 @@ import { getIngredients } from '../../redux/ingredients/operations';
 import { getFilteredRecipes } from '../../redux/recipes/operations';
 import { getRecipes, getTotalRecipes } from '../../redux/recipes/selectors';
 import { setAllFilters } from '../../redux/filters/slice.js';
-import { setPaginationParams } from '../../redux/recipes/slice.js';
+import { resetHits, setPaginationParams } from '../../redux/recipes/slice.js';
 
 export default function Filters() {
   const dispatch = useDispatch();
@@ -54,7 +54,10 @@ export default function Filters() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (isloadedCategory && isloadedIngredients) dispatch(getFilteredRecipes());
+    if (isloadedCategory && isloadedIngredients) {
+      dispatch(resetHits());
+      dispatch(getFilteredRecipes());
+    }
   }, [
     dispatch,
     selectedCategories,
@@ -77,7 +80,7 @@ export default function Filters() {
     dispatch(setPaginationParams({ page, perPage }));
     setCurrentCategory(category[0] || '');
     setCurrentIngredient(ingredients[0] || '');
-    dispatch(getFilteredRecipes());
+    // dispatch(getFilteredRecipes());
   }, [searchParams, isloadedCategory, isloadedIngredients, dispatch]);
 
   const handleCategoryChange = e => {

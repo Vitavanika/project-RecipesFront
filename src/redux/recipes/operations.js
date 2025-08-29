@@ -27,7 +27,7 @@ export const fetchFavRecipes = createAsyncThunk(
 
 export const getFilteredRecipes = createAsyncThunk(
   'recipes/getFilteredRecipes',
-  async (_, thunkAPI) => {
+  async ({ append = false } = {}, thunkAPI) => {
     const state = thunkAPI.getState();
     const searchPhrase = state.filters.searchPhrase;
     const selectedIngredients = state.filters.selectedIngredients
@@ -51,7 +51,10 @@ export const getFilteredRecipes = createAsyncThunk(
 
     try {
       const response = await apiClient.get(requestPath);
-      return response.data.data;
+      return {
+        ...response.data.data,
+        append,
+      };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }

@@ -192,10 +192,14 @@ const recipesSlice = createSlice({
         state.errorData = null;
       })
       .addCase(getFilteredRecipes.fulfilled, (state, action) => {
-        state.filteredRecipes.hits = [
-          ...state.filteredRecipes.hits,
-          ...action.payload.hits,
-        ];
+        if (action.payload.append) {
+          state.filteredRecipes.hits = [
+            ...(state.filteredRecipes.hits || []),
+            ...(action.payload.hits || []),
+          ];
+        } else {
+          state.filteredRecipes.hits = action.payload.hits || [];
+        }
         state.filteredRecipes.page = action.payload.page;
         state.filteredRecipes.perPage = action.payload.perPage;
         state.filteredRecipes.totalPages = action.payload.totalPages;

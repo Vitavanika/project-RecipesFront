@@ -1,10 +1,10 @@
-import css from "./Header.module.css";
+import css from './Header.module.css';
 
-import { useState, useEffect } from "react";
-import { Logo } from "./Logo";
-import { BurgerButton } from "./BurgerButton";
-import { MobileMenu } from "./MobileMenu";
-import { NavMenu } from "./NavMenu";
+import { useState, useEffect } from 'react';
+import { Logo } from './Logo';
+import { BurgerButton } from './BurgerButton';
+import { MobileMenu } from './MobileMenu';
+import { NavMenu } from './NavMenu';
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,8 +12,8 @@ export const Header = () => {
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const toggleMenu = () => setIsMenuOpen(prev => !prev);
@@ -33,9 +33,7 @@ export const Header = () => {
           </nav>
         )}
       </div>
-      {isMobile && (
-        <MobileMenu onClose={closeMenu} isOpen={isMenuOpen} />
-      )}
+      {isMobile && <MobileMenu onClose={closeMenu} isOpen={isMenuOpen} />}
     </header>
   );
 };

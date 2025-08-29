@@ -1,6 +1,6 @@
-import css from "./MobileMenu.module.css";
-import { NavMenu } from "./NavMenu";
-import clsx from "clsx";
+import css from './MobileMenu.module.css';
+import { NavMenu } from './NavMenu';
+import clsx from 'clsx';
 
 export const MobileMenu = ({ onClose, isOpen }) => {
   return (

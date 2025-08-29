@@ -14,7 +14,9 @@
   transition: all 0.3s ease;
   display: block;
   margin: 40px auto;
+  max-width: 335px;
   padding: 14px;
+  position: relative;
 }
 
 .loadMoreBtn:hover,
@@ -32,16 +34,29 @@
   opacity: 0.7;
 }
 
-/*  (min-width: 768px) */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid #fafafa;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 @media screen and (min-width: 768px) {
   .loadMoreBtn {
-    width: 338px; /* Tablet: Fixed (338px) */
+    max-width: 345px;
   }
 }
 
-/*  (min-width: 1440px) */
 @media screen and (min-width: 1440px) {
   .loadMoreBtn {
-    width: 372px; /* Desktop: Fixed (372px) */
+    max-width: 355px;
   }
 }

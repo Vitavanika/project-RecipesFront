@@ -27,15 +27,15 @@ const ProfilePage = () => {
   useEffect(() => {
     if (!recipeType || (recipeType !== "favorites" && recipeType !== "own")) {
       navigate("/profile/own", { replace: true });
+      return;
     }
-  }, [recipeType, navigate]);
 
-  useEffect (()=>{
     if (recipeType === "favorites") {
       dispatch(fetchFavRecipes());
     } else if (recipeType === "own") {
       dispatch(fetchOwnRecipes());
-    }},[recipeType, dispatch]);
+    }
+  },[recipeType, dispatch, navigate]);
 
 
   const recipeListToRender = recipeType === "favorites" ? favRecipes : ownRecipes;

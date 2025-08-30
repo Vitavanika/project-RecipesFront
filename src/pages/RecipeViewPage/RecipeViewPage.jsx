@@ -1,10 +1,9 @@
-import { useEffect } from "react";
-import { useParams } from "react-router";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchRecipeById } from "../../redux/recipes/operations";
-import RecipeDetails from "../../component/RecipeDetails/RecipeDetails";
-import NotFound from "../../component/NotFound/NotFound";
-
+import { useEffect } from 'react';
+import { useParams } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchRecipeById } from '../../redux/recipes/operations';
+import RecipeDetails from '../../component/RecipeDetails/RecipeDetails';
+import NotFound from '../../component/NotFound/NotFound';
 
 export default function RecipeViewPage() {
   const { recipeId } = useParams();
@@ -14,14 +13,16 @@ export default function RecipeViewPage() {
   const { loading, error } = useSelector(state => state.recipes);
 
   useEffect(() => {
-     if (recipeId) {
+    if (recipeId) {
       dispatch(fetchRecipeById(recipeId));
-    }}, [dispatch, recipeId]);
+    }
+  }, [dispatch, recipeId]);
 
-   if (loading) return <p>Loading...</p>;
-  if (error || !current?.recipe) return <NotFound />;
+  if (loading) return <p>Loading...</p>;
 
-  return <RecipeDetails
-      recipe={current.recipe}
-    />;
+  if (error) return <NotFound />;
+
+  if (!current?.recipe) return <p>No recipe found</p>;
+
+  return <RecipeDetails recipe={current.recipe} />;
 }

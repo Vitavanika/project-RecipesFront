@@ -1,13 +1,27 @@
 .header {
-    display: flex;
-    flex-direction: column;
-    padding: 14px 0;
-
     background: #3d2218;
 }
 
 .headerWrapper {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    padding: 22px 16px;
+    max-width: 393px;
+    margin: 0 auto;
+}
+
+@media only screen and (min-width: 768px) {
+    .headerWrapper {
+        padding: 22px 32px;
+        max-width: 768px
+    }
+}
+
+@media only screen and (min-width: 1440px) {
+    .headerWrapper {
+        max-width: 1440px;
+        padding: 22px 108px;
+    }
 }
 

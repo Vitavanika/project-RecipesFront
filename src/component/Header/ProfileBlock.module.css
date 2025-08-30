@@ -1,6 +1,5 @@
 .profileContainer {
     width: 123px;
-    height: 39px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,17 +7,19 @@
 }
 
 .firstLetter {
-    border-radius: 32px;
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #9b6c43;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 32px;
-    height: 32px;
-    background: #9b6c43;
-    font-family: "Montserrat", sans-serif;
     font-weight: 600;
     font-size: 12px;
+    line-height: 1;
     color: #fff;
+    text-transform: uppercase;
 }
 
 .vertLine {
@@ -30,4 +31,5 @@
 .logOutIcon {
     stroke-width: 1.33px;
     stroke: #fff;
+    fill: none;
 }

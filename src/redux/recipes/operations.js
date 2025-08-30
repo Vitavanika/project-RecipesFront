@@ -71,3 +71,19 @@ export const fetchRecipeById = createAsyncThunk(
     }
   }
 );
+
+export const toggleFavoriteRecipe = createAsyncThunk(
+  'recipes/toggleFavorite',
+  async ({ recipeId, isFavorite }, thunkAPI) => {
+    try {
+      if (isFavorite) {
+        await apiClient.delete(`/recipes/favorite/${recipeId}`);
+      } else {
+        await apiClient.post(`/recipes/favorite/${recipeId}`);
+      }
+      return { recipeId, isFavorite: !isFavorite };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data || error.message);
+    }
+  }
+);

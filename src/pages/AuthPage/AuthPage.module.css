@@ -75,6 +75,10 @@
     box-shadow: 0 0 0 4px rgba(78, 70, 180, 0.2);
 }
 
+.inputError {
+    border: 1.5px solid red;
+}
+
 .passwordWrapper {
     position: relative;
     display: flex;

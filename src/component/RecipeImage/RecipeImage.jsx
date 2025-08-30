@@ -16,6 +16,9 @@ export default function RecipeImage({ src, alt }) {
     };
 
     updateSrc();
+    window.addEventListener('resize', updateSrc);
+
+    return () => window.removeEventListener('resize', updateSrc);
   }, [src]);
 
   return (

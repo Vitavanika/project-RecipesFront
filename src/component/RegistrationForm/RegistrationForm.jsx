@@ -46,10 +46,9 @@ const RegistrationForm = () => {
       toast.success('Registration successful!');
       navigate('/');
       resetForm();
-    } catch (rejectedValueOrSerializedError) {
-      toast.error(
-        rejectedValueOrSerializedError.message || 'Registration failed'
-      );
+    } catch (error) {
+      console.error('Registration error:', error);
+      toast.error('Registration failed');
     } finally {
       setSubmitting(false);
     }
@@ -73,12 +72,14 @@ const RegistrationForm = () => {
         validationSchema={RegisterSchema}
         onSubmit={handleSubmit}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, errors, touched }) => (
           <Form className={css.form}>
             <label className={css.label}>
               <span className={css.labelText}>Enter your email address</span>
               <Field
-                className={css.input}
+                className={`${css.input} ${
+            errors.email && touched.email ? css.inputError : ''
+          }`}
                 type="email"
                 name="email"
                 placeholder="email@gmail.com"
@@ -94,7 +95,9 @@ const RegistrationForm = () => {
             <label className={css.label}>
               <span className={css.labelText}>Enter your name</span>
               <Field
-                className={css.input}
+                className={`${css.input} ${
+            errors.name && touched.name ? css.inputError : ''
+          }`}
                 type="text"
                 name="name"
                 placeholder="Max"
@@ -107,7 +110,9 @@ const RegistrationForm = () => {
               <span className={css.labelText}>Create a strong password</span>
               <div className={css.passwordWrapper}>
                 <Field
-                  className={css.input}
+                  className={`${css.input} ${
+              errors.password && touched.password ? css.inputError : ''
+            }`}
                   type={passwordVisible ? 'text' : 'password'}
                   name="password"
                   placeholder="*********"
@@ -138,7 +143,9 @@ const RegistrationForm = () => {
               <span className={css.labelText}>Repeat your password</span>
               <div className={css.passwordWrapper}>
                 <Field
-                  className={css.input}
+                  className={`${css.input} ${
+              errors.confirmPassword && touched.confirmPassword ? css.inputError : ''
+            }`}
                   type={confirmPasswordVisible ? 'text' : 'password'}
                   name="confirmPassword"
                   placeholder="*********"

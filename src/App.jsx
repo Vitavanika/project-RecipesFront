@@ -40,7 +40,7 @@ const App = () => {
       <Route path="/" element={<Layout />}>
         {/* Публічні маршрути */}
         <Route index element={<HomePage />} />
-        <Route path="recipe-view/:recipeId" element={<RecipeViewPage />} />
+        <Route path="recipes/:recipeId" element={<RecipeViewPage />} />
 
         {/* Маршрут для авторизації */}
         <Route

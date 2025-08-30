@@ -1,55 +1,36 @@
 import css from "./NavMenu.module.css";
+import clsx from "clsx";
 
-import { Link } from "react-router";
+import { NavLink } from "react-router";
 import { useSelector } from "react-redux";
 import { getIsLoggedIn } from "../../redux/auth/selectors";
 import { ProfileBlock } from "./ProfileBlock";
 
-export const NavMenu = ({onClose}) => {
+const buildLinkClass = ({ isActive }) => clsx(css.link, isActive && css.active);
+
+export const NavMenu = ({ onClose, layout }) => {
   const isAuth = useSelector(getIsLoggedIn);
 
-  if (!isAuth) {
-    return (
-      <ul className={css.menuList}>
-        <li>
-          <Link to="/" onClick={onClose}>
-            Recipes
-          </Link>
-        </li>
-        <li>
-          <Link to="auth/login" onClick={onClose}>
-            Log in
-          </Link>
-        </li>
-        <li>
-          <Link to="auth/register" onClick={onClose}>
-            Register
-          </Link>
-        </li>
-      </ul>
-    );
-  }
+  const items = {
+    recipes: <NavLink to="/" className={buildLinkClass} onClick={onClose}>Recipes</NavLink>,
+    myProfile: <NavLink to="profile/my-recipes" className={buildLinkClass} onClick={onClose}>My Profile</NavLink>,
+    addRecipes: <NavLink className={css.item} to="add-recipe" onClick={onClose}>Add Recipes</NavLink>,
+    profileBlock: <ProfileBlock onClose={onClose} />,
+    login: <NavLink to="auth/login" className={buildLinkClass} onClick={onClose}>Log in</NavLink>,
+    register: <NavLink to="auth/register" className={css.item} onClick={onClose}>Register</NavLink>,
+  };
+
+  const order = isAuth
+    ? layout === "tablet-desktop"
+      ? ["recipes", "myProfile", "addRecipes", "profileBlock"]
+      : ["recipes", "myProfile", "profileBlock", "addRecipes"]
+    : ["recipes", "login", "register"];
 
   return (
-    <ul className={css.navMenuList}>
-      <li>
-        <Link to="/" onClick={onClose}>
-          Recipes
-        </Link>
-      </li>
-      <li>
-        <Link to="profile/:recipeType" onClick={onClose}>
-          My Profile
-        </Link>
-      </li>
-      <li>
-        <ProfileBlock onClose={onClose} />
-      </li>
-      <li>
-        <Link to="add-recipe" onClick={onClose}>
-          Add Recipes
-        </Link>
-      </li>
+    <ul className={css.menuList}>
+      {order.map(key => (
+        <li key={key}>{items[key]}</li>
+      ))}
     </ul>
   );
 };

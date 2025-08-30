@@ -6,7 +6,7 @@ export const register = createAsyncThunk(
   async (credentials, thunkAPI) => {
     try {
       const response = await apiClient.post('/auth/register', credentials);
-      return response.data;
+      return response.data.data;
     } catch (error) {
       const serverMessage =
         error.response?.data?.data?.message ||
@@ -23,7 +23,7 @@ export const logIn = createAsyncThunk(
   async (credentials, thunkAPI) => {
     try {
       const response = await apiClient.post('/auth/login', credentials);
-      return response.data;
+      return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || 'Login failed'
@@ -52,7 +52,7 @@ export const refreshUser = createAsyncThunk(
 
     try {
       const response = await apiClient.get('/users/current');
-      return response.data;
+      return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }

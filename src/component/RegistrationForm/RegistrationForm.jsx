@@ -40,10 +40,9 @@ const RegistrationForm = () => {
       password: values.password,
     };
     try {
-      const response = await dispatch(register(dataToSend)).unwrap(); // Зберігаємо токен тут, після успішного запиту
-      localStorage.setItem('authToken', response.token);
-      toast.success('Registration successful!');
-      navigate('/');
+      await dispatch(register(dataToSend)).unwrap();
+      toast.success('Registration successful! Please log in.');
+      navigate('/auth/login');
       resetForm();
     } catch (error) {
       console.error('Registration error:', error);

@@ -2,6 +2,7 @@
   display: grid;
   gap: 12px;
   grid-template-columns: 1fr;
+  justify-items: center;
 }
 
 .empty {
@@ -21,6 +22,7 @@
   font-size: 14px;
   color: #6b5a4b;
 }
+
 .spinner {
   display: inline-block;
   width: 16px;
@@ -32,26 +34,42 @@
   vertical-align: -2px;
   margin-right: 6px;
 }
+
 @keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
+/* СтиліLoad more  */
+.wrap > :last-child {
+  grid-column: 1 / -1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 40px 0;
+}
+
 @media (min-width: 640px) {
   .wrap {
     grid-template-columns: repeat(2, 1fr);
     gap: 14px;
+    justify-items: center;
   }
 }
+
 @media (min-width: 1024px) {
   .wrap {
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
+    justify-items: center;
   }
 }
+
 @media (min-width: 1280px) {
   .wrap {
     grid-template-columns: repeat(4, 1fr);
+    justify-items: center;
   }
 }

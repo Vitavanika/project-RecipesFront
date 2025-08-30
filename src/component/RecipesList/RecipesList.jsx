@@ -56,17 +56,16 @@ export default function RecipesList({
   const isNextpage = useSelector(hasNextPage);
 
   useEffect(() => {
-    if (isLoading) return;
-    if (items.length === 0) {
+    if (!items.length && !isLoading && !error) {
       if (variant === 'favorites') {
         dispatch(fetchFavRecipes());
       } else if (variant === 'own') {
         dispatch(fetchOwnRecipes());
       }
     }
-  }, [dispatch, variant, items.length, isLoading]);
+  }, [dispatch, variant, items.length, isLoading, error]);
 
-  if (isLoading && items.length === 0) {
+  if (isLoading && !items.length) {
     return (
       <div className={styles.loader} role="status" aria-live="polite">
         <span className={styles.spinner} /> Loading…
@@ -74,11 +73,11 @@ export default function RecipesList({
     );
   }
 
-  if (error && items.length === 0) {
+  if (error && !items.length) {
     return <div className={styles.error}>⚠ {String(error)}</div>;
   }
 
-  if (!items.length) {
+  if (!items.length && !isLoading) {
     return <div className={styles.empty}>{emptyMessage}</div>;
   }
 

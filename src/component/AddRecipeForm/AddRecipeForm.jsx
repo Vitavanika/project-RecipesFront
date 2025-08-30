@@ -1,0 +1,418 @@
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { fetchRecipeMeta } from '../../redux/recipes/operations';
+import { fetchAddRecipe } from '../../redux/recipes/operations';
+import {
+  selectCategories,
+  selectIngredients,
+  selectLoading,
+  selectError
+} from '../../redux/recipes/selectors';
+
+import styles from './AddRecipeForm.module.css';
+
+const AddRecipeForm = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const categories = useSelector(selectCategories);
+  const ingredients = useSelector(selectIngredients);
+  const loading = useSelector(selectLoading);
+  const error = useSelector(selectError);
+
+  const [selectedIngredients, setSelectedIngredients] = useState([]);
+
+  useEffect(() => {
+    const loadMeta = async () => {
+      try {
+        await dispatch(fetchRecipeMeta()).unwrap();
+      } catch (err) {
+        toast.error(err || 'Failed to load recipe data');
+      }
+    };
+
+    loadMeta();
+  }, [dispatch]);
+
+  const validationSchema = Yup.object({
+  title: Yup.string()
+    .min(3, 'Title must be at least 3 characters')
+    .required('Title is required'),
+
+  description: Yup.string()
+    .min(10, 'Description must be at least 10 characters')
+    .required('Description is required'),
+
+  time: Yup.number()
+    .positive('Time must be a positive number')
+    .integer('Time must be an integer')
+    .min(1, 'Time must be at least 1 minute')
+    .required('Time is required'),
+
+  calories: Yup.number()
+    .positive('Calories must be a positive number')
+    .integer('Calories must be an integer')
+    .nullable(),
+
+  category: Yup.string()
+    .required('Category is required'),
+
+  instructions: Yup.string()
+    .min(20, 'Instructions must be at least 20 characters')
+    .required('Instructions are required'),
+
+  photo: Yup.mixed()
+    .required('Photo is required'),
+});
+
+const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+  setSubmitting(true);
+
+  if (selectedIngredients.length === 0) {
+    toast.error('Add at least one ingredient');
+    setSubmitting(false);
+    return;
+  }
+
+  const formData = new FormData();
+
+  Object.entries(values).forEach(([key, val]) => {
+    if (val !== null && val !== '') {
+      formData.append(key, val);
+    }
+  });
+
+  formData.append('ingredients', JSON.stringify(selectedIngredients));
+
+  try {
+    const response = await dispatch(fetchAddRecipe(formData)).unwrap();
+    toast.success('Recipe added successfully!');
+    navigate(`/recipes/${response._id || response.id}`);
+    resetForm();
+  } catch (error) {
+    const errorMessage =
+      error?.message || error?.response?.data?.message || 'Error adding recipe';
+    toast.error(errorMessage);
+  } finally {
+    setSubmitting(false);
+  }
+};
+
+  const IngredientSelector = () => {
+    const [ingredientId, setIngredientId] = useState('');
+    const [amount, setAmount] = useState('');
+
+    const addIngredient = () => {
+      if (!ingredientId || !amount.trim()) {
+        alert('Select the ingredient and specify the quantity');
+        return;
+      }
+
+      if (selectedIngredients.some(i => i.id === ingredientId)) {
+        alert('This ingredient has already been added');
+        return;
+      }
+
+      const ingredient = ingredients.find(i => i._id === ingredientId || i.id === ingredientId);
+      if (!ingredient) {
+        alert('Ingredient not found');
+        return;
+      }
+
+      setSelectedIngredients([
+        ...selectedIngredients, 
+        { 
+          id: ingredientId, 
+          name: ingredient.name, 
+          amount: amount.trim() 
+        }
+      ]);
+      
+      setIngredientId('');
+      setAmount('');
+    };
+
+    const removeIngredient = (id) => {
+      setSelectedIngredients(selectedIngredients.filter(i => i.id !== id));
+    };
+
+    const handleKeyPress = (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        addIngredient();
+      }
+    };
+
+    return (
+      <div className={styles.ingredientSelector}>
+        <h2 className={styles.ingredientHead}>Ingredients</h2>
+
+        <div className={styles.ingredientControls}>
+          <div className={styles.ingredientField}>
+            <label htmlFor="ingredientSelect" className={styles.labelText}>Name</label>
+            <div className={styles.selectWithArrow}>
+              <select
+                id="ingredientSelect"
+                value={ingredientId}
+                onChange={(e) => setIngredientId(e.target.value)}
+                className={styles.ingredientSelect}
+              >
+                <option value="">Broccoli</option>
+                {ingredients.map((ingredient) => (
+                  <option key={ingredient._id || ingredient.id} value={ingredient._id || ingredient.id}>
+                    {ingredient.name}
+                  </option>
+                ))}
+              </select>
+              <svg className={styles.selectArrow} width="24" height="24">
+                  <use svg href="/sprite.svg#icon-chevron-down" />
+              </svg>
+            </div>
+          </div>
+
+          <div className={styles.ingredientField}>
+            <label htmlFor="ingredientAmount" className={styles.labelText}>Amount</label>
+            <input
+              id="ingredientAmount"
+              type="text"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="100g"
+              className={styles.ingredientAmountInput}
+            />
+          </div>
+
+          <button type="button" onClick={addIngredient} className={styles.addIngredientButton}>
+            Add new Ingredient
+          </button>
+        </div>
+
+        <div className={styles.selectedIngredients}>
+          <table className={styles.ingredientsTable}>
+            <thead>
+              <tr>
+                <th>Name:</th>
+                <th>Amount:</th>
+                <th className={styles.actionsColumn}></th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedIngredients.length > 0 ? (
+                selectedIngredients.map((ingredient) => (
+                  <tr key={ingredient.id}>
+                    <td>{ingredient.name}</td>
+                    <td>{ingredient.amount}</td>
+                    <td className={styles.actionsColumn}>
+                      <button 
+                        type="button" 
+                        onClick={() => removeIngredient(ingredient.id)}
+                        className={styles.removeIngredientButton}
+                        title="Delete"
+                      >
+                        <svg className={styles.uploadIcon} width="52" height="52">
+                          <use svg href="/sprite.svg#icon-delete" />
+                       </svg>
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr className={styles.emptyRow}>
+                  <td colSpan="3" style={{ textAlign: 'center', color: '#999', padding: '20px' }}>
+                    
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
+
+  const PhotoUpload = ({ values, setFieldValue }) => (
+    <div className={styles.formField}>
+      <h2 className={styles.uploadHead}>Upload Photo</h2>
+      <div 
+        className={`${styles.photoUploadContainer} ${values.photo ? styles.hasImage : ''} `}
+      >
+        <input
+          type="file"
+          name="photo"
+          id="photo"
+          accept="image/*"
+          onChange={(e) => setFieldValue('photo', e.currentTarget.files[0])}
+          className={styles.fileInput}
+        />
+        
+        {!values.photo ? (
+          <div className={styles.uploadPlaceholder}>
+            <svg className={styles.uploadIcon} width="52" height="52">
+              <use svg href="/sprite.svg#icon-photo" />
+            </svg>
+          </div>
+        ) : (
+          <div className={styles.imagePreview}>
+            <img
+              src={URL.createObjectURL(values.photo)}
+              alt="Recipe preview"
+              className={styles.previewImage}
+            />
+            <div className={styles.imageOverlay}>
+              <div className={styles.overlayText}>Click to change photo</div>
+            </div>
+          </div>
+        )}
+      </div>
+      
+      <ErrorMessage name="photo" component="div" className={styles.fieldError} />
+    </div>
+  );
+
+  if (loading) {
+    return (
+      <div className={`${styles.addRecipeForm} ${styles.loadingContainer}`}>
+        <h1>Loading...</h1>
+        <p>Loading data recipe form...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={`${styles.addRecipeForm} ${styles.errorContainer}`}>
+        <h1>Error</h1>
+        <p className={styles.errorMessage}>{error}</p>
+        <button onClick={() => window.location.reload()} className={styles.retryButton}>
+          Try again!
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className={styles.addRecipeForm}>
+      <h1>Add Recipe</h1>
+
+      <Formik
+        initialValues={{
+          title: '',
+          description: '',
+          time: '',
+          calories: '',
+          category: '',
+          instructions: '',
+          photo: null
+        }}
+        validationSchema={validationSchema}
+        onSubmit={handleSubmit}
+      >
+        {({ values, setFieldValue, isSubmitting, status }) => (
+          <Form className={styles.recipeForm}>
+            {status && (
+              <div className={styles.formStatus}>
+                {status}
+              </div>
+            )}
+
+            <div className={styles.formColumn}>
+              <PhotoUpload values={values} setFieldValue={setFieldValue} />
+
+              <div className={styles.formField}>
+                <h2 className={styles.generalHead}>General Information</h2>
+                <label className={styles.labelText} htmlFor="title">Recipe Title</label>
+                <Field name="title" id="title" placeholder="Enter the name of your recipe" />
+                <ErrorMessage name="title" component="div" className={styles.fieldError} />
+              </div>
+
+              <div className={styles.formField}>
+                <label className={styles.labelText} htmlFor="description">Recipe Description</label>
+                <Field 
+                  as="textarea" 
+                  name="description"
+                  id="description"
+                  placeholder="Enter a brief description of your recipe" 
+                  rows={3}
+                />
+                <ErrorMessage name="description" component="div" className={styles.fieldError} />
+              </div>
+
+              <div className={`${styles.formField} ${styles.timeField}`}>
+                <label className={styles.labelText} htmlFor="time">Cooking time in minutes</label>
+                <Field name="time" id="time" type="number" min="1" placeholder="10" />
+                <ErrorMessage name="time" component="div" className={styles.fieldError} />
+              </div>
+
+              <div className={styles.caloriesCategoryRow}>
+                <div className={styles.formField}>
+                  <label className={styles.labelText} htmlFor="calories">Calories</label>
+                  <Field name="calories" id="calories" type="number" min="1" placeholder="150 cals" />
+                  <ErrorMessage name="calories" component="div" className={styles.fieldError} />
+                </div>
+
+                <div className={styles.formField}>
+                  <label className={styles.labelText} htmlFor="category">Category</label>
+                  <div className={styles.selectWithArrow}>
+                    <Field as="select" name="category" id="category">
+                      <option value="" disabled>Soup</option>
+                      {categories.map((cat) => (
+                        <option key={cat._id || cat.id} value={cat._id || cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </Field>
+                    <svg className={styles.selectArrow} width="24" height="24">
+                      <use svg href="/sprite.svg#icon-chevron-down" />
+                    </svg>
+                  </div>
+                  <ErrorMessage name="category" component="div" className={styles.fieldError} />
+                </div>
+              </div>
+
+              <IngredientSelector />
+
+              <div className={styles.formField}>
+                <label className={styles.instrHead} htmlFor="instructions">Instructions</label>
+                <Field 
+                  as="textarea" 
+                  name="instructions"
+                  id="instructions"
+                  placeholder="Enter a text" 
+                  rows={6}
+                />
+                <ErrorMessage name="instructions" component="div" className={styles.fieldError} />
+              </div>
+
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className={`${styles.submitButton} ${styles.mobileTabletOnly}`}
+              >
+                {isSubmitting ? 'Published...' : 'Publish Recipe'}
+              </button>
+            </div>
+
+            <div className={styles.photoColumn}>
+              <PhotoUpload values={values} setFieldValue={setFieldValue} />
+
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className={styles.submitButton}
+              >
+                {isSubmitting ? 'Published...' : 'Publish Recipe'}
+              </button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </div>
+  );
+};
+
+export default AddRecipeForm;

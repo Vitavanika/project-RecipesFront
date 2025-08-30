@@ -1,10 +1,9 @@
-// "/add-recipe"
+import AddRecipeForm from "../../component/AddRecipeForm/AddRecipeForm";
 
 const AddRecipePage = () => {
   return (
     <div>
-      <h1>Сторінка додавання рецепту</h1>
-      <p>Ця сторінка в розробці.</p>
+      <AddRecipeForm />
     </div>
   );
 };

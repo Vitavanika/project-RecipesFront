@@ -1,0 +1,140 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow: auto;
+}
+
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 56px 24px 32px;
+
+  background: var(--color-light-beige);
+  border-radius: 32px;
+width: 362px;
+height: 341px;
+}
+
+@media only screen and (min-width: 768px) {
+  .container {
+    padding: 56px 32px;
+    width: 420px;
+height: 277px;
+  }
+}
+
+.closeModalButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  outline: none;
+  padding: 0;
+  cursor: pointer;
+
+}
+
+@media only screen and (min-width: 768px) {
+  .closeModalButton {
+    right: 32px;
+  }
+}
+
+.closeIcon {
+  width: 24;
+  height: 24px;
+  stroke: var(--color-black);
+}
+
+.title {
+  font-style: normal;
+  font-weight: 600;
+  font-size: 32px;
+text-align: center;
+}
+
+.descr {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.navBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+@media only screen and (min-width: 768px) {
+  .navBlock {
+    flex-direction: row;
+    gap: 27px;
+  }
+}
+
+.loginNavButton {
+  font-weight: 600;
+  font-size: 18px;
+  text-align: center;
+  padding: 16px;
+
+  width: 314px;
+  height: 54px;
+
+  border: 1px solid var(--color-black);
+  border-radius: 8px;
+}
+
+.loginNavButton:hover,
+.loginNavButton:focus {
+  background: var(--color-light-gray);
+  border: 1px solid var(--color-light-gray);
+}
+
+
+.registerNavButton {
+  font-weight: 600;
+  font-size: 18px;
+  line-height: 22px;
+  text-align: center;
+  color: var(--color-white);
+  padding: 16px 0;
+
+  width: 314px;
+  height: 54px;
+
+  background: var(--color-light-brown);
+  border-radius: 8px;
+}
+
+.registerNavButton:hover,
+.registerNavButton:focus {
+  background: var(--color-brown);
+}
+
+@media only screen and (min-width: 768px) {
+  .loginNavButton,
+  .registerNavButton {
+    padding: 8px;
+    width: 164px;
+    height: 36px;
+  }
+}

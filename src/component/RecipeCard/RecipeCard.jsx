@@ -1,62 +1,26 @@
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router';
-import toast from 'react-hot-toast';
-import css from './RecipeCard.module.css';
-import { toggleFavoriteRecipe } from '../../redux/recipes/operations';
-import { AuthNavModal } from '../AuthNavModal/AuthNavModal';
+import { useNavigate } from "react-router";
+import { AuthModal } from "../AuthModal/AuthModal";
+import { useFavoriteRecipe } from "../../hooks/useFavoriteRecipe";
+import css from "./RecipeCard.module.css";
 
 const RecipeCard = ({
-  recipe,
-  isAuthenticated,
-  isFavorite = false,
-  onLearnMore,
-  onToggleFavorite,
-  onOpenAuthModal,
+  recipe, onLearnMore
 }) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const {
+    saved,
+    isLoading,
+    showAuthModal,
+    setShowAuthModal,
+    toggleSave,
+  } = useFavoriteRecipe(recipe._id, recipe.isFavorite);
 
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [loading, setLoading] = useState(false);
+const navigate = useNavigate();
 
   const handleLearnMoreClick = () => {
     if (onLearnMore) {
       onLearnMore(recipe);
     } else {
       navigate(`/recipes/${recipe._id}`);
-    }
-  };
-
-  const handleFavoriteClick = async () => {
-    if (!isAuthenticated) {
-      if (onOpenAuthModal) {
-        onOpenAuthModal();
-      } else {
-        setShowAuthModal(true);
-      }
-      return;
-    }
-
-    try {
-      setLoading(true);
-      if (onToggleFavorite) {
-        await onToggleFavorite(recipe);
-      } else {
-        await dispatch(
-          toggleFavoriteRecipe({ recipeId: recipe._id, isFavorite })
-        ).unwrap();
-      }
-
-      toast.success(
-        isFavorite
-          ? 'Recipe removed from favorites'
-          : 'Recipe added to favorites'
-      );
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -77,21 +41,20 @@ const RecipeCard = ({
         <p className={css.cardCaloris}>~{recipe.foodEnergy} cals</p>
 
         <div className={css.cardActions}>
-          <button className={css.learnMoreBtn} onClick={handleLearnMoreClick}>
+          <button type="button" className={css.learnMoreBtn} onClick={handleLearnMoreClick}>
             Learn more
           </button>
           <button
-            onClick={handleFavoriteClick}
-            className={css.favoriteBtn}
-            disabled={loading}
-            aria-label={
-              isFavorite ? 'Remove from favorites' : 'Add to favorites'
-            }
-          >
+          type="button"
+          onClick={() => toggleSave(() => setShowAuthModal(true))}
+          className={css.favoriteBtn}
+          disabled={isLoading}
+          aria-label={saved ? "Remove from favorites" : "Add to favorites"}
+        >
             <svg
               width="15"
               height="17"
-              className={isFavorite ? css.unsaveIcon : css.saveIcon}
+              className={saved ? css.unsaveIcon : css.saveIcon}
             >
               <use href="/sprite.svg#icon-bookmark"></use>
             </svg>
@@ -99,11 +62,10 @@ const RecipeCard = ({
         </div>
 
 
-      {showAuthModal && (
-        <AuthNavModal onClick={() => setShowAuthModal(false)} />
-      )}
+      {showAuthModal && <AuthModal onClick={() => setShowAuthModal(false)} />}
     </div>
   );
 };
 
 export default RecipeCard;
+

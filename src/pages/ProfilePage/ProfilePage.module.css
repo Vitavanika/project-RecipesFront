@@ -5,3 +5,19 @@
     font-family: "Montserrat", sans-serif;
     margin-bottom: 16px;
 }
+
+.pageContainer {
+    padding: 48px 16px;
+}
+
+@media only screen and (min-width: 768px) {
+  .pageContainer {
+    padding: 48px 32px;
+}
+}
+
+@media only screen and (min-width: 1440px) {
+  .pageContainer {
+    padding: 46px 108px;
+}
+}

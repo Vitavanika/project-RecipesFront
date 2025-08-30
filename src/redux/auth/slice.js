@@ -31,7 +31,6 @@ const authSlice = createSlice({
         state.isLoggedIn = true;
         state.isLoading = false;
         state.error = null;
-        localStorage.setItem('authToken', action.payload.token);
       })
       .addCase(register.rejected, handleRejected)
       .addCase(logIn.pending, handlePending)
@@ -41,7 +40,6 @@ const authSlice = createSlice({
         state.isLoggedIn = true;
         state.isLoading = false;
         state.error = null;
-        localStorage.setItem('authToken', action.payload.token);
       })
       .addCase(logIn.rejected, handleRejected)
       .addCase(logOut.pending, handlePending)
@@ -51,7 +49,6 @@ const authSlice = createSlice({
         state.isLoggedIn = false;
         state.isLoading = false;
         state.error = null;
-        localStorage.removeItem('authToken');
       })
       .addCase(logOut.rejected, handleRejected)
       .addCase(refreshUser.pending, state => {

@@ -39,10 +39,9 @@ const RegistrationForm = () => {
       email: values.email,
       password: values.password,
     };
-    console.log('Sending data:', values);
-
     try {
-      await dispatch(register(dataToSend)).unwrap();
+      const response = await dispatch(register(dataToSend)).unwrap(); // Зберігаємо токен тут, після успішного запиту
+      localStorage.setItem('authToken', response.token);
       toast.success('Registration successful!');
       navigate('/');
       resetForm();
@@ -78,8 +77,8 @@ const RegistrationForm = () => {
               <span className={css.labelText}>Enter your email address</span>
               <Field
                 className={`${css.input} ${
-            errors.email && touched.email ? css.inputError : ''
-          }`}
+                  errors.email && touched.email ? css.inputError : ''
+                }`}
                 type="email"
                 name="email"
                 placeholder="email@gmail.com"
@@ -96,8 +95,8 @@ const RegistrationForm = () => {
               <span className={css.labelText}>Enter your name</span>
               <Field
                 className={`${css.input} ${
-            errors.name && touched.name ? css.inputError : ''
-          }`}
+                  errors.name && touched.name ? css.inputError : ''
+                }`}
                 type="text"
                 name="name"
                 placeholder="Max"
@@ -111,8 +110,8 @@ const RegistrationForm = () => {
               <div className={css.passwordWrapper}>
                 <Field
                   className={`${css.input} ${
-              errors.password && touched.password ? css.inputError : ''
-            }`}
+                    errors.password && touched.password ? css.inputError : ''
+                  }`}
                   type={passwordVisible ? 'text' : 'password'}
                   name="password"
                   placeholder="*********"
@@ -144,8 +143,10 @@ const RegistrationForm = () => {
               <div className={css.passwordWrapper}>
                 <Field
                   className={`${css.input} ${
-              errors.confirmPassword && touched.confirmPassword ? css.inputError : ''
-            }`}
+                    errors.confirmPassword && touched.confirmPassword
+                      ? css.inputError
+                      : ''
+                  }`}
                   type={confirmPasswordVisible ? 'text' : 'password'}
                   name="confirmPassword"
                   placeholder="*********"

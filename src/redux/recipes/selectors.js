@@ -2,7 +2,9 @@ export const selectOwnRecipes = state => state.recipes.own.items;
 export const selectFavRecipes = state => state.recipes.favorites.items;
 export const selectFilteredRecipes = state => state.recipes.filteredRecipes;
 export const selectLoading = state => state.recipes.filteredRecipes.isLoading;
-export const selectError = state => state.recipes.error;
+export const selectOwnError = (state) => state.recipes.own.error;
+export const selectFavError = (state) => state.recipes.favorites.error;
+export const selectError = (state) => state.recipes.error;
 export const getTotalRecipes = state =>
   state.recipes.filteredRecipes.totalItems;
 export const getCurrentPage = state => state.recipes.filteredRecipes.page;

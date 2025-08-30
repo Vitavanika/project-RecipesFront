@@ -25,13 +25,7 @@ const authSlice = createSlice({
   extraReducers: builder =>
     builder
       .addCase(register.pending, handlePending)
-      .addCase(register.fulfilled, (state, action) => {
-        state.user = action.payload.user;
-        // бекенд НЕ! присилає токен при реєстрації.
-        // як варіант - викликати операцію логіну відразу після успішної реєстрації
-        // тоді трохи міняти опеацію і слайс
-        state.token = action.payload.token;
-        state.isLoggedIn = true;
+      .addCase(register.fulfilled, state => {
         state.isLoading = false;
         state.error = null;
       })

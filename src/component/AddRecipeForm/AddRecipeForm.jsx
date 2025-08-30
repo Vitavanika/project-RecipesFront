@@ -23,7 +23,6 @@ const AddRecipeForm = () => {
   const ingredients = useSelector(selectIngredients);
   const loading = useSelector(selectLoading);
   const error = useSelector(selectError);
-
   const [selectedIngredients, setSelectedIngredients] = useState([]);
 
   useEffect(() => {

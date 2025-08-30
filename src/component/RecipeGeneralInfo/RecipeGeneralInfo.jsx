@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useFavoriteRecipe } from '../../hooks/useFavoriteRecipe';
-import { AuthNavModal } from '../AuthNavModal/AuthNavModal.jsx';
+import { AuthModal } from '../AuthModal/AuthModal';
+import toast from "react-hot-toast";
 import css from "./RecipeGeneralInfo.module.css";
 
 export default function RecipeGeneralInfo({
@@ -10,12 +11,23 @@ export default function RecipeGeneralInfo({
   recipeId,
   initialIsSaved = false,
 }) {
-  const { saved, isLoading, toggleSave } = useFavoriteRecipe(recipeId, initialIsSaved);
+  const { saved, isLoading, toggleSave } = useFavoriteRecipe(
+    recipeId,
+    initialIsSaved
+  );
   const [showAuthModal, setShowAuthModal] = useState(false);
 
   const handleToggleSave = async () => {
-    await toggleSave(() => setShowAuthModal(true)); 
-      };
+    try {
+      const result = await toggleSave(() => setShowAuthModal(true));
+
+      if (result !== undefined) {
+        toast.success(result ? "Recipe added to favorites" : "Recipe removed from favorites");
+      }
+    } catch (error) {
+      toast.error(error.message || "Something went wrong");
+    }
+  };
 
   const handleCloseModal = () => {
     setShowAuthModal(false);
@@ -50,7 +62,7 @@ export default function RecipeGeneralInfo({
         </svg>
       </button>
       {showAuthModal && (
-        <AuthNavModal onClick={handleCloseModal} />
+        <AuthModal onClick={handleCloseModal} />
       )}
     </div>
   );

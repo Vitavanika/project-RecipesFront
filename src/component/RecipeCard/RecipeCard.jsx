@@ -1,21 +1,22 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
 import css from './RecipeCard.module.css';
 import { toggleFavoriteRecipe } from '../../redux/recipes/operations';
-import { AuthNavModal } from '../AuthNavModal/AuthNavModal';
+import { AuthModal } from '../AuthModal/AuthModal';
+import { getIsLoggedIn } from '../../redux/auth/selectors';
 
 const RecipeCard = ({
   recipe,
-  isAuthenticated,
-  isFavorite = false,
   onLearnMore,
   onToggleFavorite,
   onOpenAuthModal,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+ const isAuthenticated = useSelector(getIsLoggedIn);
 
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -28,7 +29,8 @@ const RecipeCard = ({
     }
   };
 
-  const handleFavoriteClick = async () => {
+  const handleFavoriteClick = async (e) => {
+    e.preventDefault();
     if (!isAuthenticated) {
       if (onOpenAuthModal) {
         onOpenAuthModal();
@@ -38,21 +40,24 @@ const RecipeCard = ({
       return;
     }
 
-    try {
+   try {
       setLoading(true);
       if (onToggleFavorite) {
         await onToggleFavorite(recipe);
       } else {
-        await dispatch(
-          toggleFavoriteRecipe({ recipeId: recipe._id, isFavorite })
+        const result = await dispatch(
+          toggleFavoriteRecipe({
+            recipeId: recipe._id,
+            isFavorite: recipe.isFavorite,
+          })
         ).unwrap();
-      }
 
-      toast.success(
-        isFavorite
-          ? 'Recipe removed from favorites'
-          : 'Recipe added to favorites'
-      );
+        toast.success(
+          result.isFavorite
+            ? 'Recipe added to favorites'
+            : 'Recipe removed from favorites'
+        );
+      }
     } catch (error) {
       toast.error(error.message);
     } finally {
@@ -77,21 +82,22 @@ const RecipeCard = ({
         <p className={css.cardCaloris}>~{recipe.foodEnergy} cals</p>
 
         <div className={css.cardActions}>
-          <button className={css.learnMoreBtn} onClick={handleLearnMoreClick}>
+          <button type="button" className={css.learnMoreBtn} onClick={handleLearnMoreClick}>
             Learn more
           </button>
           <button
+          type="button"
             onClick={handleFavoriteClick}
             className={css.favoriteBtn}
             disabled={loading}
             aria-label={
-              isFavorite ? 'Remove from favorites' : 'Add to favorites'
+              recipe.isFavorite ? 'Remove from favorites' : 'Add to favorites'
             }
           >
             <svg
               width="15"
               height="17"
-              className={isFavorite ? css.unsaveIcon : css.saveIcon}
+              className={recipe.isFavorite ? css.unsaveIcon : css.saveIcon}
             >
               <use href="/sprite.svg#icon-bookmark"></use>
             </svg>
@@ -100,7 +106,7 @@ const RecipeCard = ({
 
 
       {showAuthModal && (
-        <AuthNavModal onClick={() => setShowAuthModal(false)} />
+        <AuthModal onClick={() => setShowAuthModal(false)} />
       )}
     </div>
   );

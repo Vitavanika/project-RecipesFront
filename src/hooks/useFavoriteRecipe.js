@@ -1,15 +1,15 @@
-import { useState, useEffect } from 'react';
-import { toast } from 'react-hot-toast';
-import { useAuth } from '../context/AuthContext.jsx';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
+import { toggleFavoriteRecipe } from '../redux/recipes/operations';
+import { getIsLoggedIn } from '../redux/auth/selectors';
 
 export const useFavoriteRecipe = (recipeId, initialSaved = false) => {
-  const { isAuthenticated } = useAuth();
+  const dispatch = useDispatch();
+  const isAuthenticated = useSelector(getIsLoggedIn);
+
   const [saved, setSaved] = useState(initialSaved);
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    setSaved(initialSaved);
-  }, [initialSaved]);
 
   const toggleSave = async (onRequireAuth) => {
     if (!isAuthenticated) {
@@ -17,18 +17,22 @@ export const useFavoriteRecipe = (recipeId, initialSaved = false) => {
       return false;
     }
 
-    setIsLoading(true);
     try {
-      const response = await fetch(`/api/favorites/${recipeId}`, {
-        method: saved ? 'DELETE' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
+      setIsLoading(true);
 
-      if (!response.ok) throw new Error('Failed to update favorites');
+      const result = await dispatch(
+        toggleFavoriteRecipe({
+          recipeId,
+          isFavorite: saved, 
+        })
+      ).unwrap();
 
-      setSaved(!saved);
+      setSaved(result.isFavorite);
+
       toast.success(
-        saved ? 'Recipe removed from favorites' : 'Recipe added to favorites'
+        result.isFavorite
+          ? 'Recipe added to favorites'
+          : 'Recipe removed from favorites'
       );
 
       return true;

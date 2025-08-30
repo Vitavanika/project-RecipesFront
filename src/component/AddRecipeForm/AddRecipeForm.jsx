@@ -4,14 +4,21 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-hot-toast';
-import { fetchRecipeMeta } from '../../redux/recipes/operations';
+import { getCategories } from '../../redux/categories/operations';
+import { getIngredients } from '../../redux/ingredients/operations';
 import { fetchAddRecipe } from '../../redux/recipes/operations';
 import {
-  selectCategories,
-  selectIngredients,
-  selectLoading,
-  selectError
-} from '../../redux/recipes/selectors';
+  getIngredientsSlice,
+  getIsLoadedIngredients,
+  getIsLoadingIngredients,
+  getIsErrorLoadIngredients
+} from '../../redux/ingredients/selectors';
+import {
+  getCategoriesSlice,
+  getIsLoadedCategories,
+  getIsLoadingCategories,
+  getIsErrorLoadCategories
+} from '../../redux/categories/selectors';
 
 import styles from './AddRecipeForm.module.css';
 
@@ -19,88 +26,103 @@ const AddRecipeForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const categories = useSelector(selectCategories);
-  const ingredients = useSelector(selectIngredients);
-  const loading = useSelector(selectLoading);
-  const error = useSelector(selectError);
+  const categories = useSelector(getCategoriesSlice);
+  const ingredients = useSelector(getIngredientsSlice);
+  
+  const isLoadingCategories = useSelector(getIsLoadingCategories);
+  const isLoadingIngredients = useSelector(getIsLoadingIngredients);
+  const isLoadedCategories = useSelector(getIsLoadedCategories);
+  const isLoadedIngredients = useSelector(getIsLoadedIngredients);
+  const isErrorCategories = useSelector(getIsErrorLoadCategories);
+  const isErrorIngredients = useSelector(getIsErrorLoadIngredients);
+
+  const loading = isLoadingCategories || isLoadingIngredients;
+  const error = isErrorCategories || isErrorIngredients;
 
   const [selectedIngredients, setSelectedIngredients] = useState([]);
 
   useEffect(() => {
-    const loadMeta = async () => {
+    const loadData = async () => {
       try {
-        await dispatch(fetchRecipeMeta()).unwrap();
+        if (!isLoadedCategories) {
+          await dispatch(getCategories()).unwrap();
+        }
+        
+        if (!isLoadedIngredients) {
+          await dispatch(getIngredients()).unwrap();
+        }
       } catch (err) {
-        toast.error(err || 'Failed to load recipe data');
+        toast.error(err?.message || 'Failed to load recipe data');
       }
     };
 
-    loadMeta();
-  }, [dispatch]);
+    loadData();
+  }, [dispatch, isLoadedCategories, isLoadedIngredients]);
 
   const validationSchema = Yup.object({
-  title: Yup.string()
-    .min(3, 'Title must be at least 3 characters')
-    .required('Title is required'),
+    title: Yup.string()
+      .min(3, 'Title must be at least 3 characters')
+      .required('Title is required'),
 
-  description: Yup.string()
-    .min(10, 'Description must be at least 10 characters')
-    .required('Description is required'),
+    description: Yup.string()
+      .min(10, 'Description must be at least 10 characters')
+      .required('Description is required'),
 
-  time: Yup.number()
-    .positive('Time must be a positive number')
-    .integer('Time must be an integer')
-    .min(1, 'Time must be at least 1 minute')
-    .required('Time is required'),
+    time: Yup.number()
+      .positive('Time must be a positive number')
+      .integer('Time must be an integer')
+      .min(1, 'Time must be at least 1 minute')
+      .required('Time is required'),
 
-  calories: Yup.number()
-    .positive('Calories must be a positive number')
-    .integer('Calories must be an integer')
-    .nullable(),
+    calories: Yup.number()
+      .positive('Calories must be a positive number')
+      .integer('Calories must be an integer')
+      .nullable(),
 
-  category: Yup.string()
-    .required('Category is required'),
+    category: Yup.string()
+      .required('Category is required'),
 
-  instructions: Yup.string()
-    .min(20, 'Instructions must be at least 20 characters')
-    .required('Instructions are required'),
+    instructions: Yup.string()
+      .min(20, 'Instructions must be at least 20 characters')
+      .required('Instructions are required'),
 
-  photo: Yup.mixed()
-    .required('Photo is required'),
-});
-
-const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-  setSubmitting(true);
-
-  if (selectedIngredients.length === 0) {
-    toast.error('Add at least one ingredient');
-    setSubmitting(false);
-    return;
-  }
-
-  const formData = new FormData();
-
-  Object.entries(values).forEach(([key, val]) => {
-    if (val !== null && val !== '') {
-      formData.append(key, val);
-    }
+    photo: Yup.mixed()
+      .required('Photo is required'),
   });
 
-  formData.append('ingredients', JSON.stringify(selectedIngredients));
+  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+    setSubmitting(true);
 
-  try {
-    const response = await dispatch(fetchAddRecipe(formData)).unwrap();
-    toast.success('Recipe added successfully!');
-    navigate(`/recipes/${response._id || response.id}`);
-    resetForm();
-  } catch (error) {
-    const errorMessage =
-      error?.message || error?.response?.data?.message || 'Error adding recipe';
-    toast.error(errorMessage);
-  } finally {
-    setSubmitting(false);
-  }
-};
+    if (selectedIngredients.length === 0) {
+      toast.error('Add at least one ingredient');
+      setSubmitting(false);
+      return;
+    }
+
+    const formData = new FormData();
+
+    Object.entries(values).forEach(([key, val]) => {
+      if (val !== null && val !== '') {
+        formData.append(key, val);
+      }
+    });
+
+    formData.append('ingredients', JSON.stringify(selectedIngredients));
+
+    try {
+      const response = await dispatch(fetchAddRecipe(formData)).unwrap();
+      toast.success('Recipe added successfully!');
+      navigate(`/recipes/${response._id || response.id}`);
+      resetForm();
+      setSelectedIngredients([]);
+    } catch (error) {
+      const errorMessage =
+        error?.message || error?.response?.data?.message || 'Error adding recipe';
+      toast.error(errorMessage);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const IngredientSelector = () => {
     const [ingredientId, setIngredientId] = useState('');
@@ -108,18 +130,18 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
 
     const addIngredient = () => {
       if (!ingredientId || !amount.trim()) {
-        alert('Select the ingredient and specify the quantity');
+        toast.error('Select the ingredient and specify the quantity');
         return;
       }
 
       if (selectedIngredients.some(i => i.id === ingredientId)) {
-        alert('This ingredient has already been added');
+        toast.error('This ingredient has already been added');
         return;
       }
 
       const ingredient = ingredients.find(i => i._id === ingredientId || i.id === ingredientId);
       if (!ingredient) {
-        alert('Ingredient not found');
+        toast.error('Ingredient not found');
         return;
       }
 
@@ -161,7 +183,7 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
                 onChange={(e) => setIngredientId(e.target.value)}
                 className={styles.ingredientSelect}
               >
-                <option value="">Broccoli</option>
+                <option value="">Select ingredient</option>
                 {ingredients.map((ingredient) => (
                   <option key={ingredient._id || ingredient.id} value={ingredient._id || ingredient.id}>
                     {ingredient.name}
@@ -169,7 +191,7 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
                 ))}
               </select>
               <svg className={styles.selectArrow} width="24" height="24">
-                  <use svg href="/sprite.svg#icon-chevron-down" />
+                <use href="/sprite.svg#icon-chevron-down" />
               </svg>
             </div>
           </div>
@@ -215,8 +237,8 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
                         title="Delete"
                       >
                         <svg className={styles.uploadIcon} width="52" height="52">
-                          <use svg href="/sprite.svg#icon-delete" />
-                       </svg>
+                          <use href="/sprite.svg#icon-delete" />
+                        </svg>
                       </button>
                     </td>
                   </tr>
@@ -224,7 +246,7 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
               ) : (
                 <tr className={styles.emptyRow}>
                   <td colSpan="3" style={{ textAlign: 'center', color: '#999', padding: '20px' }}>
-                    
+                    No ingredients added yet
                   </td>
                 </tr>
               )}
@@ -253,7 +275,7 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
         {!values.photo ? (
           <div className={styles.uploadPlaceholder}>
             <svg className={styles.uploadIcon} width="52" height="52">
-              <use svg href="/sprite.svg#icon-photo" />
+              <use href="/sprite.svg#icon-photo" />
             </svg>
           </div>
         ) : (
@@ -359,7 +381,7 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
                   <label className={styles.labelText} htmlFor="category">Category</label>
                   <div className={styles.selectWithArrow}>
                     <Field as="select" name="category" id="category">
-                      <option value="" disabled>Soup</option>
+                      <option value="">Select category</option>
                       {categories.map((cat) => (
                         <option key={cat._id || cat.id} value={cat._id || cat.id}>
                           {cat.name}
@@ -367,7 +389,7 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
                       ))}
                     </Field>
                     <svg className={styles.selectArrow} width="24" height="24">
-                      <use svg href="/sprite.svg#icon-chevron-down" />
+                      <use href="/sprite.svg#icon-chevron-down" />
                     </svg>
                   </div>
                   <ErrorMessage name="category" component="div" className={styles.fieldError} />

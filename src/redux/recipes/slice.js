@@ -5,7 +5,6 @@ import {
   fetchRecipeById,
   toggleFavoriteRecipe,
   getFilteredRecipes,
-  fetchRecipeMeta,
   fetchAddRecipe,
 } from './operations';
 
@@ -40,10 +39,6 @@ const initialState = {
     isLoading: false,
     error: null,
     errorData: null,
-  },
-  meta: {
-    categories: [],
-    ingredients: [],
   },
   add: {
     loading: false,
@@ -156,20 +151,6 @@ const recipesSlice = createSlice({
           action.payload?.message || action.error?.message || 'Failed to load filtered recipes';
         state.filteredRecipes.errorData = action.payload ?? null;
       })
-    
-    .addCase(fetchRecipeMeta.pending, (state) => {
-              state.loading = true;
-              state.error = null;
-          })
-          .addCase(fetchRecipeMeta.fulfilled, (state, action) => {
-              state.loading = false;
-              state.meta.categories = action.payload.categories;
-              state.meta.ingredients = action.payload.ingredients;
-          })
-          .addCase(fetchRecipeMeta.rejected, (state, action) => {
-              state.loading = false;
-              state.error = action.payload || true;
-          })
 
           // Add recipe
           .addCase(fetchAddRecipe.pending, (state) => {

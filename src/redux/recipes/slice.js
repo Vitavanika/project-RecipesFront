@@ -5,6 +5,8 @@ import {
   fetchRecipeById,
   toggleFavoriteRecipe,
   getFilteredRecipes,
+  fetchRecipeMeta,
+  fetchAddRecipe,
 } from './operations';
 
 const initialState = {
@@ -38,6 +40,15 @@ const initialState = {
     isLoading: false,
     error: null,
     errorData: null,
+  },
+  meta: {
+    categories: [],
+    ingredients: [],
+  },
+  add: {
+    loading: false,
+    error: null,
+    success: false,
   },
 };
 
@@ -144,7 +155,37 @@ const recipesSlice = createSlice({
         state.filteredRecipes.error =
           action.payload?.message || action.error?.message || 'Failed to load filtered recipes';
         state.filteredRecipes.errorData = action.payload ?? null;
-      });
+      })
+    
+    .addCase(fetchRecipeMeta.pending, (state) => {
+              state.loading = true;
+              state.error = null;
+          })
+          .addCase(fetchRecipeMeta.fulfilled, (state, action) => {
+              state.loading = false;
+              state.meta.categories = action.payload.categories;
+              state.meta.ingredients = action.payload.ingredients;
+          })
+          .addCase(fetchRecipeMeta.rejected, (state, action) => {
+              state.loading = false;
+              state.error = action.payload || true;
+          })
+
+          // Add recipe
+          .addCase(fetchAddRecipe.pending, (state) => {
+              state.add.loading = true;
+              state.add.error = null;
+              state.add.success = false;
+          })
+          .addCase(fetchAddRecipe.fulfilled, (state) => {
+              state.add.loading = false;
+              state.add.success = true;
+          })
+          .addCase(fetchAddRecipe.rejected, (state, action) => {
+              state.add.loading = false;
+              state.add.error = action.payload || true;
+              state.add.success = false;
+          });
   },
 });
 

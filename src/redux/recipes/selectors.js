@@ -14,3 +14,10 @@ export const getRecipes = state => state.recipes.filteredRecipes.hits;
 export const hasNextPage = state => state.recipes.filteredRecipes.hasNextPage;
 export const hasPreviousPage = state =>
   state.recipes.filteredRecipes.hasPreviousPage;
+
+export const selectCategories = (state) => state.recipes.meta.categories;
+export const selectIngredients = (state) => state.recipes.meta.ingredients;
+
+export const selectAddRecipeLoading = (state) => state.recipes.add.loading;
+export const selectAddRecipeError = (state) => state.recipes.add.error;
+export const selectAddRecipeSuccess = (state) => state.recipes.add.success;

@@ -7,7 +7,8 @@ import {
   fetchFavRecipes,
 } from '../../redux/recipes/operations';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
-import { hasNextPage } from '../../redux/recipes/selectors';
+import { getTotalRecipes, hasNextPage } from '../../redux/recipes/selectors';
+import NoRecipesFound from '../NoRecipesFound/NoRecipesFound';
 
 export default function RecipesList({
   variant,
@@ -20,6 +21,7 @@ export default function RecipesList({
 }) {
   const dispatch = useDispatch();
   const isNextpage = useSelector(hasNextPage);
+  const totalItems = useSelector(getTotalRecipes);
 
   const items = useSelector(s => {
     switch (variant) {
@@ -65,7 +67,7 @@ export default function RecipesList({
   }
 
   if (!items.length) {
-    return <div className={styles.empty}>{emptyMessage}</div>;
+    return <NoRecipesFound />;
   }
 
   return (

@@ -63,6 +63,11 @@ export default function Filters() {
     dispatch(getIngredients());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (categories.length === 0) setCurrentCategory('');
+    if (ingredients.length === 0) setCurrentIngredient('');
+  }, [categories, ingredients]);
+
   // Ініціалізація стану з searchParams
   useEffect(() => {
     if (!isloadedCategory || !isloadedIngredients) return;
@@ -162,8 +167,6 @@ export default function Filters() {
     setSearchParams({});
     dispatch(resetFilters([]));
     dispatch(resetHits());
-    setCurrentCategory('');
-    setCurrentIngredient('');
   };
 
   return (

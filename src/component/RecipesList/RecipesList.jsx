@@ -8,6 +8,7 @@ import {
   fetchOwnRecipes,
   fetchFavRecipes,
 } from '../../redux/recipes/operations';
+import NoRecipesFound from '../NoRecipesFound/NoRecipesFound';
 
 export default function RecipesList({
   variant,
@@ -31,11 +32,6 @@ export default function RecipesList({
     }
   });
 
-  const isLoading = useSelector(s =>
-    variant === 'favorites'
-      ? Boolean(s?.recipes?.favorites?.isLoading)
-      : Boolean(s?.recipes?.own?.isLoading)
-  );
   const isLoading = useSelector(s => {
     switch (variant) {
       case 'favorites':
@@ -47,11 +43,6 @@ export default function RecipesList({
     }
   });
 
-  const error = useSelector(s =>
-    variant === 'favorites'
-      ? s?.recipes?.favorites?.error ?? ''
-      : s?.recipes?.own?.error ?? ''
-  );
   const error = useSelector(s => {
     switch (variant) {
       case 'favorites':
@@ -97,7 +88,6 @@ export default function RecipesList({
       {items.map(r => (
         <RecipeCard
           key={r._id || r.id}
-          recipe={r} // передаємо весь об’єкт
           recipe={r}
           variant={variant}
           isAuthenticated={isAuthenticated}

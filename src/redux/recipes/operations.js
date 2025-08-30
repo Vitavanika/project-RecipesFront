@@ -88,27 +88,6 @@ export const toggleFavoriteRecipe = createAsyncThunk(
   }
 );
 
-export const fetchRecipeMeta = createAsyncThunk(
-  'recipes/fetchMeta',
-  async (_, thunkAPI) => {
-    try {
-      const [catRes, ingRes] = await Promise.all([
-        apiClient.get('/categories'),
-        apiClient.get('/ingredients'),
-      ]);
-
-      return {
-        categories: Array.isArray(catRes.data) ? catRes.data : [],
-        ingredients: Array.isArray(ingRes.data) ? ingRes.data : [],
-      };
-    } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data || error.message || 'Failed to load recipe metadata'
-      );
-    }
-  }
-);
-
 export const fetchAddRecipe = createAsyncThunk(
   'recipes/addRecipe',
   async (formData, thunkAPI) => {

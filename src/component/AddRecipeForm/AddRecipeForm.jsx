@@ -60,7 +60,7 @@ const AddRecipeForm = () => {
   }, [dispatch, isLoadedCategories, isLoadedIngredients]);
 
   const validationSchema = Yup.object({
-    title: Yup.string()
+    name: Yup.string()
       .min(3, 'Title must be at least 3 characters')
       .required('Title is required'),
 
@@ -68,13 +68,15 @@ const AddRecipeForm = () => {
       .min(10, 'Description must be at least 10 characters')
       .required('Description is required'),
 
-    time: Yup.number()
-      .positive('Time must be a positive number')
-      .integer('Time must be an integer')
-      .min(1, 'Time must be at least 1 minute')
+    cookingTime: Yup.string()
+      .matches(/^\d+$/, 'Time should not have letters') 
+      .test('min-value', 'Time must be at least 1 minute', value => {
+        const num = Number(value);
+          return num >= 1;
+        })
       .required('Time is required'),
 
-    calories: Yup.number()
+    foodEnergy: Yup.number()
       .positive('Calories must be a positive number')
       .integer('Calories must be an integer')
       .nullable(),
@@ -90,39 +92,51 @@ const AddRecipeForm = () => {
       .required('Photo is required'),
   });
 
-  const handleSubmit = async (values, { setSubmitting, resetForm }) => {
-    setSubmitting(true);
+const handleSubmit = async (values, { setSubmitting, resetForm }) => {
+  setSubmitting(true);
 
-    if (selectedIngredients.length === 0) {
-      toast.error('Add at least one ingredient');
-      setSubmitting(false);
-      return;
-    }
+  if (selectedIngredients.length === 0) {
+    toast.error('Add at least one ingredient');
+    setSubmitting(false);
+    return;
+  }
 
-    const formData = new FormData();
-
-    Object.entries(values).forEach(([key, val]) => {
-      if (val !== null && val !== '') {
-        formData.append(key, val);
-      }
-    });
-
-    formData.append('ingredients', JSON.stringify(selectedIngredients));
-
-    try {
-      const response = await dispatch(fetchAddRecipe(formData)).unwrap();
-      toast.success('Recipe added successfully!');
-      navigate(`/recipes/${response._id || response.id}`);
-      resetForm();
-      setSelectedIngredients([]);
-    } catch (error) {
-      const errorMessage =
-        error?.message || error?.response?.data?.message || 'Error adding recipe';
-      toast.error(errorMessage);
-    } finally {
-      setSubmitting(false);
-    }
+  const fieldMap = {
+    title: 'name',
+    time: 'cookingTime',
+    calories: 'foodEnergy',
   };
+
+  const formData = new FormData();
+
+  Object.entries(values).forEach(([key, val]) => {
+    if (val !== null && val !== '') {
+      const mappedKey = fieldMap[key] || key;
+      formData.append(mappedKey, val);
+    }
+  })
+
+  const mappedIngredients = selectedIngredients.map(({ name, amount }) => ({
+    name,
+    quantity: amount,
+  }));
+
+  formData.append('ingredients', JSON.stringify(mappedIngredients));
+
+  try {
+    const response = await dispatch(fetchAddRecipe(formData)).unwrap();
+    toast.success('Recipe added successfully!');
+    navigate(`/recipes/${response._id || response.id}`);
+    resetForm();
+    setSelectedIngredients([]);
+  } catch (error) {
+    const errorMessage =
+      error?.message || error?.response?.data?.message || 'Error adding recipe';
+    toast.error(errorMessage);
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   const IngredientSelector = () => {
     const [ingredientId, setIngredientId] = useState('');
@@ -139,7 +153,7 @@ const AddRecipeForm = () => {
         return;
       }
 
-      const ingredient = ingredients.find(i => i._id === ingredientId || i.id === ingredientId);
+      const ingredient = ingredients.find(i => [i._id, i.id].includes(ingredientId));
       if (!ingredient) {
         toast.error('Ingredient not found');
         return;
@@ -148,9 +162,8 @@ const AddRecipeForm = () => {
       setSelectedIngredients([
         ...selectedIngredients, 
         { 
-          id: ingredientId, 
-          name: ingredient.name, 
-          amount: amount.trim() 
+          name: ingredient.name,
+          quantity: amount.trim()
         }
       ]);
       
@@ -228,7 +241,7 @@ const AddRecipeForm = () => {
                 selectedIngredients.map((ingredient) => (
                   <tr key={ingredient.id}>
                     <td>{ingredient.name}</td>
-                    <td>{ingredient.amount}</td>
+                    <td>{ingredient.quantity}</td>
                     <td className={styles.actionsColumn}>
                       <button 
                         type="button" 
@@ -323,10 +336,10 @@ const AddRecipeForm = () => {
 
       <Formik
         initialValues={{
-          title: '',
+          name: '',
           description: '',
-          time: '',
-          calories: '',
+          cookingTime: '',
+          foodEnergy: '',
           category: '',
           instructions: '',
           photo: null
@@ -348,8 +361,8 @@ const AddRecipeForm = () => {
               <div className={styles.formField}>
                 <h2 className={styles.generalHead}>General Information</h2>
                 <label className={styles.labelText} htmlFor="title">Recipe Title</label>
-                <Field name="title" id="title" placeholder="Enter the name of your recipe" />
-                <ErrorMessage name="title" component="div" className={styles.fieldError} />
+                <Field name="name" id="name" placeholder="Enter the name of your recipe" />
+                <ErrorMessage name="name" component="div" className={styles.fieldError} />
               </div>
 
               <div className={styles.formField}>
@@ -366,15 +379,15 @@ const AddRecipeForm = () => {
 
               <div className={`${styles.formField} ${styles.timeField}`}>
                 <label className={styles.labelText} htmlFor="time">Cooking time in minutes</label>
-                <Field name="time" id="time" type="number" min="1" placeholder="10" />
-                <ErrorMessage name="time" component="div" className={styles.fieldError} />
+                <Field name="cookingTime" id="cookingTime" type="text" min="1" placeholder="10" />
+                <ErrorMessage name="cookingTime" component="div" className={styles.fieldError} />
               </div>
 
               <div className={styles.caloriesCategoryRow}>
                 <div className={styles.formField}>
                   <label className={styles.labelText} htmlFor="calories">Calories</label>
-                  <Field name="calories" id="calories" type="number" min="1" placeholder="150 cals" />
-                  <ErrorMessage name="calories" component="div" className={styles.fieldError} />
+                  <Field name="foodEnergy" id="calfoodEnergyories" type="number" min="1" placeholder="150 cals" />
+                  <ErrorMessage name="foodEnergy" component="div" className={styles.fieldError} />
                 </div>
 
                 <div className={styles.formField}>

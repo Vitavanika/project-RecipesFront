@@ -16,7 +16,11 @@ import { ingredientsReducer } from './ingredients/slice';
 import { categoriesReducer } from './categories/slice';
 import { filtersReducer } from './filters/slice';
 
-const authPersistConfig = { key: 'auth', storage, whitelist: ['token'] };
+const authPersistConfig = {
+  key: 'auth',
+  storage,
+  whitelist: ['token', 'isLoggedIn'],
+};
 
 export const store = configureStore({
   reducer: {

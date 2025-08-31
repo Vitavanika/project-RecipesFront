@@ -4,9 +4,6 @@ const BASE_URL = 'https://project-recipesback.onrender.com/api/';
 
 const apiClient = axios.create({
   baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
 apiClient.interceptors.request.use(

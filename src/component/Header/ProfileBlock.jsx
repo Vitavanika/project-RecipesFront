@@ -41,13 +41,11 @@ export const ProfileBlock = ({ onClose }) => {
         </button>
       </div>
 
-      {isLogoutModalOpen && (
         <LogoutModal
           onCancel={closeLogoutModal}
           onConfirm={handleLogout}
           isOpen={isLogoutModalOpen}
         />
-      )}
     </>
   );
 };

@@ -40,10 +40,10 @@
 
     transform: translateY(-20px);
     opacity: 0;
-    transition: opacity 2s ease, transform 2s ease;
+    transition: opacity 300ms ease, transform 300ms ease;
 }
 
-.overlay.open .modal {
+.modal.open {
     transform: translateY(0);
     opacity: 1;
 }

@@ -27,7 +27,7 @@ export const LogoutModal = ({ onCancel, onConfirm, isOpen }) => {
       className={clsx(css.overlay, { [css.open]: isOpen })}
       onClick={handleOverlayClick}
     >
-      <div className={css.modal}>
+      <div className={clsx(css.modal, { [css.open]: isOpen })}>
         <button className={css.closeBtn} onClick={onCancel}>
           <svg className={css.closeIcon} width="32" height="32">
             <use href="/sprite.svg#icon-close"></use>

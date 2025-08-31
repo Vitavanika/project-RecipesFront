@@ -89,3 +89,17 @@ export const toggleFavoriteRecipe = createAsyncThunk(
     }
   }
 );
+
+export const fetchAddRecipe = createAsyncThunk(
+  'recipes/addRecipe',
+  async (formData, thunkAPI) => {
+    try {
+      const response = await apiClient.post('/recipes', formData);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(
+        error.response?.data || error.message || 'Failed to add recipe'
+      );
+    }
+  }
+);

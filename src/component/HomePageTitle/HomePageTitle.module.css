@@ -1,0 +1,29 @@
+.container {
+  padding: 48px 16px 16px;
+  max-width: 393px;
+  margin: 0 auto;
+}
+
+.title {
+  font-weight: 600;
+  font-size: 32px;
+  line-height: 1.22;
+}
+
+@media only screen and (min-width: 768px) {
+  .container {
+    max-width: 768px;
+    padding: 48px 32px 16px;
+  }
+
+  .title {
+    font-size: 40px;
+    line-height: 49px;
+  }
+}
+@media only screen and (min-width: 1440px) {
+  .container {
+    padding: 48px 108px 16px;
+    max-width: 1440px;
+  }
+}

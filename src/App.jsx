@@ -15,12 +15,20 @@ import RecipeViewPage from './pages/RecipeViewPage/RecipeViewPage.jsx';
 // Приватний маршрут - доступний тільки для авторизованих користувачів
 const PrivateRoute = ({ children }) => {
   const isLoggedIn = useSelector(getIsLoggedIn);
+  const isRefreshing = useSelector(getIsRefreshing);
+  if (isRefreshing) {
+    return <Loader />;
+  }
   return isLoggedIn ? children : <Navigate to="/auth/login" replace />;
 };
 
 // Публічний маршрут - доступний для всіх
 const PublicRoute = ({ children }) => {
   const isLoggedIn = useSelector(getIsLoggedIn);
+  const isRefreshing = useSelector(getIsRefreshing);
+  if (isRefreshing) {
+    return <Loader />;
+  }
   return isLoggedIn ? <Navigate to="/" replace /> : children;
 };
 
@@ -32,7 +40,6 @@ const App = () => {
     dispatch(refreshUser());
   }, [dispatch]);
 
-  // add React loader here
   return isRefreshing ? (
     <strong>Loading...</strong>
   ) : (

@@ -1,10 +1,14 @@
+.heroWrapper {
+  background-image: url('/src/images/HeroMob1x.webp');
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 0 auto;
+}
+
 .heroContainer {
   max-width: 393px;
   padding: 128px 32px 98px;
   margin: 0 auto;
-  background-image: url('/src/images/HeroMob1x.webp');
-  background-size: 100%;
-  background-repeat: no-repeat;
 }
 
 .heroTitle {
@@ -17,16 +21,19 @@
 }
 
 @media only screen and (min-resolution: 192dpi), (min-resolution: 2dppx) {
-  .heroContainer {
+  .heroWrapper  {
     background-image: url('/src/images/HeroMob2x.webp');
   }
 }
 
 @media only screen and (min-width: 768px) {
+  .heroWrapper {
+    background-image: url('/src/images/HeroTab1x.webp');
+    background-size: 100%;
+  }
   .heroContainer {
     max-width: 768px;
     padding: 128px 32px;
-    background-image: url('/src/images/HeroTab1x.webp');
   }
 
   .heroTitle {
@@ -36,17 +43,20 @@
   }
 
   @media only screen and (min-resolution: 192dpi), (min-resolution: 2dppx) {
-    .heroContainer {
+    .heroWrapper {
       background-image: url('/src/images/HeroTab2x.webp');
     }
   }
 }
 
 @media only screen and (min-width: 1440px) {
+  .heroWrapper {
+    background-image: url('/src/images/HeroDesk1x.webp');
+    max-width: var(--container-width-desktop);
+  }
   .heroContainer {
     max-width: 1440px;
     padding: 128px 108px;
-    background-image: url('/src/images/HeroDesk1x.webp');
   }
 
   .heroTitle {
@@ -54,7 +64,7 @@
   }
 
   @media only screen and (min-resolution: 192dpi), (min-resolution: 2dppx) {
-    .heroContainer {
+    .heroWrapper {
       background-image: url('/src/images/HeroDesk2x.webp');
     }
   }

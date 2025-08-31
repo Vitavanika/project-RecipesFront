@@ -1,9 +1,9 @@
 .wrap {
-  max-width: 1440px;
+  max-width: 393px;
   margin: 0 auto 40px;
   padding: 0 20px;
   display: grid;
-  gap: 12px;
+  gap: 24px;
   grid-template-columns: 1fr;
   justify-items: center;
 }
@@ -45,7 +45,7 @@
 }
 
 /* Load more */
-.wrap > button:last-child {
+.wrap>button:last-child {
   grid-column: 1 / -1;
   width: 100%;
   display: flex;
@@ -55,35 +55,9 @@
   justify-self: center;
 }
 
-@media (min-width: 640px) {
-  .wrap {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
-    justify-items: center;
-    margin-bottom: 50px; /*  на tablet */
-  }
-}
-
-@media (min-width: 1024px) {
-  .wrap {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    justify-items: start;
-    margin-bottom: 60px;
-  }
-}
-
-@media (min-width: 1280px) {
-  .wrap {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    justify-items: start;
-    margin-bottom: 60px;
-  }
-}
-
 .wrap:has(> :only-child) {
-  justify-items: start; /*  одна зліва */
+  justify-items: start;
+  /*  одна зліва */
 }
 
 /* Альтернативний спосіб для браузерів що не підтримують :has() */
@@ -95,28 +69,20 @@
   margin-bottom: 80px;
 }
 
-@media (min-width: 1440px) {
+@media screen and (min-width: 768px) {
   .wrap {
-    gap: 20px;
-  }
-}
-
-@media (max-width: 639px) {
-  .wrap {
-    gap: 16px;
+    max-width: 768px;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
     margin-bottom: 50px;
   }
 }
 
-@media (min-width: 768px) and (max-width: 1023px) {
+@media screen and (min-width: 1440px) {
   .wrap {
-    gap: 18px;
-  }
-}
-
-@media (min-width: 1600px) {
-  .wrap {
-    gap: 24px;
-    margin-bottom: 80px;
+    max-width: 1440px;
+    grid-template-columns: repeat(4, 1fr);
+    /* justify-items: start; */
+    margin-bottom: 60px;
   }
 }

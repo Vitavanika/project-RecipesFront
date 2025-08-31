@@ -30,33 +30,23 @@
   --color-dark-brown: #3d2218;
   --color-background: #fbfcf8;
   --color-brown: #6d554b;
-  --color-gray-2: #c5c5c5;
   --color-gray-3: #9f9f9f;
   --color-social-media: rgba(255, 255, 255, 0);
   --color-icon-gray: #3a3a3a;
   --color-dark-gray: #323232;
   --color-red: #c80000;
-  --color-beige: #e3caa5;
-  --color-beige-2: #edd9aa;
-
-  /* Кольори з прозорістю */
-  --color-white-55: rgba(255, 255, 255, 0.55);
-  --color-white-80: rgba(255, 255, 255, 0.8);
-  --color-black-60: rgba(0, 0, 0, 0.6);
-  --color-black-50: rgba(0, 0, 0, 0.5);
-  --color-dark-brown-65: rgba(61, 34, 24, 0.65);
 
   /* Типографія */
   --font-family: "Montserrat", sans-serif;
 
   /* Container paddings */
-  --padding-mobile: 10px;
-  --padding-tablet: 15px;
+  --padding-mobile: 16px;
+  --padding-tablet: 32px;
 
   /* Container widths */
-  --max-width-mobile: 380px;
-  --max-width-tablet: 735px;
-  --max-width-desktop: 1254px;
+  --max-width-mobile: 393px;
+  --max-width-tablet: 768px;
+  --max-width-desktop: 1440px;
 
   /* Section padding */
   --section-padding: 48px;

@@ -1,4 +1,5 @@
 .container {
+  width: 100%;
   min-width: 320px;
   max-width: var(--max-width-mobile);
   padding-left: var(--padding-mobile);

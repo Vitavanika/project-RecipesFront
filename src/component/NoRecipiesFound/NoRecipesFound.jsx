@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 import styles from './NoRecipesFound.module.css';
 import { useSearchParams } from 'react-router';
 import { resetFilters } from '../../redux/filters/slice';
-import { resetHits, setPaginationParams } from '../../redux/recipes/slice';
+import { resetHits } from '../../redux/recipes/slice';
 
 export default function NoRecipesFound() {
   const [, setSearchParams] = useSearchParams();
@@ -12,7 +12,6 @@ export default function NoRecipesFound() {
   const handleClick = () => {
     setSearchParams({});
     dispatch(resetFilters([]));
-    dispatch(setPaginationParams());
     dispatch(resetHits());
   };
 

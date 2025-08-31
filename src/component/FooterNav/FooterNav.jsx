@@ -51,7 +51,7 @@ export const FooterNav = () => {
           </li>
         )}
         {isLoggedIn && (
-          <NavLink to="/profile" className={styles.link}>
+          <NavLink to="/profile/own" className={styles.link}>
             Account
           </NavLink>
         )}

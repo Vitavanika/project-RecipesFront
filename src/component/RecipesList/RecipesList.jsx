@@ -82,7 +82,7 @@ export default function RecipesList({
   }
 
   return (
-    <div className={styles.wrap}>
+    <div className={`${styles.wrap} ${items.length === 1 ? styles['single-item'] : ''}`}>
       {items.map(r => (
         <RecipeCard
           key={r._id || r.id}

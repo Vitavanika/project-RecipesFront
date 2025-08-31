@@ -52,7 +52,6 @@
 @media only screen and (min-width: 1440px) {
   .heroWrapper {
     background-image: url('/src/images/HeroDesk1x.webp');
-    max-width: var(--container-width-desktop);
   }
   .heroContainer {
     max-width: 1440px;

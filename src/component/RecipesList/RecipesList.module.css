@@ -82,7 +82,7 @@
   .wrap {
     max-width: 1440px;
     grid-template-columns: repeat(4, 1fr);
-    /* justify-items: start; */
+    justify-self: center;
     margin-bottom: 60px;
   }
 }

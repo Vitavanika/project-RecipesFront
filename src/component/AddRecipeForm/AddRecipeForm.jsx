@@ -162,8 +162,9 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
       setSelectedIngredients([
         ...selectedIngredients, 
         { 
+          id: ingredient._id || ingredient.id,
           name: ingredient.name,
-          quantity: amount.trim()
+          amount: amount.trim(),
         }
       ]);
       
@@ -241,7 +242,7 @@ const handleSubmit = async (values, { setSubmitting, resetForm }) => {
                 selectedIngredients.map((ingredient) => (
                   <tr key={ingredient.id}>
                     <td>{ingredient.name}</td>
-                    <td>{ingredient.quantity}</td>
+                    <td>{ingredient.amount}</td>
                     <td className={styles.actionsColumn}>
                       <button 
                         type="button" 

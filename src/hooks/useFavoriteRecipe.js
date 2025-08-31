@@ -1,44 +1,57 @@
-import { useState, useEffect } from 'react';
-import { toast } from 'react-hot-toast';
-import { useAuth } from '../context/AuthContext.jsx';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
+import { toggleFavoriteRecipe } from '../redux/recipes/operations';
+import { getIsLoggedIn } from '../redux/auth/selectors';
+import { selectFavLoading } from "../redux/recipes/selectors";
 
 export const useFavoriteRecipe = (recipeId, initialSaved = false) => {
-  const { isAuthenticated } = useAuth();
+  const dispatch = useDispatch();
+
+  const isAuthenticated = useSelector(getIsLoggedIn);
+  const isLoading = useSelector(selectFavLoading);
+
   const [saved, setSaved] = useState(initialSaved);
-  const [isLoading, setIsLoading] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
 
-  useEffect(() => {
-    setSaved(initialSaved);
-  }, [initialSaved]);
-
-  const toggleSave = async (onRequireAuth) => {
+  const toggleSave = async (onAuthRequired) => {
     if (!isAuthenticated) {
-      if (onRequireAuth) onRequireAuth();
-      return false;
+      if (onAuthRequired) {
+        onAuthRequired();
+      } else {
+        setShowAuthModal(true);
+      }
+      return;
     }
 
-    setIsLoading(true);
     try {
-      const response = await fetch(`/api/favorites/${recipeId}`, {
-        method: saved ? 'DELETE' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      });
+      const result = await dispatch(
+        toggleFavoriteRecipe({
+          recipeId,
+          isFavorite: saved,
+        })
+      ).unwrap();
 
-      if (!response.ok) throw new Error('Failed to update favorites');
+      setSaved(result.isFavorite);
 
-      setSaved(!saved);
       toast.success(
-        saved ? 'Recipe removed from favorites' : 'Recipe added to favorites'
+        result.isFavorite
+          ? "Recipe added to favorites"
+          : "Recipe removed from favorites"
       );
 
-      return true;
+      return result.isFavorite;
     } catch (error) {
-      toast.error(error.message);
-      return false;
-    } finally {
-      setIsLoading(false);
+      toast.error(error.message || "Something went wrong");
     }
   };
 
-  return { saved, isLoading, toggleSave };
-};
+
+  return {
+    saved,
+    isLoading,
+    showAuthModal,
+    setShowAuthModal,
+    toggleSave,
+  };
+}

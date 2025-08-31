@@ -1,6 +1,5 @@
-import { useState } from 'react';
 import { useFavoriteRecipe } from '../../hooks/useFavoriteRecipe';
-import { AuthNavModal } from '../AuthNavModal/AuthNavModal.jsx';
+import { AuthModal } from '../AuthModal/AuthModal';
 import css from "./RecipeGeneralInfo.module.css";
 
 export default function RecipeGeneralInfo({
@@ -10,16 +9,13 @@ export default function RecipeGeneralInfo({
   recipeId,
   initialIsSaved = false,
 }) {
-  const { saved, isLoading, toggleSave } = useFavoriteRecipe(recipeId, initialIsSaved);
-  const [showAuthModal, setShowAuthModal] = useState(false);
-
-  const handleToggleSave = async () => {
-    await toggleSave(() => setShowAuthModal(true)); 
-      };
-
-  const handleCloseModal = () => {
-    setShowAuthModal(false);
-  };
+  const {
+    saved,
+    isLoading,
+    showAuthModal,
+    setShowAuthModal,
+    toggleSave,
+  } = useFavoriteRecipe(recipeId, initialIsSaved);
 
   return (
     <div className={css.container}>
@@ -39,7 +35,11 @@ export default function RecipeGeneralInfo({
         </ul>
       </div>
 
-      <button onClick={handleToggleSave} className={css.button} disabled={isLoading}>
+      <button
+        onClick={() => toggleSave(() => setShowAuthModal(true))}
+        className={css.button}
+        disabled={isLoading}
+      >
         {saved ? "Unsave" : "Save"}
         <svg
           width="15"
@@ -49,9 +49,7 @@ export default function RecipeGeneralInfo({
           <use href="/sprite.svg#icon-bookmark"></use>
         </svg>
       </button>
-      {showAuthModal && (
-        <AuthNavModal onClick={handleCloseModal} />
-      )}
+      {showAuthModal && <AuthModal onClick={() => setShowAuthModal(false)} />}
     </div>
   );
 }

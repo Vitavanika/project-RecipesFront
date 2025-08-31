@@ -1,9 +1,11 @@
 .wrap {
+  max-width: 1440px;
+  margin: 0 auto 40px;
+  padding: 0 20px;
   display: grid;
   gap: 12px;
   grid-template-columns: 1fr;
   justify-items: center;
-  margin-bottom: 40px; /*  відступ знизу*/
 }
 
 .empty {

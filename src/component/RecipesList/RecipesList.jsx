@@ -10,6 +10,7 @@ import {
   fetchFavRecipes,
 } from '../../redux/recipes/operations';
 import { getIsLoggedIn } from '../../redux/auth/selectors';
+import NoRecipesFound from '../NoRecipiesFound/NoRecipesFound';
 
 export default function RecipesList({
   variant,
@@ -18,7 +19,6 @@ export default function RecipesList({
   onDelete,
   onOpenAuthModal,
   isAuthenticated = false,
-  emptyMessage,
 }) {
   const hasFetched = useRef(false);
   const dispatch = useDispatch();
@@ -69,7 +69,7 @@ export default function RecipesList({
           break;
         }
         case 'public': {
-          dispatch(getFilteredRecipes());
+          // dispatch(getFilteredRecipes());
           break;
         }
         case 'favorites': {
@@ -95,7 +95,7 @@ export default function RecipesList({
   }
 
   if (!items.length && !isLoading) {
-    return <div className={styles.empty}>{emptyMessage}</div>;
+    return <NoRecipesFound />;
   }
 
   const uniqueItems = items.filter(

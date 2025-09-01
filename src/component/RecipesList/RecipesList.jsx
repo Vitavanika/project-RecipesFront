@@ -18,7 +18,7 @@ export default function RecipesList({
   onDelete,
   onOpenAuthModal,
   isAuthenticated = false,
-  emptyMessage = 'No recipes found',
+  emptyMessage,
 }) {
   const dispatch = useDispatch();
 
@@ -62,7 +62,7 @@ export default function RecipesList({
   const isNextpage = useSelector(hasNextPage);
 
 useEffect(() => {
-  if (!items.length && !isLoading && !error) {
+  if (!items.length === 0 && !isLoading && !error) {
     if (variant === 'own' && isLoggedIn) {
       dispatch(fetchOwnRecipes());
     } else if (variant === 'favorites' && isLoggedIn) {

@@ -56,14 +56,15 @@ export default function RecipesList({
   const isNextpage = useSelector(hasNextPage);
 
   useEffect(() => {
-    if (!items.length && !isLoading && !error) {
+    if (items.length === 0 && !isLoading && !error) {
       if (variant === 'favorites') {
         dispatch(fetchFavRecipes());
       } else if (variant === 'own') {
         dispatch(fetchOwnRecipes());
       }
     }
-  }, [dispatch, variant, items.length, isLoading, error]);
+
+  }, [dispatch, variant]);
 
   if (isLoading && !items.length) {
     return (
@@ -82,7 +83,12 @@ export default function RecipesList({
   }
 
   return (
-    <div className={`${styles.wrap} ${items.length === 1 ? styles['single-item'] : ''}`} container>
+    <div
+      className={`${styles.wrap} ${
+        items.length === 1 ? styles['single-item'] : ''
+      }`}
+      container="true"
+    >
       {items.map(r => (
         <RecipeCard
           key={r._id || r.id}

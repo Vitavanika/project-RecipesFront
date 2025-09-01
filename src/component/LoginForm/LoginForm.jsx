@@ -14,7 +14,7 @@ const LoginSchema = Yup.object().shape({
     .email('Invalid email format')
     .required('Required field'),
   password: Yup.string()
-    .min(6, 'Minimum 6 characters')
+    .min(8, 'Minimum 8 characters')
     .required('Required field'),
 });
 

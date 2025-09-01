@@ -7,6 +7,7 @@ import { hasNextPage } from '../../redux/recipes/selectors';
 import {
   fetchOwnRecipes,
   getFilteredRecipes,
+  fetchFavRecipes
 } from '../../redux/recipes/operations';
 import { getIsLoggedIn } from "../../redux/auth/selectors";
 
@@ -34,7 +35,7 @@ export default function RecipesList({
     }
   });
 
-  const favorites = useSelector(s => s?.recipes?.favorites?.items ?? []);
+ 
 
   const isLoading = useSelector(s => {
     switch (variant) {
@@ -60,15 +61,17 @@ export default function RecipesList({
 
   const isNextpage = useSelector(hasNextPage);
 
-  useEffect(() => {
-    if (!items.length && !isLoading && !error) {
-      if (variant === 'own' && isLoggedIn) {
-        dispatch(fetchOwnRecipes());
-      } else if (variant === 'public') {
-        dispatch(getFilteredRecipes());
-      }
+useEffect(() => {
+  if (!items.length && !isLoading && !error) {
+    if (variant === 'own' && isLoggedIn) {
+      dispatch(fetchOwnRecipes());
+    } else if (variant === 'favorites' && isLoggedIn) {
+      dispatch(fetchFavRecipes());
+    } else if (variant === 'public') {
+      dispatch(getFilteredRecipes());
     }
-  }, [dispatch, variant, items.length, isLoading, error, isLoggedIn]);
+  }
+}, [dispatch, variant, items.length, isLoading, error, isLoggedIn]);
 
   if (isLoading && !items.length) {
     return (
@@ -97,13 +100,10 @@ export default function RecipesList({
         uniqueItems.length === 1 ? styles['single-item'] : ''
       }`}
     >
-      {uniqueItems.map(r => {
-        const isFavorite = favorites.some(f => f._id === r._id);
-
-        return (
+      {uniqueItems.map(r =>  (
           <RecipeCard
             key={r._id || r.id}
-            recipe={{ ...r, isFavorite }}
+            recipe={r}
             variant={variant}
             isAuthenticated={isAuthenticated}
             onLearnMore={onLearnMore}
@@ -112,8 +112,8 @@ export default function RecipesList({
             onOpenAuthModal={onOpenAuthModal}
             disabled={r._pending === true}
           />
-        );
-      })}
+        )
+      )}
       {isNextpage && <LoadMoreBtn />}
     </div>
   );

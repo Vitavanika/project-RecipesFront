@@ -176,6 +176,7 @@
 
   .filtersForm {
     flex-direction: row;
+    align-items: center;
   }
   .resetButton {
     order: 0;

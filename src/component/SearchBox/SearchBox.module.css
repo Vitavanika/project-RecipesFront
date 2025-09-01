@@ -53,10 +53,11 @@
 }
 
 .button:disabled {
-  padding: 4px 8px;
-
+  /* Keep the same padding to prevent layout shift */
+  padding: 13px;
   background: #9b6c43;
   opacity: 0.3;
+  cursor: not-allowed;
   box-shadow: 0px 0px 0px 2px #ffffff, 0px 0px 0px 6px rgba(78, 70, 180, 0.12);
   border-radius: 8px;
 }

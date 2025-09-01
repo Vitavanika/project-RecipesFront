@@ -174,11 +174,6 @@ const RegistrationForm = () => {
               />
             </label>
 
-            <label className={css.checkboxLabel}>
-              <Field type="checkbox" name="terms" />I agree to the Terms of
-              Service and Privacy Policy
-            </label>
-
             <button
               type="submit"
               className={css.submitBtn}

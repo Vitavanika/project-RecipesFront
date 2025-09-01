@@ -10,7 +10,7 @@ const HomePage = () => {
       <Hero />
       <HomePageTitle />
       <Filters />
-      <RecipesList />
+      <RecipesList variant="public" />
     </div>
   );
 };

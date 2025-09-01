@@ -1,9 +1,13 @@
+import { useEffect } from "react";
 import RecipeImage from "../RecipeImage/RecipeImage";
 import RecipeGeneralInfo from "../RecipeGeneralInfo/RecipeGeneralInfo";
 import RecipeContent from "../RecipeContent/RecipeContent";
 import css from "./RecipeDetails.module.css";
 
 export default function RecipeDetails({ recipe }) {
+   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
     <div className={css.container}>

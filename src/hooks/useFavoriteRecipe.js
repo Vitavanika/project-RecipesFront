@@ -1,18 +1,25 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import { toggleFavoriteRecipe } from '../redux/recipes/operations';
 import { getIsLoggedIn } from '../redux/auth/selectors';
-import { selectFavLoading } from "../redux/recipes/selectors";
+import { selectFavLoading, selectFavRecipes } from "../redux/recipes/selectors";
 
-export const useFavoriteRecipe = (recipeId, initialSaved = false) => {
+export const useFavoriteRecipe = (recipeId) => {
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector(getIsLoggedIn);
   const isLoading = useSelector(selectFavLoading);
+  const favorites = useSelector(selectFavRecipes);
 
-  const [saved, setSaved] = useState(initialSaved);
   const [showAuthModal, setShowAuthModal] = useState(false);
+
+  const savedInRedux = favorites.some(f => f._id === recipeId);
+  const [localSaved, setLocalSaved] = useState(savedInRedux);
+
+  useEffect(() => {
+    setLocalSaved(savedInRedux);
+  }, [savedInRedux]);
 
   const toggleSave = async (onAuthRequired) => {
     if (!isAuthenticated) {
@@ -28,11 +35,9 @@ export const useFavoriteRecipe = (recipeId, initialSaved = false) => {
       const result = await dispatch(
         toggleFavoriteRecipe({
           recipeId,
-          isFavorite: saved,
+          isFavorite: localSaved,
         })
       ).unwrap();
-
-      setSaved(result.isFavorite);
 
       toast.success(
         result.isFavorite
@@ -40,18 +45,18 @@ export const useFavoriteRecipe = (recipeId, initialSaved = false) => {
           : "Recipe removed from favorites"
       );
 
+      setLocalSaved(result.isFavorite);
       return result.isFavorite;
     } catch (error) {
       toast.error(error.message || "Something went wrong");
     }
   };
 
-
   return {
-    saved,
+    saved: localSaved,
     isLoading,
     showAuthModal,
     setShowAuthModal,
     toggleSave,
   };
-}
+};

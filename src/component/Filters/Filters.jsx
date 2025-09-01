@@ -54,6 +54,8 @@ export default function Filters() {
     searchPhrase: '',
   });
   const prevPageRef = useRef({ page: 1, perPage: 12 });
+  const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
 
   const isMultiselect = false;
 
@@ -63,60 +65,86 @@ export default function Filters() {
     dispatch(getIngredients());
   }, [dispatch]);
 
-  // Ініціалізація стану з searchParams
   useEffect(() => {
-    if (!isloadedCategory || !isloadedIngredients) return;
+    if (selectedCategories.length === 0) {
+      setCurrentCategory('');
+    }
+    if (selectedIngredients.length === 0) {
+      setCurrentIngredient('');
+    }
+  }, [selectedCategories.length, selectedIngredients.length]);
 
-    const category = searchParams.getAll('category');
-    const ingredients = searchParams.getAll('ingredients');
-    const searchPhrase = searchParams.get('searchPhrase') || '';
-    const page = Number(searchParams.get('page')) || 1;
-    const perPage = Number(searchParams.get('perPage')) || 12;
+  // Ініціалізація стану з searchParams
+  // useEffect(() => {
+  //   if (!isloadedCategory || !isloadedIngredients) return;
 
-    dispatch(setAllFilters({ category, ingredients, searchPhrase }));
-    dispatch(setPaginationParams({ page, perPage }));
+  //   const category = searchParams.getAll('category');
+  //   const ingredients = searchParams.getAll('ingredients');
+  //   const searchPhrase = searchParams.get('searchPhrase') || '';
+  //   const page = Number(searchParams.get('page')) || 1;
+  //   const perPage = Number(searchParams.get('perPage')) || 12;
 
-    setCurrentCategory(category[0] || '');
-    setCurrentIngredient(ingredients[0] || '');
-  }, [searchParams, isloadedCategory, isloadedIngredients, dispatch]);
+  //   dispatch(setAllFilters({ category, ingredients, searchPhrase }));
+  //   dispatch(setPaginationParams({ page, perPage }));
+
+  //   setCurrentCategory(category[0] || '');
+  //   setCurrentIngredient(ingredients[0] || '');
+  // }, [searchParams, isloadedCategory, isloadedIngredients, dispatch]);
 
   // Відстеження змін фільтрів та пагінації
+  // useEffect(() => {
+  //   if (!isloadedCategory || !isloadedIngredients) return;
+
+  //   const filtersChanged =
+  //     selectedCategories.join() + selectedIngredients.join() + searchPhrase !==
+  //     prevFiltersRef.current.categories.join() +
+  //       prevFiltersRef.current.ingredients.join() +
+  //       prevFiltersRef.current.searchPhrase;
+
+  //   const pageChanged =
+  //     page !== prevPageRef.current.page ||
+  //     perPage !== prevPageRef.current.perPage;
+
+  //   if (filtersChanged) {
+  //     dispatch(resetHits());
+  //     dispatch(getFilteredRecipes({ append: false }));
+  //   } else if (pageChanged) {
+  //     dispatch(getFilteredRecipes({ append: true }));
+  //   }
+
+  //   prevFiltersRef.current = {
+  //     categories: selectedCategories,
+  //     ingredients: selectedIngredients,
+  //     searchPhrase,
+  //   };
+  //   prevPageRef.current = { page, perPage };
+  // }, [
+  //   selectedCategories,
+  //   selectedIngredients,
+  //   searchPhrase,
+  //   page,
+  //   perPage,
+  //   isloadedCategory,
+  //   isloadedIngredients,
+  //   dispatch,
+  // ]);
+
   useEffect(() => {
-    if (!isloadedCategory || !isloadedIngredients) return;
-
-    const filtersChanged =
-      selectedCategories.join() + selectedIngredients.join() + searchPhrase !==
-      prevFiltersRef.current.categories.join() +
-        prevFiltersRef.current.ingredients.join() +
-        prevFiltersRef.current.searchPhrase;
-
-    const pageChanged =
-      page !== prevPageRef.current.page ||
-      perPage !== prevPageRef.current.perPage;
-
-    if (filtersChanged) {
-      dispatch(resetHits());
-      dispatch(getFilteredRecipes({ append: false }));
-    } else if (pageChanged) {
-      dispatch(getFilteredRecipes({ append: true }));
+    if (JSON.stringify(searchParams) !== '{}') {
     }
+  }, []);
 
-    prevFiltersRef.current = {
-      categories: selectedCategories,
-      ingredients: selectedIngredients,
-      searchPhrase,
-    };
-    prevPageRef.current = { page, perPage };
-  }, [
-    selectedCategories,
-    selectedIngredients,
-    searchPhrase,
-    page,
-    perPage,
-    isloadedCategory,
-    isloadedIngredients,
-    dispatch,
-  ]);
+  useEffect(() => {
+    window.addEventListener('resize', getViewportWidth);
+    function getViewportWidth() {
+      setViewportWidth(window.innerWidth);
+    }
+    return () => window.removeEventListener('resize', getViewportWidth);
+  }, []);
+
+  //----------Functions----------------------//
+
+  const toggleFilters = () => setIsOpenFilter(prevState => !prevState);
 
   const handleCategoryChange = e => {
     if (!e.target.value) return;
@@ -162,65 +190,99 @@ export default function Filters() {
     setSearchParams({});
     dispatch(resetFilters([]));
     dispatch(resetHits());
-    setCurrentCategory('');
-    setCurrentIngredient('');
   };
 
+  //----------Functions----------------------//
+
   return (
-    <>
-      <p>{`${totalRecipes ?? 0} recipes`}</p>
-      <form action="setFilters">
-        <button type="button" onClick={handleReset}>
-          Reset filters
-        </button>
-        <select
-          name="ingredients"
-          id="selectIngredients"
-          value={currentIngredient}
-          onChange={handleIngredientChange}
-          key="ingredients"
-        >
-          <option value="" disabled hidden>
-            Please, select ingredient
-          </option>
-          {ingredients.length === 0 ? (
-            <option>Loading...</option>
-          ) : (
-            ingredients.map(ingredient => (
-              <option
-                name={ingredient.name}
-                value={ingredient._id}
-                key={ingredient._id}
-              >
-                {ingredient.name}
+    <div className={`${styles.container} container`}>
+      <p className={styles.recipesCount}>{`${totalRecipes ?? 0} recipes`}</p>
+      <div className={styles.formWrapper}>
+        {viewportWidth < 1440 && (
+          <button className={styles.filtersButton} onClick={toggleFilters}>
+            Filters
+            <div className={styles.thumb}>
+              {isOpenFilter ? (
+                <svg width="16" height="15" className={styles.filterIcon}>
+                  <use href="/sprite.svg#icon-close-circle"></use>
+                </svg>
+              ) : (
+                <svg width="16" height="15" className={styles.filterIcon}>
+                  <use href="/sprite.svg#icon-filter"></use>
+                </svg>
+              )}
+            </div>
+          </button>
+        )}
+        <form action="setFilters">
+          <button
+            className={styles.resetButton}
+            type="button"
+            onClick={handleReset}
+          >
+            Reset filters
+          </button>
+          <label htmlFor="ingredients" className={styles.selectLabel}>
+            <select
+              className={styles.select}
+              name="ingredients"
+              id="selectIngredients"
+              value={currentIngredient}
+              onChange={handleIngredientChange}
+              key="ingredients"
+            >
+              <option value="" disabled hidden>
+                Ingredient
               </option>
-            ))
-          )}
-        </select>
-        <select
-          name="categories"
-          id="selectCategories"
-          value={currentCategory}
-          onChange={handleCategoryChange}
-        >
-          <option value="" disabled hidden>
-            Please, select category
-          </option>
-          {categories.length === 0 ? (
-            <option>Loading...</option>
-          ) : (
-            categories.map(category => (
-              <option
-                name={category.name}
-                value={category.name}
-                key={category._id}
-              >
-                {category.name}
+              {ingredients.length === 0 ? (
+                <option>Loading...</option>
+              ) : (
+                ingredients.map(ingredient => (
+                  <option
+                    name={ingredient.name}
+                    value={ingredient._id}
+                    key={ingredient._id}
+                  >
+                    {ingredient.name}
+                  </option>
+                ))
+              )}
+            </select>
+            <svg width="16" height="15" className={styles.selectIcon}>
+              <use href="/sprite.svg#icon-chevron-down"></use>
+            </svg>
+          </label>
+          <label htmlFor="ingredients" className={styles.selectLabel}>
+            <select
+              className={styles.select}
+              name="categories"
+              id="selectCategories"
+              value={currentCategory}
+              onChange={handleCategoryChange}
+            >
+              <option value="" disabled hidden>
+                Category
               </option>
-            ))
-          )}
-        </select>
-      </form>
-    </>
+              {categories.length === 0 ? (
+                <option>Loading...</option>
+              ) : (
+                categories.map(category => (
+                  <option
+                    name={category.name}
+                    value={category.name}
+                    key={category._id}
+                  >
+                    {category.name}
+                  </option>
+                ))
+              )}
+            </select>
+            <svg width="16" height="15" className={styles.selectIcon}>
+              <use href="/sprite.svg#icon-chevron-down"></use>
+            </svg>
+          </label>
+        </form>
+      </div>
+    </div>
   );
 }

@@ -8,6 +8,7 @@ import {
   fetchOwnRecipes,
   fetchFavRecipes,
 } from '../../redux/recipes/operations';
+import NoRecipesFound from '../NoRecipiesFound/NoRecipesFound';
 
 export default function RecipesList({
   variant,
@@ -16,7 +17,6 @@ export default function RecipesList({
   onDelete,
   onOpenAuthModal,
   isAuthenticated = false,
-  emptyMessage = 'No recipes found',
 }) {
   const dispatch = useDispatch();
 
@@ -78,11 +78,16 @@ export default function RecipesList({
   }
 
   if (!items.length && !isLoading) {
-    return <div className={styles.empty}>{emptyMessage}</div>;
+    return <NoRecipesFound />;
   }
 
   return (
-    <div className={`${styles.wrap} ${items.length === 1 ? styles['single-item'] : ''}`} container>
+    <div
+      className={`${styles.wrap} ${
+        items.length === 1 ? styles['single-item'] : ''
+      }`}
+      container
+    >
       {items.map(r => (
         <RecipeCard
           key={r._id || r.id}

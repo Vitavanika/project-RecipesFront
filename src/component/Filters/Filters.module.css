@@ -69,8 +69,9 @@
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
+  transition: transform 0.25s ease;
 }
 
-.selectLabel.open .selectIcon {
+.selectIcon.open {
   transform: translateY(-50%) rotate(180deg);
 }

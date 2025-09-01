@@ -56,6 +56,8 @@ export default function Filters() {
   const prevPageRef = useRef({ page: 1, perPage: 12 });
   const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
+  const [isOpenCategory, setIsOpenCategory] = useState(false);
+  const [isOpenIngredient, setIsOpenIngredient] = useState(false);
 
   const isMultiselect = false;
 
@@ -74,65 +76,63 @@ export default function Filters() {
     }
   }, [selectedCategories.length, selectedIngredients.length]);
 
-  // Ініціалізація стану з searchParams
-  // useEffect(() => {
-  //   if (!isloadedCategory || !isloadedIngredients) return;
+  useEffect(() => {
+    if (!isloadedCategory || !isloadedIngredients) return;
 
-  //   const category = searchParams.getAll('category');
-  //   const ingredients = searchParams.getAll('ingredients');
-  //   const searchPhrase = searchParams.get('searchPhrase') || '';
-  //   const page = Number(searchParams.get('page')) || 1;
-  //   const perPage = Number(searchParams.get('perPage')) || 12;
+    const category = searchParams.getAll('category');
+    const ingredients = searchParams.getAll('ingredients');
+    const searchPhrase = searchParams.get('searchPhrase') || '';
+    const page = Number(searchParams.get('page')) || 1;
+    const perPage = Number(searchParams.get('perPage')) || 12;
 
-  //   dispatch(setAllFilters({ category, ingredients, searchPhrase }));
-  //   dispatch(setPaginationParams({ page, perPage }));
+    dispatch(setAllFilters({ category, ingredients, searchPhrase }));
+    dispatch(setPaginationParams({ page, perPage }));
 
-  //   setCurrentCategory(category[0] || '');
-  //   setCurrentIngredient(ingredients[0] || '');
-  // }, [searchParams, isloadedCategory, isloadedIngredients, dispatch]);
-
-  // Відстеження змін фільтрів та пагінації
-  // useEffect(() => {
-  //   if (!isloadedCategory || !isloadedIngredients) return;
-
-  //   const filtersChanged =
-  //     selectedCategories.join() + selectedIngredients.join() + searchPhrase !==
-  //     prevFiltersRef.current.categories.join() +
-  //       prevFiltersRef.current.ingredients.join() +
-  //       prevFiltersRef.current.searchPhrase;
-
-  //   const pageChanged =
-  //     page !== prevPageRef.current.page ||
-  //     perPage !== prevPageRef.current.perPage;
-
-  //   if (filtersChanged) {
-  //     dispatch(resetHits());
-  //     dispatch(getFilteredRecipes({ append: false }));
-  //   } else if (pageChanged) {
-  //     dispatch(getFilteredRecipes({ append: true }));
-  //   }
-
-  //   prevFiltersRef.current = {
-  //     categories: selectedCategories,
-  //     ingredients: selectedIngredients,
-  //     searchPhrase,
-  //   };
-  //   prevPageRef.current = { page, perPage };
-  // }, [
-  //   selectedCategories,
-  //   selectedIngredients,
-  //   searchPhrase,
-  //   page,
-  //   perPage,
-  //   isloadedCategory,
-  //   isloadedIngredients,
-  //   dispatch,
-  // ]);
+    setCurrentCategory(category[0] || '');
+    setCurrentIngredient(ingredients[0] || '');
+  }, [searchParams, isloadedCategory, isloadedIngredients, dispatch]);
 
   useEffect(() => {
-    if (JSON.stringify(searchParams) !== '{}') {
+    if (!isloadedCategory || !isloadedIngredients) return;
+
+    const filtersChanged =
+      selectedCategories.join() + selectedIngredients.join() + searchPhrase !==
+      prevFiltersRef.current.categories.join() +
+        prevFiltersRef.current.ingredients.join() +
+        prevFiltersRef.current.searchPhrase;
+
+    const pageChanged =
+      page !== prevPageRef.current.page ||
+      perPage !== prevPageRef.current.perPage;
+
+    if (filtersChanged) {
+      dispatch(resetHits());
+      dispatch(getFilteredRecipes({ append: false }));
+    } else if (pageChanged) {
+      dispatch(getFilteredRecipes({ append: true }));
     }
-  }, []);
+
+    prevFiltersRef.current = {
+      categories: selectedCategories,
+      ingredients: selectedIngredients,
+      searchPhrase,
+    };
+    prevPageRef.current = { page, perPage };
+  }, [
+    selectedCategories,
+    selectedIngredients,
+    searchPhrase,
+    page,
+    perPage,
+    isloadedCategory,
+    isloadedIngredients,
+    dispatch,
+  ]);
+
+  // useEffect(() => {
+  //   if (JSON.stringify(searchParams) !== '{}') {
+  //   }
+  // }, []);
 
   useEffect(() => {
     window.addEventListener('resize', getViewportWidth);
@@ -145,6 +145,11 @@ export default function Filters() {
   //----------Functions----------------------//
 
   const toggleFilters = () => setIsOpenFilter(prevState => !prevState);
+
+  const handlesetIsOpenCategory = () => setIsOpenCategory(true);
+  const handlesetIsCloseCategory = () => setIsOpenCategory(false);
+  const handlesetIsOpenIngredient = () => setIsOpenIngredient(true);
+  const handlesetIsCloseIngredient = () => setIsOpenIngredient(false);
 
   const handleCategoryChange = e => {
     if (!e.target.value) return;
@@ -229,6 +234,8 @@ export default function Filters() {
               id="selectIngredients"
               value={currentIngredient}
               onChange={handleIngredientChange}
+              onFocus={handlesetIsOpenIngredient}
+              onBlur={handlesetIsCloseIngredient}
               key="ingredients"
             >
               <option value="" disabled hidden>
@@ -248,7 +255,13 @@ export default function Filters() {
                 ))
               )}
             </select>
-            <svg width="16" height="15" className={styles.selectIcon}>
+            <svg
+              width="16"
+              height="15"
+              className={`${styles.selectIcon} ${
+                isOpenIngredient ? 'open' : ''
+              }`}
+            >
               <use href="/sprite.svg#icon-chevron-down"></use>
             </svg>
           </label>
@@ -259,6 +272,8 @@ export default function Filters() {
               id="selectCategories"
               value={currentCategory}
               onChange={handleCategoryChange}
+              onFocus={handlesetIsOpenCategory}
+              onBlur={handlesetIsCloseCategory}
             >
               <option value="" disabled hidden>
                 Category
@@ -277,7 +292,11 @@ export default function Filters() {
                 ))
               )}
             </select>
-            <svg width="16" height="15" className={styles.selectIcon}>
+            <svg
+              width="16"
+              height="15"
+              className={`${styles.selectIcon} ${isOpenCategory ? 'open' : ''}`}
+            >
               <use href="/sprite.svg#icon-chevron-down"></use>
             </svg>
           </label>

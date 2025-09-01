@@ -25,7 +25,11 @@ import {
 import { getCategories } from '../../redux/categories/operations';
 import { getIngredients } from '../../redux/ingredients/operations';
 import { getFilteredRecipes } from '../../redux/recipes/operations';
-import { getTotalRecipes } from '../../redux/recipes/selectors';
+import {
+  getCurrentPage,
+  getPerPage,
+  getTotalRecipes,
+} from '../../redux/recipes/selectors';
 import { resetHits, setPaginationParams } from '../../redux/recipes/slice';
 
 export default function Filters() {
@@ -33,17 +37,6 @@ export default function Filters() {
 
   const categories = useSelector(getCategoriesSlice);
   const ingredients = useSelector(getIngredientsSlice);
-
-  const selectedCategories = useSelector(getSelectedCategory);
-  const selectedIngredients = useSelector(getSelectedIngredients);
-  const searchPhrase = useSelector(getSearchPhrase);
-  const page = useSelector(s => s.recipes.filteredRecipes.page);
-  const perPage = useSelector(s => s.recipes.filteredRecipes.perPage);
-
-  const isloadedCategory = useSelector(getIsLoadedCategories);
-  const isloadedIngredients = useSelector(getIsLoadedIngredients);
-
-  const totalRecipes = useSelector(getTotalRecipes);
 
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -114,7 +107,7 @@ export default function Filters() {
     }),
     menuList: provided => ({
       ...provided,
-      maxHeight: 57 * 6,
+      maxHeight: 41 * 6,
       overflowX: 'hidden',
       padding: 0,
     }),
@@ -139,6 +132,7 @@ export default function Filters() {
           transform: props.selectProps.menuIsOpen
             ? 'rotateY(180deg)'
             : 'rotateY(0deg)',
+          transformOrigin: 'center',
           transition: 'transform 0.2s ease-in-out',
           fill: '#fff',
           strokeWidth: 1,
@@ -150,30 +144,62 @@ export default function Filters() {
     </components.DropdownIndicator>
   );
 
+  //--------------------------------------------------------------------------
+
   useEffect(() => {
+    // Завантажуємо інгредієнти і категорії
     dispatch(getCategories());
     dispatch(getIngredients());
-    dispatch(getFilteredRecipes({ append: false }));
   }, [dispatch]);
 
   useEffect(() => {
-    if (!isloadedCategory || !isloadedIngredients) return;
+    // Записуємо дані з searchParams у стейт
+    const selectedCategoriesSP = searchParams.getAll('category');
+    const selectedIngredientsSP = searchParams.getAll('ingredients');
+    const searchPhraseSP = searchParams.get('searchPhrase') || '';
+    const pageSP = Number(searchParams.get('page')) || 1;
+    const perPageSP = Number(searchParams.get('perPage')) || 12;
 
-    const category = searchParams.getAll('category');
-    const ingredients = searchParams.getAll('ingredients');
-    const searchPhrase = searchParams.get('searchPhrase') || '';
-    const page = Number(searchParams.get('page')) || 1;
-    const perPage = Number(searchParams.get('perPage')) || 12;
+    setSelectedCategoriesState(selectedCategoriesSP);
+    setSelectedIngredientsState(selectedIngredientsSP);
 
-    dispatch(setAllFilters({ category, ingredients, searchPhrase }));
-    dispatch(setPaginationParams({ page, perPage }));
-  }, [searchParams, isloadedCategory, isloadedIngredients, dispatch]);
+    dispatch(
+      setAllFilters({
+        selectedCategories: selectedCategoriesSP,
+        selectedIngredients: selectedIngredientsSP,
+        searchPhrase: searchPhraseSP,
+      })
+    );
+    dispatch(setPaginationParams({ page: pageSP, perPage: perPageSP }));
+    dispatch(
+      getFilteredRecipes({
+        searchPhrase: searchPhraseSP,
+        selectedCategories: selectedCategoriesSP,
+        selectedIngredients: selectedIngredientsSP,
+        page: pageSP,
+        perPage: perPageSP,
+        append: false,
+      })
+    );
+  }, [searchParams, dispatch]);
+
+  const [selectedCategoriesState, setSelectedCategoriesState] = useState([]);
+  const [selectedIngredientsState, setSelectedIngredientsState] = useState([]);
+  const searchPhrase = useSelector(getSearchPhrase);
+  const page = useSelector(getCurrentPage);
+  const perPage = useSelector(getPerPage);
+
+  const isloadedCategory = useSelector(getIsLoadedCategories);
+  const isloadedIngredients = useSelector(getIsLoadedIngredients);
+
+  const totalRecipes = useSelector(getTotalRecipes);
 
   useEffect(() => {
-    if (!isloadedCategory || !isloadedIngredients) return;
-
+    // Отримуємо рецепти
     const filtersChanged =
-      selectedCategories.join() + selectedIngredients.join() + searchPhrase !==
+      selectedCategoriesState.join() +
+        selectedIngredientsState.join() +
+        searchPhrase !==
       prevFiltersRef.current.categories.join() +
         prevFiltersRef.current.ingredients.join() +
         prevFiltersRef.current.searchPhrase;
@@ -184,20 +210,39 @@ export default function Filters() {
 
     if (filtersChanged) {
       dispatch(resetHits());
-      dispatch(getFilteredRecipes({ append: false }));
+      dispatch(
+        getFilteredRecipes({
+          searchPhrase,
+          selectedCategories: selectedCategoriesState,
+          selectedIngredients: selectedIngredientsState,
+          page,
+          perPage,
+          append: false,
+        })
+      );
     } else if (pageChanged) {
-      dispatch(getFilteredRecipes({ append: true }));
+      dispatch(
+        getFilteredRecipes({
+          searchPhrase,
+          selectedCategories: selectedCategoriesState,
+          selectedIngredients: selectedIngredientsState,
+          page,
+          perPage,
+          append: true,
+        })
+      );
     }
 
     prevFiltersRef.current = {
-      categories: selectedCategories,
-      ingredients: selectedIngredients,
+      categories: selectedCategoriesState,
+      ingredients: selectedIngredientsState,
       searchPhrase,
     };
     prevPageRef.current = { page, perPage };
   }, [
-    selectedCategories,
-    selectedIngredients,
+    searchParams,
+    selectedCategoriesState,
+    selectedIngredientsState,
     searchPhrase,
     page,
     perPage,
@@ -206,10 +251,7 @@ export default function Filters() {
     dispatch,
   ]);
 
-  // useEffect(() => {
-  //   if (JSON.stringify(searchParams) !== '{}') {
-  //   }
-  // }, []);
+  //-------------Обробка подій-----------------------
 
   useEffect(() => {
     window.addEventListener('resize', getViewportWidth);
@@ -245,35 +287,27 @@ export default function Filters() {
     setIsOpenFilter(prevState => !prevState);
   };
 
-  const valueForCategorySelectTemp = selectedCategories
+  const valueForIngredientSelect = selectedIngredientsState
+    .map(id => {
+      const ingredient = ingredients.find(i => i._id === id);
+      return ingredient
+        ? { value: ingredient._id, label: ingredient.name }
+        : null;
+    })
+    .filter(Boolean);
+
+  const valueForCategorySelect = selectedCategoriesState
     .map(catName => {
-      const category = categories.find(cat => cat.name === catName);
+      const category = categories.find(c => c.name === catName);
       return category ? { value: category._id, label: category.name } : null;
     })
     .filter(Boolean);
-
-  const valueForCategorySelect =
-    valueForCategorySelectTemp.length > 0 ? valueForCategorySelectTemp[0] : '';
-
-  const valueForIngredientSelectTemp = selectedIngredients
-    .map(selectedId => {
-      const ingredient = ingredients.find(cat => cat._id === selectedId);
-      return ingredient
-        ? { value: ingredient._id, label: ingredient.name }
-        : '';
-    })
-    .filter(Boolean);
-
-  const valueForIngredientSelect =
-    valueForIngredientSelectTemp.length > 0
-      ? valueForIngredientSelectTemp[0]
-      : null;
 
   const handleCategoryChange = values => {
     if (!values) return;
 
     const newCategories = isMultiselect
-      ? [...selectedCategories, values.label]
+      ? [...selectedCategoriesState, values.label]
       : [values.label];
     dispatch(setSelectedCategory(newCategories));
 
@@ -292,7 +326,7 @@ export default function Filters() {
     if (!values) return;
 
     const newIngredients = isMultiselect
-      ? [...selectedIngredients, values.value]
+      ? [...selectedIngredientsState, values.value]
       : [values.value];
     dispatch(setSelectedIngredients(newIngredients));
 

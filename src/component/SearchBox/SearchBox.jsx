@@ -2,7 +2,7 @@ import { Field, Form, Formik } from 'formik';
 import { useSearchParams } from 'react-router';
 import { selectLoading } from '../../redux/recipes/selectors';
 import { useSelector, useDispatch } from 'react-redux';
-import { getFilteredRecipes } from '../../redux/recipes/operations';
+// import { getFilteredRecipes } from '../../redux/recipes/operations';
 import { toast } from 'react-hot-toast';
 
 import styles from './SearchBox.module.css';
@@ -33,18 +33,18 @@ export const SearchBox = () => {
     }
 
     dispatch(setSearchPhrase(searchQuery));
+    toast.success('Search is done!');
 
-    dispatchSearch();
+    // dispatchSearch();
   };
 
-  const dispatchSearch = async () => {
-    try {
-      await dispatch(getFilteredRecipes()).unwrap();
-      toast.success('Search is done!');
-    } catch (error) {
-      toast.error(error?.message || String(error) || 'Search failed');
-    }
-  };
+  // const dispatchSearch = async () => {
+  //   try {
+  //     await dispatch(getFilteredRecipes()).unwrap();
+  //   } catch (error) {
+  //     toast.error(error?.message || String(error) || 'Search failed');
+  //   }
+  // };
 
   return (
     <div className={styles.container}>

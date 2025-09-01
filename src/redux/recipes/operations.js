@@ -27,31 +27,36 @@ export const fetchFavRecipes = createAsyncThunk(
 
 export const getFilteredRecipes = createAsyncThunk(
   'recipes/getFilteredRecipes',
-  async (_, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const searchPhrase = state.filters.searchPhrase;
-    const selectedIngredients = state.filters.selectedIngredients
+  async (requestParams, thunkAPI) => {
+    const {
+      searchPhrase,
+      selectedCategories: category,
+      selectedIngredients: ingredient,
+      page,
+      perPage,
+      append,
+    } = requestParams;
+
+    const selectedIngredients = ingredient
       .map(ingredient => `ingredients=${ingredient}`)
       .join('&');
-    const selectedCategory = state.filters.selectedCategory
+    const selectedCategory = category
       .map(category => `category=${encodeURIComponent(category)}`)
       .join('&');
-    const currentPage = state.recipes.filteredRecipes.page ?? 1;
-    const perPage = state.recipes.filteredRecipes.perPage ?? 12;
 
     const queryParams = [];
     if (searchPhrase)
       queryParams.push(`searchPhrase=${encodeURIComponent(searchPhrase)}`);
     if (selectedIngredients) queryParams.push(selectedIngredients);
     if (selectedCategory) queryParams.push(selectedCategory);
-    queryParams.push(`page=${currentPage}`);
+    queryParams.push(`page=${page}`);
     queryParams.push(`perPage=${perPage}`);
 
     const requestPath = `/recipes?${queryParams.join('&')}`;
 
     try {
       const response = await apiClient.get(requestPath);
-      return response.data.data;
+      return { ...response.data.data, append };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -76,7 +81,7 @@ export const toggleFavoriteRecipe = createAsyncThunk(
   'recipes/toggleFavorite',
   async ({ recipeId, isFavorite }, thunkAPI) => {
     try {
-      const method = isFavorite ? "DELETE" : "POST";
+      const method = isFavorite ? 'DELETE' : 'POST';
       const response = await apiClient({
         url: `/recipes/favorites/${recipeId}`,
         method,
@@ -86,7 +91,7 @@ export const toggleFavoriteRecipe = createAsyncThunk(
 
       return {
         recipeId,
-        isFavorite: !isFavorite, 
+        isFavorite: !isFavorite,
         favorites,
       };
     } catch (error) {

@@ -1,9 +1,9 @@
 import { Field, Form, Formik } from 'formik';
 import { useSearchParams } from 'react-router';
-import { selectLoading } from '../../redux/recipes/selectors';
 import { useSelector, useDispatch } from 'react-redux';
 // import { getFilteredRecipes } from '../../redux/recipes/operations';
 import { toast } from 'react-hot-toast';
+import { useState } from 'react';
 
 import styles from './SearchBox.module.css';
 import { setSearchPhrase } from '../../redux/filters/slice';
@@ -14,9 +14,10 @@ export const SearchBox = () => {
   const searchPhrase = useSelector(getSearchPhrase);
   const formInitialValue = { query: searchPhrase || '' };
   const dispatch = useDispatch();
-  const isLoading = useSelector(selectLoading);
+  const [isSearching, setIsSearching] = useState(false);
 
   const handleSubmit = values => {
+    setIsSearching(true);
     const searchQuery = values.query.trim();
     if (!searchQuery) {
       setSearchParams(prev => {
@@ -62,10 +63,14 @@ export const SearchBox = () => {
               className={styles.input}
             />
           </label>
-          <button type="submit" disabled={isLoading} className={styles.button}>
+          <button
+            type="submit"
+            disabled={isSearching}
+            className={styles.button}
+          >
             {
               /* add a loader? */
-              isLoading ? 'Searching...' : 'Search'
+              isSearching ? 'Searching...' : 'Search'
             }
           </button>
         </Form>

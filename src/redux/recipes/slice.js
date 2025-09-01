@@ -8,6 +8,8 @@ import {
   fetchAddRecipe,
 } from './operations';
 
+import { logOut } from '../auth/operations';
+
 const initialState = {
   own: {
     items: [],
@@ -185,7 +187,8 @@ const recipesSlice = createSlice({
         state.add.loading = false;
         state.add.error = action.payload || true;
         state.add.success = false;
-      });
+      })
+      .addCase(logOut.fulfilled, () => initialState);
   },
 });
 

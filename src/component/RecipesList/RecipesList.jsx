@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './RecipesList.module.css';
 import RecipeCard from '../RecipeCard/RecipeCard';
@@ -7,9 +7,9 @@ import { hasNextPage } from '../../redux/recipes/selectors';
 import {
   fetchOwnRecipes,
   getFilteredRecipes,
-  fetchFavRecipes
+  fetchFavRecipes,
 } from '../../redux/recipes/operations';
-import { getIsLoggedIn } from "../../redux/auth/selectors";
+import { getIsLoggedIn } from '../../redux/auth/selectors';
 
 export default function RecipesList({
   variant,
@@ -20,6 +20,7 @@ export default function RecipesList({
   isAuthenticated = false,
   emptyMessage,
 }) {
+  const hasFetched = useRef(false);
   const dispatch = useDispatch();
 
   const isLoggedIn = useSelector(getIsLoggedIn);
@@ -34,8 +35,6 @@ export default function RecipesList({
         return s?.recipes?.filteredRecipes?.hits ?? [];
     }
   });
-
- 
 
   const isLoading = useSelector(s => {
     switch (variant) {
@@ -61,17 +60,27 @@ export default function RecipesList({
 
   const isNextpage = useSelector(hasNextPage);
 
-useEffect(() => {
-  if (items.length && !isLoading && !error) {
-    if (variant === 'own' && isLoggedIn) {
-      dispatch(fetchOwnRecipes());
-    } else if (variant === 'favorites' && isLoggedIn) {
-      dispatch(fetchFavRecipes());
-    } else if (variant === 'public') {
-      dispatch(getFilteredRecipes());
+  useEffect(() => {
+    if (!hasFetched.current && !isLoading && !error && items.length === 0) {
+      hasFetched.current = true;
+      switch (variant) {
+        case 'own': {
+          dispatch(fetchOwnRecipes());
+          break;
+        }
+        case 'public': {
+          dispatch(getFilteredRecipes());
+          break;
+        }
+        case 'favorites': {
+          dispatch(fetchFavRecipes());
+          break;
+        }
+        default:
+          return;
+      }
     }
-  }
-}, [dispatch, variant, items.length, isLoading, error, isLoggedIn]);
+  }, [dispatch, variant, items.length, isLoading, error, isLoggedIn]);
 
   if (isLoading && !items.length) {
     return (
@@ -90,8 +99,7 @@ useEffect(() => {
   }
 
   const uniqueItems = items.filter(
-    (recipe, index, self) =>
-      index === self.findIndex(r => r._id === recipe._id)
+    (recipe, index, self) => index === self.findIndex(r => r._id === recipe._id)
   );
 
   return (
@@ -100,20 +108,19 @@ useEffect(() => {
         uniqueItems.length === 1 ? styles['single-item'] : ''
       }`}
     >
-      {uniqueItems.map(r =>  (
-          <RecipeCard
-            key={r._id || r.id}
-            recipe={r}
-            variant={variant}
-            isAuthenticated={isAuthenticated}
-            onLearnMore={onLearnMore}
-            onToggleFavorite={onToggleFavorite}
-            onDelete={onDelete}
-            onOpenAuthModal={onOpenAuthModal}
-            disabled={r._pending === true}
-          />
-        )
-      )}
+      {uniqueItems.map(r => (
+        <RecipeCard
+          key={r._id || r.id}
+          recipe={r}
+          variant={variant}
+          isAuthenticated={isAuthenticated}
+          onLearnMore={onLearnMore}
+          onToggleFavorite={onToggleFavorite}
+          onDelete={onDelete}
+          onOpenAuthModal={onOpenAuthModal}
+          disabled={r._pending === true}
+        />
+      ))}
       {isNextpage && <LoadMoreBtn />}
     </div>
   );

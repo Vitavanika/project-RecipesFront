@@ -1,10 +1,18 @@
 .container {
+  box-sizing: border-box;
   padding: 0 16px;
   max-width: 393px;
   margin: 0 auto 16px;
+  display: flex;
+  height: 33px;
 }
 
 .wrapper {
+  position: relative;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .recipesCount {
@@ -14,12 +22,66 @@
   color: var(--color-black);
 }
 
+.resetButton {
+  order: 2;
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--color-black);
+  border-bottom: 1px solid var(--color-black);
+  padding: 0px 0px 4px;
+  width: 74px;
+  height: 19px;
+}
+
+.butonWrapper {
+  display: flex;
+  justify-content: end;
+  margin-top: 4px;
+}
+
 .formWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-background);
+  /* padding: 0 12px 16px; */
+  z-index: 98;
+}
+
+.formContainer {
+  box-sizing: border-box;
+  overflow: hidden;
+  position: absolute;
+  right: -12px;
+  top: 0;
+  padding: 0 12px;
+  background-color: var(--color-background);
+  border-radius: 8px;
+  height: 0px;
+  transition: height 250ms ease-in, padding 250ms ease-in;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.formContainer.openFilters {
+  padding: 62px 12px 16px;
+  height: 212px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+  z-index: 100;
+}
+
+.filtersForm {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 24px;
+  /* padding: 0 12px 16px; */
 }
 
 .selectLabel {
   position: relative;
-  /* display: inline-block; */
 }
 
 .select {
@@ -31,7 +93,7 @@
   padding: 4px 32px 4px 8px;
   width: 296px;
   height: 33px;
-  background-color: #fff;
+  background-color: var(--color-white);
 }
 
 .filterIcon {
@@ -40,19 +102,32 @@
   stroke: var(--color-black);
 }
 
+.filterIconClose {
+  fill: var(--color-white);
+  stroke-width: 1px;
+  stroke: var(--color-black);
+  width: 100%;
+  height: 100%;
+}
+
 .filtersButton {
+  position: relative;
   border-radius: 8px;
-  padding: 0px 0px 4px;
+  padding: 4px 0px 4px;
   width: 67px;
   height: 28px;
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
   font-size: 12px;
-  color: #000;
+  color: var(--color-black);
   display: flex;
+  z-index: 300;
 }
 
 .thumb {
+  position: absolute;
+  right: 0;
+  top: 0;
   width: 24px;
   height: 24px;
   display: flex;
@@ -71,7 +146,39 @@
   pointer-events: none;
   transition: transform 0.25s ease;
 }
-
-.selectIcon.open {
+.openSelectIcon {
   transform: translateY(-50%) rotate(180deg);
+}
+
+@media only screen and (min-width: 768px) {
+  .container {
+    padding: 0 32px;
+    max-width: 768px;
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  .container {
+    padding: 0 20px;
+    max-width: 1264px;
+  }
+
+  .formWrapper {
+    flex-direction: row;
+  }
+
+  .formContainer {
+    position: relative;
+    flex-direction: row;
+    height: auto;
+    width: auto;
+  }
+
+  .filtersForm {
+    flex-direction: row;
+    align-items: center;
+  }
+  .resetButton {
+    order: 0;
+  }
 }

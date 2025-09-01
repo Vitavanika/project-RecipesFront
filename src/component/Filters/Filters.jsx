@@ -65,6 +65,7 @@ export default function Filters() {
   useEffect(() => {
     dispatch(getCategories());
     dispatch(getIngredients());
+    dispatch(getFilteredRecipes({ append: false }));
   }, [dispatch]);
 
   useEffect(() => {
@@ -142,9 +143,33 @@ export default function Filters() {
     return () => window.removeEventListener('resize', getViewportWidth);
   }, []);
 
+  const formContainer = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (event.target.id === 'openFiltersButton') {
+        return;
+      }
+      if (
+        formContainer.current &&
+        !formContainer.current.contains(event.target)
+      ) {
+        setIsOpenFilter(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [formContainer]);
+
   //----------Functions----------------------//
 
-  const toggleFilters = () => setIsOpenFilter(prevState => !prevState);
+  const toggleFilters = event => {
+    event.stopPropagation();
+    setIsOpenFilter(prevState => !prevState);
+  };
 
   const handlesetIsOpenCategory = () => setIsOpenCategory(true);
   const handlesetIsCloseCategory = () => setIsOpenCategory(false);
@@ -201,106 +226,129 @@ export default function Filters() {
 
   return (
     <div className={`${styles.container} container`}>
-      <p className={styles.recipesCount}>{`${totalRecipes ?? 0} recipes`}</p>
-      <div className={styles.formWrapper}>
-        {viewportWidth < 1440 && (
-          <button className={styles.filtersButton} onClick={toggleFilters}>
-            Filters
-            <div className={styles.thumb}>
-              {isOpenFilter ? (
-                <svg width="16" height="15" className={styles.filterIcon}>
-                  <use href="/sprite.svg#icon-close-circle"></use>
-                </svg>
-              ) : (
-                <svg width="16" height="15" className={styles.filterIcon}>
-                  <use href="/sprite.svg#icon-filter"></use>
-                </svg>
-              )}
+      <div className={styles.wrapper}>
+        <p className={styles.recipesCount}>{`${totalRecipes ?? 0} recipes`}</p>
+        <div className={styles.formWrapper}>
+          {viewportWidth < 1440 && (
+            <div className={styles.butonWrapper}>
+              <button
+                id="openFiltersButton"
+                type="button"
+                aria-label="Filters button"
+                className={styles.filtersButton}
+                onClick={toggleFilters}
+              >
+                Filters
+                <div className={styles.thumb}>
+                  {isOpenFilter ? (
+                    <svg
+                      width="16"
+                      height="15"
+                      className={styles.filterIconClose}
+                    >
+                      <use href="/sprite.svg#icon-close-circle"></use>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="15" className={styles.filterIcon}>
+                      <use href="/sprite.svg#icon-filter"></use>
+                    </svg>
+                  )}
+                </div>
+              </button>
             </div>
-          </button>
-        )}
-        <form action="setFilters">
-          <button
-            className={styles.resetButton}
-            type="button"
-            onClick={handleReset}
+          )}
+          <div
+            ref={formContainer}
+            className={`${styles.formContainer} ${
+              isOpenFilter && styles.openFilters
+            }`}
           >
-            Reset filters
-          </button>
-          <label htmlFor="ingredients" className={styles.selectLabel}>
-            <select
-              className={styles.select}
-              name="ingredients"
-              id="selectIngredients"
-              value={currentIngredient}
-              onChange={handleIngredientChange}
-              onFocus={handlesetIsOpenIngredient}
-              onBlur={handlesetIsCloseIngredient}
-              key="ingredients"
-            >
-              <option value="" disabled hidden>
-                Ingredient
-              </option>
-              {ingredients.length === 0 ? (
-                <option>Loading...</option>
-              ) : (
-                ingredients.map(ingredient => (
-                  <option
-                    name={ingredient.name}
-                    value={ingredient._id}
-                    key={ingredient._id}
-                  >
-                    {ingredient.name}
+            <form action="setFilters" className={styles.filtersForm}>
+              <button
+                className={styles.resetButton}
+                type="button"
+                onClick={handleReset}
+              >
+                Reset filters
+              </button>
+              <label htmlFor="ingredients" className={styles.selectLabel}>
+                <select
+                  className={styles.select}
+                  name="ingredients"
+                  id="selectIngredients"
+                  value={currentIngredient}
+                  onChange={handleIngredientChange}
+                  onFocus={handlesetIsOpenIngredient}
+                  onBlur={handlesetIsCloseIngredient}
+                  key="ingredients"
+                >
+                  <option value="" disabled hidden>
+                    Ingredient
                   </option>
-                ))
-              )}
-            </select>
-            <svg
-              width="16"
-              height="15"
-              className={`${styles.selectIcon} ${
-                isOpenIngredient ? 'open' : ''
-              }`}
-            >
-              <use href="/sprite.svg#icon-chevron-down"></use>
-            </svg>
-          </label>
-          <label htmlFor="ingredients" className={styles.selectLabel}>
-            <select
-              className={styles.select}
-              name="categories"
-              id="selectCategories"
-              value={currentCategory}
-              onChange={handleCategoryChange}
-              onFocus={handlesetIsOpenCategory}
-              onBlur={handlesetIsCloseCategory}
-            >
-              <option value="" disabled hidden>
-                Category
-              </option>
-              {categories.length === 0 ? (
-                <option>Loading...</option>
-              ) : (
-                categories.map(category => (
-                  <option
-                    name={category.name}
-                    value={category.name}
-                    key={category._id}
-                  >
-                    {category.name}
+                  {ingredients.length === 0 ? (
+                    <option>Loading...</option>
+                  ) : (
+                    ingredients.map(ingredient => (
+                      <option
+                        name={ingredient.name}
+                        value={ingredient._id}
+                        key={ingredient._id}
+                      >
+                        {ingredient.name}
+                      </option>
+                    ))
+                  )}
+                </select>
+                <svg
+                  width="16"
+                  height="15"
+                  className={`${styles.selectIcon} ${
+                    isOpenIngredient && styles.openSelectIcon
+                  }`}
+                >
+                  <use href="/sprite.svg#icon-chevron-down"></use>
+                </svg>
+              </label>
+              <label htmlFor="ingredients" className={styles.selectLabel}>
+                <select
+                  className={styles.select}
+                  name="categories"
+                  id="selectCategories"
+                  value={currentCategory}
+                  onChange={handleCategoryChange}
+                  onFocus={handlesetIsOpenCategory}
+                  onBlur={handlesetIsCloseCategory}
+                >
+                  <option value="" disabled hidden>
+                    Category
                   </option>
-                ))
-              )}
-            </select>
-            <svg
-              width="16"
-              height="15"
-              className={`${styles.selectIcon} ${isOpenCategory ? 'open' : ''}`}
-            >
-              <use href="/sprite.svg#icon-chevron-down"></use>
-            </svg>
-          </label>
-        </form>
+                  {categories.length === 0 ? (
+                    <option>Loading...</option>
+                  ) : (
+                    categories.map(category => (
+                      <option
+                        name={category.name}
+                        value={category.name}
+                        key={category._id}
+                      >
+                        {category.name}
+                      </option>
+                    ))
+                  )}
+                </select>
+                <svg
+                  width="16"
+                  height="15"
+                  className={`${styles.selectIcon} ${
+                    isOpenCategory && styles.openSelectIcon
+                  }`}
+                >
+                  <use href="/sprite.svg#icon-chevron-down"></use>
+                </svg>
+              </label>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );

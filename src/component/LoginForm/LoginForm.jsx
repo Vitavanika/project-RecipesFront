@@ -33,8 +33,7 @@ export default function LoginForm() {
     };
 
     try {
-      const response = await dispatch(logIn(dataToSend)).unwrap();
-      localStorage.setItem('authToken', response.accessToken);
+      await dispatch(logIn(dataToSend)).unwrap();
       toast.success('Login successful!');
       navigate('/');
       resetForm();

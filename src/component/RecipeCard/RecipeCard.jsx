@@ -26,15 +26,15 @@ const navigate = useNavigate();
 
   return (
     <div className={css.card}>
-        <img src={recipe.thumb} alt={recipe.title} className={css.cardImage} />
+        <img src={recipe.photo} alt={recipe.title} className={css.cardImage} />
         <div className={css.cardHeader}>
-          <h3 className={css.cardTitle}>{recipe.title}</h3>
+          <h3 className={css.cardTitle}>{recipe.name}</h3>
           <div className={css.cardTime}>
             <svg className={css.cardTimeIcon}  width="16"
               height="16" >
               <use href="/sprite.svg#icon-clock" />
             </svg>
-            <span>{recipe.time}</span>
+            <span>{recipe.cookingTime}</span>
           </div>
         </div>
         <p className={css.cardDescription}>{recipe.description}</p>

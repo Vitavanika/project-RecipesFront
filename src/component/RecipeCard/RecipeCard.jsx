@@ -12,7 +12,7 @@ const RecipeCard = ({
     showAuthModal,
     setShowAuthModal,
     toggleSave,
-  } = useFavoriteRecipe(recipe._id, recipe.isFavorite);
+  } = useFavoriteRecipe(recipe._id);
 
 const navigate = useNavigate();
 

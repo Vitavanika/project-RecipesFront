@@ -7,7 +7,6 @@ export default function RecipeGeneralInfo({
   cookingTime,
   calories,
   recipeId,
-  initialIsSaved = false,
 }) {
   const {
     saved,
@@ -15,7 +14,7 @@ export default function RecipeGeneralInfo({
     showAuthModal,
     setShowAuthModal,
     toggleSave,
-  } = useFavoriteRecipe(recipeId, initialIsSaved);
+  } = useFavoriteRecipe(recipeId);
 
   return (
     <div className={css.container}>

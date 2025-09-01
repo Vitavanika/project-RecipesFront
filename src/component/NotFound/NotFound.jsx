@@ -7,15 +7,15 @@ export default function NotFound() {
        <picture className={css.picture}>
         <source
           media="(min-width: 1440px)"
-          srcSet="/src/images/404Desk1x.webp 1x, /src/images/404Desk2x.webp 2x"
+          srcSet="/images/404Desk1x.webp 1x, /src/images/404Desk2x.webp 2x"
         />
         <source
           media="(min-width: 768px)"
-          srcSet="/src/images/404Tab1x.webp 1x, /src/images/404Tab2x.webp 2x"
+          srcSet="/images/404Tab1x.webp 1x, /src/images/404Tab2x.webp 2x"
         />
         <img
-          src="/src/images/404Mob1x.webp"
-          srcSet="/src/images/404Mob1x.webp 1x, /src/images/404Mob2x.webp 2x"
+          src="/images/404Mob1x.webp"
+          srcSet="/images/404Mob1x.webp 1x, /src/images/404Mob2x.webp 2x"
           alt="Not found"
           className={css.img}
         />

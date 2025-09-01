@@ -60,7 +60,6 @@
   border-radius: 8px;
   height: 0px;
   transition: height 250ms ease-in, padding 250ms ease-in;
-  pointer-events: none;
   z-index: 50;
 }
 

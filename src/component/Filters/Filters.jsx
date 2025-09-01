@@ -54,6 +54,10 @@ export default function Filters() {
     searchPhrase: '',
   });
   const prevPageRef = useRef({ page: 1, perPage: 12 });
+  const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
+  const [isOpenCategory, setIsOpenCategory] = useState(false);
+  const [isOpenIngredient, setIsOpenIngredient] = useState(false);
 
   const isMultiselect = false;
 
@@ -61,9 +65,18 @@ export default function Filters() {
   useEffect(() => {
     dispatch(getCategories());
     dispatch(getIngredients());
+    dispatch(getFilteredRecipes({ append: false }));
   }, [dispatch]);
 
-  // Ініціалізація стану з searchParams
+  useEffect(() => {
+    if (selectedCategories.length === 0) {
+      setCurrentCategory('');
+    }
+    if (selectedIngredients.length === 0) {
+      setCurrentIngredient('');
+    }
+  }, [selectedCategories.length, selectedIngredients.length]);
+
   useEffect(() => {
     if (!isloadedCategory || !isloadedIngredients) return;
 
@@ -80,7 +93,6 @@ export default function Filters() {
     setCurrentIngredient(ingredients[0] || '');
   }, [searchParams, isloadedCategory, isloadedIngredients, dispatch]);
 
-  // Відстеження змін фільтрів та пагінації
   useEffect(() => {
     if (!isloadedCategory || !isloadedIngredients) return;
 
@@ -117,6 +129,52 @@ export default function Filters() {
     isloadedIngredients,
     dispatch,
   ]);
+
+  // useEffect(() => {
+  //   if (JSON.stringify(searchParams) !== '{}') {
+  //   }
+  // }, []);
+
+  useEffect(() => {
+    window.addEventListener('resize', getViewportWidth);
+    function getViewportWidth() {
+      setViewportWidth(window.innerWidth);
+    }
+    return () => window.removeEventListener('resize', getViewportWidth);
+  }, []);
+
+  const formContainer = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (event.target.id === 'openFiltersButton') {
+        return;
+      }
+      if (
+        formContainer.current &&
+        !formContainer.current.contains(event.target)
+      ) {
+        setIsOpenFilter(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [formContainer]);
+
+  //----------Functions----------------------//
+
+  const toggleFilters = event => {
+    event.stopPropagation();
+    setIsOpenFilter(prevState => !prevState);
+  };
+
+  const handlesetIsOpenCategory = () => setIsOpenCategory(true);
+  const handlesetIsCloseCategory = () => setIsOpenCategory(false);
+  const handlesetIsOpenIngredient = () => setIsOpenIngredient(true);
+  const handlesetIsCloseIngredient = () => setIsOpenIngredient(false);
 
   const handleCategoryChange = e => {
     if (!e.target.value) return;
@@ -162,65 +220,136 @@ export default function Filters() {
     setSearchParams({});
     dispatch(resetFilters([]));
     dispatch(resetHits());
-    setCurrentCategory('');
-    setCurrentIngredient('');
   };
 
+  //----------Functions----------------------//
+
   return (
-    <>
-      <p>{`${totalRecipes ?? 0} recipes`}</p>
-      <form action="setFilters">
-        <button type="button" onClick={handleReset}>
-          Reset filters
-        </button>
-        <select
-          name="ingredients"
-          id="selectIngredients"
-          value={currentIngredient}
-          onChange={handleIngredientChange}
-          key="ingredients"
-        >
-          <option value="" disabled hidden>
-            Please, select ingredient
-          </option>
-          {ingredients.length === 0 ? (
-            <option>Loading...</option>
-          ) : (
-            ingredients.map(ingredient => (
-              <option
-                name={ingredient.name}
-                value={ingredient._id}
-                key={ingredient._id}
+    <div className={`${styles.container} container`}>
+      <div className={styles.wrapper}>
+        <p className={styles.recipesCount}>{`${totalRecipes ?? 0} recipes`}</p>
+        <div className={styles.formWrapper}>
+          {viewportWidth < 1440 && (
+            <div className={styles.butonWrapper}>
+              <button
+                id="openFiltersButton"
+                type="button"
+                aria-label="Filters button"
+                className={styles.filtersButton}
+                onClick={toggleFilters}
               >
-                {ingredient.name}
-              </option>
-            ))
+                Filters
+                <div className={styles.thumb}>
+                  {isOpenFilter ? (
+                    <svg
+                      width="16"
+                      height="15"
+                      className={styles.filterIconClose}
+                    >
+                      <use href="/sprite.svg#icon-close-circle"></use>
+                    </svg>
+                  ) : (
+                    <svg width="16" height="15" className={styles.filterIcon}>
+                      <use href="/sprite.svg#icon-filter"></use>
+                    </svg>
+                  )}
+                </div>
+              </button>
+            </div>
           )}
-        </select>
-        <select
-          name="categories"
-          id="selectCategories"
-          value={currentCategory}
-          onChange={handleCategoryChange}
-        >
-          <option value="" disabled hidden>
-            Please, select category
-          </option>
-          {categories.length === 0 ? (
-            <option>Loading...</option>
-          ) : (
-            categories.map(category => (
-              <option
-                name={category.name}
-                value={category.name}
-                key={category._id}
+          <div
+            ref={formContainer}
+            className={`${styles.formContainer} ${
+              isOpenFilter && styles.openFilters
+            }`}
+          >
+            <form action="setFilters" className={styles.filtersForm}>
+              <button
+                className={styles.resetButton}
+                type="button"
+                onClick={handleReset}
               >
-                {category.name}
-              </option>
-            ))
-          )}
-        </select>
-      </form>
-    </>
+                Reset filters
+              </button>
+              <label htmlFor="ingredients" className={styles.selectLabel}>
+                <select
+                  className={styles.select}
+                  name="ingredients"
+                  id="selectIngredients"
+                  value={currentIngredient}
+                  onChange={handleIngredientChange}
+                  onFocus={handlesetIsOpenIngredient}
+                  onBlur={handlesetIsCloseIngredient}
+                  key="ingredients"
+                >
+                  <option value="" disabled hidden>
+                    Ingredient
+                  </option>
+                  {ingredients.length === 0 ? (
+                    <option>Loading...</option>
+                  ) : (
+                    ingredients.map(ingredient => (
+                      <option
+                        name={ingredient.name}
+                        value={ingredient._id}
+                        key={ingredient._id}
+                      >
+                        {ingredient.name}
+                      </option>
+                    ))
+                  )}
+                </select>
+                <svg
+                  width="16"
+                  height="15"
+                  className={`${styles.selectIcon} ${
+                    isOpenIngredient && styles.openSelectIcon
+                  }`}
+                >
+                  <use href="/sprite.svg#icon-chevron-down"></use>
+                </svg>
+              </label>
+              <label htmlFor="ingredients" className={styles.selectLabel}>
+                <select
+                  className={styles.select}
+                  name="categories"
+                  id="selectCategories"
+                  value={currentCategory}
+                  onChange={handleCategoryChange}
+                  onFocus={handlesetIsOpenCategory}
+                  onBlur={handlesetIsCloseCategory}
+                >
+                  <option value="" disabled hidden>
+                    Category
+                  </option>
+                  {categories.length === 0 ? (
+                    <option>Loading...</option>
+                  ) : (
+                    categories.map(category => (
+                      <option
+                        name={category.name}
+                        value={category.name}
+                        key={category._id}
+                      >
+                        {category.name}
+                      </option>
+                    ))
+                  )}
+                </select>
+                <svg
+                  width="16"
+                  height="15"
+                  className={`${styles.selectIcon} ${
+                    isOpenCategory && styles.openSelectIcon
+                  }`}
+                >
+                  <use href="/sprite.svg#icon-chevron-down"></use>
+                </svg>
+              </label>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

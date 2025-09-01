@@ -1,4 +1,5 @@
 import styles from './Filters.module.css';
+import Select, { components } from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'react-router';
@@ -44,8 +45,6 @@ export default function Filters() {
 
   const totalRecipes = useSelector(getTotalRecipes);
 
-  const [currentCategory, setCurrentCategory] = useState('');
-  const [currentIngredient, setCurrentIngredient] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
 
   const prevFiltersRef = useRef({
@@ -56,26 +55,106 @@ export default function Filters() {
   const prevPageRef = useRef({ page: 1, perPage: 12 });
   const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
   const [isOpenFilter, setIsOpenFilter] = useState(false);
-  const [isOpenCategory, setIsOpenCategory] = useState(false);
-  const [isOpenIngredient, setIsOpenIngredient] = useState(false);
 
   const isMultiselect = false;
 
-  // Завантажуємо категорії та інгредієнти
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      margin: 0,
+      padding: 0,
+      paddingRight: 4,
+      border: '1px solid #d9d9d9',
+      borderRadius: 4,
+      width: 296,
+      minHeight: 33,
+      boxShadow: state.isFocused ? '0 0 0 2px rgba(0, 0, 0, 0.25)' : 'none',
+      borderColor: state.isFocused ? '#000' : '#d9d9d9',
+      transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
+      '&:hover': {
+        borderColor: '#000',
+      },
+    }),
+    placeholder: provided => ({
+      ...provided,
+      margin: 0,
+      padding: 0,
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 400,
+      fontSize: 16,
+      lineHeight: '155%',
+      color: '#595d62',
+    }),
+    dropdownIndicator: (provided, state) => ({
+      ...provided,
+      margin: 0,
+      padding: 0,
+      transition: 'transform 0.2s',
+      transform: state.selectProps.menuIsOpen ? 'rotate(180deg)' : null,
+      color: '#555',
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      borderRadius: state.isFocused ? 4 : 8,
+      padding: '0 8px 0 12px',
+      height: 41,
+      display: 'flex',
+      alignItems: 'center',
+      width: '100%',
+      backgroundColor: state.isFocused ? '#d3d3d3' : '#fff',
+      color: state.isSelected ? '#000' : '#000',
+      cursor: 'pointer',
+    }),
+    menu: provided => ({
+      ...provided,
+      margin: 0,
+      padding: 0,
+      maxHeight: 41 * 6,
+      overflowY: 'hidden',
+    }),
+    menuList: provided => ({
+      ...provided,
+      maxHeight: 57 * 6,
+      overflowX: 'hidden',
+      padding: 0,
+    }),
+    singleValue: provided => ({
+      ...provided,
+      fontFamily: 'Montserrat, sans-serif',
+      fontWeight: 400,
+      fontSize: 16,
+      lineHeight: '155%',
+      color: '#000',
+    }),
+  };
+
+  const DropdownIndicator = props => (
+    <components.DropdownIndicator {...props}>
+      <svg
+        width="16"
+        height="15"
+        style={{
+          marginRight: 8,
+          marginLeft: 4,
+          transform: props.selectProps.menuIsOpen
+            ? 'rotate(180deg)'
+            : 'rotate(0deg)',
+          transition: 'transform 0.2s ease-in-out',
+          fill: '#fff',
+          strokeWidth: 1,
+          stroke: '#000',
+        }}
+      >
+        <use href="/sprite.svg#icon-chevron-down"></use>
+      </svg>
+    </components.DropdownIndicator>
+  );
+
   useEffect(() => {
     dispatch(getCategories());
     dispatch(getIngredients());
     dispatch(getFilteredRecipes({ append: false }));
   }, [dispatch]);
-
-  useEffect(() => {
-    if (selectedCategories.length === 0) {
-      setCurrentCategory('');
-    }
-    if (selectedIngredients.length === 0) {
-      setCurrentIngredient('');
-    }
-  }, [selectedCategories.length, selectedIngredients.length]);
 
   useEffect(() => {
     if (!isloadedCategory || !isloadedIngredients) return;
@@ -88,9 +167,6 @@ export default function Filters() {
 
     dispatch(setAllFilters({ category, ingredients, searchPhrase }));
     dispatch(setPaginationParams({ page, perPage }));
-
-    setCurrentCategory(category[0] || '');
-    setCurrentIngredient(ingredients[0] || '');
   }, [searchParams, isloadedCategory, isloadedIngredients, dispatch]);
 
   useEffect(() => {
@@ -164,53 +240,68 @@ export default function Filters() {
     };
   }, [formContainer]);
 
-  //----------Functions----------------------//
-
   const toggleFilters = event => {
     event.stopPropagation();
     setIsOpenFilter(prevState => !prevState);
   };
 
-  const handlesetIsOpenCategory = () => setIsOpenCategory(true);
-  const handlesetIsCloseCategory = () => setIsOpenCategory(false);
-  const handlesetIsOpenIngredient = () => setIsOpenIngredient(true);
-  const handlesetIsCloseIngredient = () => setIsOpenIngredient(false);
+  const valueForCategorySelectTemp = selectedCategories
+    .map(selectedId => {
+      const category = categories.find(cat => cat.name === selectedId);
+      return category ? { value: category._id, label: category.name } : null;
+    })
+    .filter(Boolean);
 
-  const handleCategoryChange = e => {
-    if (!e.target.value) return;
+  const valueForCategorySelect =
+    valueForCategorySelectTemp.length > 0 ? valueForCategorySelectTemp[0] : '';
 
-    setCurrentCategory(e.target.value);
+  const valueForIngredientSelectTemp = selectedIngredients
+    .map(selectedId => {
+      const ingredient = ingredients.find(cat => cat._id === selectedId);
+      return ingredient
+        ? { value: ingredient._id, label: ingredient.name }
+        : '';
+    })
+    .filter(Boolean);
+
+  const valueForIngredientSelect =
+    valueForIngredientSelectTemp.length > 0
+      ? valueForIngredientSelectTemp[0]
+      : null;
+
+  const handleCategoryChange = values => {
+    if (!values) return;
+
     const newCategories = isMultiselect
-      ? [...selectedCategories, e.target.value]
-      : [e.target.value];
+      ? [...selectedCategories, values.label]
+      : [values.label];
     dispatch(setSelectedCategory(newCategories));
 
     setSearchParams(prev => {
       const next = new URLSearchParams(prev);
       if (isMultiselect) {
-        next.append('category', e.target.value);
+        next.append('category', values.label);
       } else {
-        next.set('category', e.target.value);
+        next.set('category', values.label);
       }
       return next;
     });
   };
 
-  const handleIngredientChange = e => {
-    if (!e.target.value) return;
+  const handleIngredientChange = values => {
+    if (!values) return;
 
-    setCurrentIngredient(e.target.value);
     const newIngredients = isMultiselect
-      ? [...selectedIngredients, e.target.value]
-      : [e.target.value];
+      ? [...selectedIngredients, values.value]
+      : [values.value];
     dispatch(setSelectedIngredients(newIngredients));
 
     setSearchParams(prev => {
       const next = new URLSearchParams(prev);
       if (isMultiselect) {
-        next.append('ingredients', e.target.value);
+        next.append('ingredients', values.value);
       } else {
-        next.set('ingredients', e.target.value);
+        next.set('ingredients', values.value);
       }
       return next;
     });
@@ -221,8 +312,6 @@ export default function Filters() {
     dispatch(resetFilters([]));
     dispatch(resetHits());
   };
-
-  //----------Functions----------------------//
 
   return (
     <div className={`${styles.container} container`}>
@@ -271,80 +360,38 @@ export default function Filters() {
               >
                 Reset filters
               </button>
-              <label htmlFor="ingredients" className={styles.selectLabel}>
-                <select
-                  className={styles.select}
-                  name="ingredients"
-                  id="selectIngredients"
-                  value={currentIngredient}
-                  onChange={handleIngredientChange}
-                  onFocus={handlesetIsOpenIngredient}
-                  onBlur={handlesetIsCloseIngredient}
-                  key="ingredients"
-                >
-                  <option value="" disabled hidden>
-                    Ingredient
-                  </option>
-                  {ingredients.length === 0 ? (
-                    <option>Loading...</option>
-                  ) : (
-                    ingredients.map(ingredient => (
-                      <option
-                        name={ingredient.name}
-                        value={ingredient._id}
-                        key={ingredient._id}
-                      >
-                        {ingredient.name}
-                      </option>
-                    ))
-                  )}
-                </select>
-                <svg
-                  width="16"
-                  height="15"
-                  className={`${styles.selectIcon} ${
-                    isOpenIngredient && styles.openSelectIcon
-                  }`}
-                >
-                  <use href="/sprite.svg#icon-chevron-down"></use>
-                </svg>
+              <label htmlFor="categories" className={styles.selectLabel}>
+                <Select
+                  options={categories.map(item => ({
+                    value: item._id,
+                    label: item.name,
+                  }))}
+                  styles={customStyles}
+                  components={{
+                    DropdownIndicator,
+                    IndicatorSeparator: () => null,
+                  }}
+                  placeholder="Category"
+                  isLoading={!categories.length}
+                  onChange={handleCategoryChange}
+                  value={valueForCategorySelect}
+                />
               </label>
               <label htmlFor="ingredients" className={styles.selectLabel}>
-                <select
-                  className={styles.select}
-                  name="categories"
-                  id="selectCategories"
-                  value={currentCategory}
-                  onChange={handleCategoryChange}
-                  onFocus={handlesetIsOpenCategory}
-                  onBlur={handlesetIsCloseCategory}
-                >
-                  <option value="" disabled hidden>
-                    Category
-                  </option>
-                  {categories.length === 0 ? (
-                    <option>Loading...</option>
-                  ) : (
-                    categories.map(category => (
-                      <option
-                        name={category.name}
-                        value={category.name}
-                        key={category._id}
-                      >
-                        {category.name}
-                      </option>
-                    ))
-                  )}
-                </select>
-                <svg
-                  width="16"
-                  height="15"
-                  className={`${styles.selectIcon} ${
-                    isOpenCategory && styles.openSelectIcon
-                  }`}
-                >
-                  <use href="/sprite.svg#icon-chevron-down"></use>
-                </svg>
+                <Select
+                  options={ingredients.map(item => ({
+                    value: item._id,
+                    label: item.name,
+                  }))}
+                  styles={customStyles}
+                  components={{
+                    DropdownIndicator,
+                    IndicatorSeparator: () => null,
+                  }}
+                  placeholder="Ingredient"
+                  onChange={handleIngredientChange}
+                  value={valueForIngredientSelect}
+                />
               </label>
             </form>
           </div>

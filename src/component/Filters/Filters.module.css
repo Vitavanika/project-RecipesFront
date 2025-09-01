@@ -69,6 +69,7 @@
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.3);
   pointer-events: auto;
   z-index: 100;
+  overflow: visible;
 }
 
 .filtersForm {
@@ -171,6 +172,7 @@
     flex-direction: row;
     height: auto;
     width: auto;
+    overflow: visible;
   }
 
   .filtersForm {

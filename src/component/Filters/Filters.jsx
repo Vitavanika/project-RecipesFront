@@ -246,8 +246,8 @@ export default function Filters() {
   };
 
   const valueForCategorySelectTemp = selectedCategories
-    .map(selectedId => {
-      const category = categories.find(cat => cat.name === selectedId);
+    .map(catName => {
+      const category = categories.find(cat => cat.name === catName);
       return category ? { value: category._id, label: category.name } : null;
     })
     .filter(Boolean);

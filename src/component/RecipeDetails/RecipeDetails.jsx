@@ -7,12 +7,12 @@ export default function RecipeDetails({ recipe }) {
 
   return (
     <div className={css.container}>
-       <RecipeImage src={recipe.thumb} alt={recipe.title} />
-      <h2 className={css.title}>{recipe.title}</h2>
+       <RecipeImage src={recipe.photo} alt={recipe.name} />
+      <h2 className={css.title}>{recipe.name}</h2>
       <div className={css.wrapper}>
         <RecipeGeneralInfo
           category={recipe.category || "Unknown"}
-          cookingTime={recipe.time}
+          cookingTime={recipe.cookingTime}
           calories={recipe.foodEnergy}
           recipeId={recipe._id}
           />

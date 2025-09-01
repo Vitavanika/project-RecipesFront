@@ -56,15 +56,14 @@ export default function RecipesList({
   const isNextpage = useSelector(hasNextPage);
 
   useEffect(() => {
-    if (items.length === 0 && !isLoading && !error) {
+    if (items.length && !isLoading && !error) {
       if (variant === 'favorites') {
         dispatch(fetchFavRecipes());
       } else if (variant === 'own') {
         dispatch(fetchOwnRecipes());
       }
     }
-
-  }, [dispatch, variant]);
+  }, [dispatch, variant, items.length, isLoading, error]);
 
   if (isLoading && !items.length) {
     return (

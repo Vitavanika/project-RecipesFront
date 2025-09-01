@@ -157,7 +157,6 @@ export default function Filters() {
     const selectedCategoriesSP = searchParams.getAll('category');
     const selectedIngredientsSP = searchParams.getAll('ingredients');
     const searchPhraseSP = searchParams.get('searchPhrase') || '';
-    console.log('🚀 ~ searchPhraseSP:', searchPhraseSP);
     const pageSP = Number(searchParams.get('page')) || 1;
     const perPageSP = Number(searchParams.get('perPage')) || 12;
 

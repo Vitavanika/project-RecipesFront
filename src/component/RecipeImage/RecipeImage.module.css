@@ -1,14 +1,14 @@
 .img {
   border-radius: 8px;
-  width: 361px;
+  max-width: 361px;
   height: 276px;
-  margin: 48px 0 32px;
+  margin: 48px auto 32px;
 }
 @media only screen and (min-width: 768px) {
   .img {
-    width: 704px;
+    max-width: 704px;
     height: 624px;
-    margin: 0 0 32px;
+    margin: 0 auto 32px;
   }
 }
 
@@ -24,7 +24,7 @@
     margin: 0 0 32px;
   }
   .img {
-    margin: 0;
+    margin: 0 auto;
     border-radius: 0;
   }
 }

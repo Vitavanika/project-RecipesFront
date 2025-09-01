@@ -19,6 +19,7 @@ export default function RecipesList({
   isAuthenticated = false,
   emptyMessage = 'No recipes found',
 }) {
+  const hasFetched = useRef(false);
   const dispatch = useDispatch();
 
   const isLoggedIn = useSelector(getIsLoggedIn);

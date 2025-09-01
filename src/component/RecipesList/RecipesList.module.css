@@ -1,7 +1,6 @@
 .wrap {
   max-width: 393px;
   margin: 0 auto 40px;
-  padding: 0 20px;
   display: grid;
   gap: 24px;
   grid-template-columns: 1fr;
@@ -45,7 +44,7 @@
 }
 
 /* Load more */
-.wrap>button:last-child {
+.wrap > button:last-child {
   grid-column: 1 / -1;
   width: 100%;
   display: flex;
@@ -71,7 +70,7 @@
 
 @media screen and (min-width: 768px) {
   .wrap {
-    max-width: 768px;
+    max-width: 704px;
     grid-template-columns: repeat(2, 1fr);
     justify-items: center;
     margin-bottom: 50px;
@@ -80,7 +79,7 @@
 
 @media screen and (min-width: 1440px) {
   .wrap {
-    max-width: 1440px;
+    max-width: 1225px;
     grid-template-columns: repeat(4, 1fr);
     justify-self: center;
     margin-bottom: 60px;

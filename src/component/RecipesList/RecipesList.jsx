@@ -63,10 +63,21 @@ export default function RecipesList({
   useEffect(() => {
     if (!hasFetched.current && !isLoading && !error && items.length === 0) {
       hasFetched.current = true;
-      if (variant === 'own' && isLoggedIn) {
-        dispatch(fetchOwnRecipes());
-      } else if (variant === 'public') {
-        dispatch(getFilteredRecipes());
+      switch (variant) {
+        case 'own': {
+          dispatch(fetchOwnRecipes());
+          break;
+        }
+        case 'public': {
+          dispatch(getFilteredRecipes());
+          break;
+        }
+        case 'favorites': {
+          dispatch(fetchFavRecipes());
+          break;
+        }
+        default:
+          return;
       }
     }
   }, [dispatch, variant, items.length, isLoading, error, isLoggedIn]);

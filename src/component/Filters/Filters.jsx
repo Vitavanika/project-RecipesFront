@@ -137,8 +137,8 @@ export default function Filters() {
           marginRight: 8,
           marginLeft: 4,
           transform: props.selectProps.menuIsOpen
-            ? 'rotate(180deg)'
-            : 'rotate(0deg)',
+            ? 'rotateY(180deg)'
+            : 'rotateY(0deg)',
           transition: 'transform 0.2s ease-in-out',
           fill: '#fff',
           strokeWidth: 1,

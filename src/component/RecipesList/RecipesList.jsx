@@ -7,8 +7,9 @@ import { hasNextPage } from '../../redux/recipes/selectors';
 import {
   fetchOwnRecipes,
   getFilteredRecipes,
+  fetchFavRecipes,
 } from '../../redux/recipes/operations';
-import { getIsLoggedIn } from "../../redux/auth/selectors";
+import { getIsLoggedIn } from '../../redux/auth/selectors';
 
 export default function RecipesList({
   variant,
@@ -17,7 +18,7 @@ export default function RecipesList({
   onDelete,
   onOpenAuthModal,
   isAuthenticated = false,
-  emptyMessage = 'No recipes found',
+  emptyMessage,
 }) {
   const hasFetched = useRef(false);
   const dispatch = useDispatch();
@@ -34,8 +35,6 @@ export default function RecipesList({
         return s?.recipes?.filteredRecipes?.hits ?? [];
     }
   });
-
-  const favorites = useSelector(s => s?.recipes?.favorites?.items ?? []);
 
   const isLoading = useSelector(s => {
     switch (variant) {
@@ -89,8 +88,7 @@ export default function RecipesList({
   }
 
   const uniqueItems = items.filter(
-    (recipe, index, self) =>
-      index === self.findIndex(r => r._id === recipe._id)
+    (recipe, index, self) => index === self.findIndex(r => r._id === recipe._id)
   );
 
   return (
@@ -99,23 +97,19 @@ export default function RecipesList({
         uniqueItems.length === 1 ? styles['single-item'] : ''
       }`}
     >
-      {uniqueItems.map(r => {
-        const isFavorite = favorites.some(f => f._id === r._id);
-
-        return (
-          <RecipeCard
-            key={r._id || r.id}
-            recipe={{ ...r, isFavorite }}
-            variant={variant}
-            isAuthenticated={isAuthenticated}
-            onLearnMore={onLearnMore}
-            onToggleFavorite={onToggleFavorite}
-            onDelete={onDelete}
-            onOpenAuthModal={onOpenAuthModal}
-            disabled={r._pending === true}
-          />
-        );
-      })}
+      {uniqueItems.map(r => (
+        <RecipeCard
+          key={r._id || r.id}
+          recipe={r}
+          variant={variant}
+          isAuthenticated={isAuthenticated}
+          onLearnMore={onLearnMore}
+          onToggleFavorite={onToggleFavorite}
+          onDelete={onDelete}
+          onOpenAuthModal={onOpenAuthModal}
+          disabled={r._pending === true}
+        />
+      ))}
       {isNextpage && <LoadMoreBtn />}
     </div>
   );

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './RecipesList.module.css';
 import RecipeCard from '../RecipeCard/RecipeCard';
@@ -61,7 +61,8 @@ export default function RecipesList({
   const isNextpage = useSelector(hasNextPage);
 
   useEffect(() => {
-    if (!items.length && !isLoading && !error) {
+    if (!hasFetched.current && !isLoading && !error && items.length === 0) {
+      hasFetched.current = true;
       if (variant === 'own' && isLoggedIn) {
         dispatch(fetchOwnRecipes());
       } else if (variant === 'public') {

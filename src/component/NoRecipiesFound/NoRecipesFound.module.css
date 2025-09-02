@@ -29,7 +29,7 @@
 .resetFiltersButton:active,
 .resetFiltersButton:focus-visible {
   box-shadow: 0 0 0 6px var(--color-shadow), 0 0 0 2px var(--color-white);
-  background-color: var(--color-light-gray);
+  background-color: var(--color-border);
 }
 
 .resetFiltersButton:hover,

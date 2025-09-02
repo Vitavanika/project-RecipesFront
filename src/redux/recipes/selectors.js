@@ -19,3 +19,4 @@ export const hasPreviousPage = state =>
 export const selectAddRecipeLoading = (state) => state.recipes.add.loading;
 export const selectAddRecipeError = (state) => state.recipes.add.error;
 export const selectAddRecipeSuccess = (state) => state.recipes.add.success;
+export const getIsLoading = state => state.recipes.own.isLoading || state.recipes.favorites.isLoading;

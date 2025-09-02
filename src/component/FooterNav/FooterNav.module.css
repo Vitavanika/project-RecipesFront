@@ -27,7 +27,7 @@
 }
 
 .link:hover {
-  color: var(--color-white-80);
+  opacity: 0.5;
 }
 
 .link:focus {
@@ -35,7 +35,7 @@
 }
 
 .link:focus-visible {
-  color: var(--color-white-80);
+  opacity: 0.5;
 }
 
 .link:active {

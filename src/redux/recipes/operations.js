@@ -17,8 +17,10 @@ export const fetchFavRecipes = createAsyncThunk(
   'recipes/getFavRecipes',
   async (_, thunkAPI) => {
     try {
-      const response = await apiClient.get('/recipes/favorites');
-      return response.data.data.hits;
+      const response = await apiClient.get('/recipes/favorites', {
+        headers: { 'Cache-Control': 'no-cache' }  
+      });
+      return response.data.data?.hits ?? [];
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }
@@ -73,7 +75,7 @@ export const fetchRecipeById = createAsyncThunk(
 );
 
 export const toggleFavoriteRecipe = createAsyncThunk(
-  'recipes/toggleFavorite',
+  "recipes/toggleFavorite",
   async ({ recipeId, isFavorite }, thunkAPI) => {
     try {
       const method = isFavorite ? "DELETE" : "POST";
@@ -82,12 +84,12 @@ export const toggleFavoriteRecipe = createAsyncThunk(
         method,
       });
 
-      const favorites = response.data?.data?.hits || [];
+thunkAPI.dispatch(fetchFavRecipes());
 
       return {
         recipeId,
-        isFavorite: !isFavorite, 
-        favorites,
+        isFavorite: !isFavorite,
+        recipe: response.data, 
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);

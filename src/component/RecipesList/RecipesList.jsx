@@ -65,6 +65,13 @@ export default function RecipesList({
   }, [variant, isLoading, error, items.length, isLoggedIn]);
 
   useEffect(() => {
+    if (!isLoggedIn) return;
+
+  if (variant === 'favorites' && !hasFetched.current[variant] && !isLoading && !error && items.length === 0) {
+    hasFetched.current[variant] = true;
+    return;
+  }
+
     if (shouldFetch) {
       hasFetched.current[variant] = true;
       switch (variant) {
@@ -79,9 +86,9 @@ export default function RecipesList({
           break;
       }
     }
-  }, [shouldFetch, dispatch, variant]);
+  }, [shouldFetch, dispatch, variant, isLoggedIn, isLoading, error, items.length]);
 
-  // Reset fetch flag when variant changes
+ 
   useEffect(() => {
     return () => {
       if (hasFetched.current[variant]) {

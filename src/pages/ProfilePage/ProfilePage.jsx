@@ -4,20 +4,28 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import ProfileNavigation from '../../component/ProfileNavigation/ProfileNavigation';
 import RecipesList from '../../component/RecipesList/RecipesList';
-import {
-  fetchOwnRecipes,
-  fetchFavRecipes,
-} from '../../redux/recipes/operations.js';
+import { fetchRecipesByVariant } from '../../redux/recipes/operations.js';
 import { getIsRefreshing } from '../../redux/auth/selectors';
-import { getIsLoading } from '../../redux/recipes/selectors';
-import Loader from '../../component/Loader/Loader';
+import {
+  selectOwnRecipes,
+  selectFavRecipes,
+  selectOwnRecipesLoading,
+  selectFavRecipesLoading,
+} from '../../redux/recipes/selectors';
 
 const ProfilePage = () => {
   const { recipeType } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isRefreshing = useSelector(getIsRefreshing);
-  const isLoading = useSelector(getIsLoading);
+
+  const isOwnLoading = useSelector(selectOwnRecipesLoading);
+  const isFavLoading = useSelector(selectFavRecipesLoading);
+  const ownRecipes = useSelector(selectOwnRecipes);
+  const favRecipes = useSelector(selectFavRecipes);
+
+  const items = recipeType === 'own' ? ownRecipes : favRecipes;
+  const isLoading = recipeType === 'own' ? isOwnLoading : isFavLoading;
 
   useEffect(() => {
     if (!recipeType || (recipeType !== 'favorites' && recipeType !== 'own')) {
@@ -26,14 +34,8 @@ const ProfilePage = () => {
   }, [recipeType, navigate]);
 
   useEffect(() => {
-    // Не завантажуємо дані, якщо додаток все ще оновлює користувача
-    if (isRefreshing) return;
-
-    // Виконуємо запит на основі типу рецептів
-    if (recipeType === 'favorites') {
-      dispatch(fetchFavRecipes());
-    } else if (recipeType === 'own') {
-      dispatch(fetchOwnRecipes());
+    if (!isRefreshing) {
+      dispatch(fetchRecipesByVariant(recipeType));
     }
   }, [recipeType, dispatch, isRefreshing]);
 
@@ -44,15 +46,16 @@ const ProfilePage = () => {
     return "You haven't added your own recipes yet. Click 'Add recipes' to create your first recipe.";
   };
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
   return (
     <div className={css.pageContainer}>
       <h1 className={css.title}>My profile</h1>
       <ProfileNavigation />
-      <RecipesList variant={recipeType} emptyMessage={getEmptyMessage()} />
+      <RecipesList
+        variant={recipeType}
+        items={items}
+        isLoading={isLoading}
+        emptyMessage={getEmptyMessage()}
+      />
     </div>
   );
 };

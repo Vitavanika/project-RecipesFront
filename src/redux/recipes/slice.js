@@ -100,7 +100,8 @@ const recipesSlice = createSlice({
       })
       .addCase(fetchFavRecipes.rejected, (state, action) => {
         state.favorites.isLoading = false;
-        state.favorites.error = action.payload;
+        state.favorites.error =
+          action.payload?.message || 'Failed to load favorite recipes';
       })
 
       .addCase(fetchRecipeById.pending, state => {
@@ -125,7 +126,7 @@ const recipesSlice = createSlice({
       .addCase(toggleFavoriteRecipe.fulfilled, (state, action) => {
         const { recipeId, isFavorite } = action.payload;
 
-         if (state.favorites && state.favorites.items) {
+        if (state.favorites && state.favorites.items) {
           if (isFavorite) {
             if (!state.favorites.items.includes(recipeId)) {
               state.favorites.items.push(recipeId);
@@ -139,7 +140,10 @@ const recipesSlice = createSlice({
       })
 
       .addCase(toggleFavoriteRecipe.rejected, (state, action) => {
-        state.favorites.error = action.payload;
+        state.favorites.error =
+          action.payload?.message ||
+          action.error?.message ||
+          'Failed to toggle favorite status.';
       })
 
       .addCase(getFilteredRecipes.pending, state => {
@@ -184,7 +188,10 @@ const recipesSlice = createSlice({
       })
       .addCase(fetchAddRecipe.rejected, (state, action) => {
         state.add.loading = false;
-        state.add.error = action.payload || true;
+        state.add.error =
+          action.payload?.message ||
+          action.error?.message ||
+          'Failed to add recipe';
         state.add.success = false;
       })
       .addCase(logOut.fulfilled, () => initialState);

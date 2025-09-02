@@ -1,7 +1,7 @@
 import styles from './Filters.module.css';
 import Select, { components } from 'react-select';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 import {
   getSearchPhrase,
@@ -13,15 +13,10 @@ import {
   setSelectedCategory,
   setSelectedIngredients,
   setAllFilters,
+  setSearchPhrase,
 } from '../../redux/filters/slice';
-import {
-  getCategoriesSlice,
-  getIsLoadedCategories,
-} from '../../redux/categories/selectors';
-import {
-  getIngredientsSlice,
-  getIsLoadedIngredients,
-} from '../../redux/ingredients/selectors';
+import { getCategoriesSlice } from '../../redux/categories/selectors';
+import { getIngredientsSlice } from '../../redux/ingredients/selectors';
 import { getCategories } from '../../redux/categories/operations';
 import { getIngredients } from '../../redux/ingredients/operations';
 import { getFilteredRecipes } from '../../redux/recipes/operations';
@@ -34,23 +29,142 @@ import { resetHits, setPaginationParams } from '../../redux/recipes/slice';
 
 export default function Filters() {
   const dispatch = useDispatch();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
+  const [isOpenFilter, setIsOpenFilter] = useState(false);
+
+  // --------------------
+  useEffect(() => {
+    dispatch(getCategories());
+    dispatch(getIngredients());
+  }, [dispatch]);
 
   const categories = useSelector(getCategoriesSlice);
   const ingredients = useSelector(getIngredientsSlice);
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  // --------------------
+  const [isFiltersInitialized, setIsFiltersInitialized] = useState(false);
 
-  const prevFiltersRef = useRef({
-    categories: [],
-    ingredients: [],
-    searchPhrase: '',
-  });
-  const prevPageRef = useRef({ page: 1, perPage: 12 });
-  const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
-  const [isOpenFilter, setIsOpenFilter] = useState(false);
+  useEffect(() => {
+    const category = searchParams.get('category') || '';
+    const ingredients = searchParams.get('ingredients');
+    const searchPhrase = searchParams.get('searchPhrase') || '';
+    const page = Number(searchParams.get('page')) || 1;
+    const perPage = Number(searchParams.get('perPage')) || 12;
 
-  const isMultiselect = false;
+    dispatch(
+      setAllFilters({
+        category,
+        ingredients,
+        searchPhrase,
+      })
+    );
+    dispatch(setPaginationParams({ page, perPage }));
+    setIsFiltersInitialized(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
+  // --------------------
+  const searchPhrase = useSelector(getSearchPhrase);
+  const selectedCategories = useSelector(getSelectedCategory);
+  const selectedIngredients = useSelector(getSelectedIngredients);
+  const page = useSelector(getCurrentPage);
+  const perPage = useSelector(getPerPage);
+  const totalRecipes = useSelector(getTotalRecipes);
+
+  // --------------------
+  const query = useMemo(() => {
+    const q = {};
+    if (searchPhrase) q.searchPhrase = searchPhrase;
+    if (selectedCategories) q.category = selectedCategories;
+    if (selectedIngredients) q.ingredients = selectedIngredients;
+    if (page && page > 1) q.page = page;
+    if (page > 1 && perPage) q.perPage = perPage;
+
+    return q;
+  }, [searchPhrase, selectedCategories, selectedIngredients, page, perPage]);
+
+  // --------------------
+  useEffect(() => {
+    if (!isFiltersInitialized) return;
+    dispatch(getFilteredRecipes(query));
+
+    const newParams = new URLSearchParams();
+    if (searchPhrase) newParams.set('searchPhrase', searchPhrase);
+    if (selectedCategories) newParams.set('category', selectedCategories);
+    if (selectedIngredients) newParams.set('ingredients', selectedIngredients);
+    if (page && page > 1) newParams.set('page', page);
+    if (page > 1 && perPage) newParams.set('perPage', perPage);
+
+    if (newParams.toString() !== searchParams.toString()) {
+      setSearchParams(newParams);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, query, setSearchParams]);
+
+  // --------------------
+  useEffect(() => {
+    function getViewportWidth() {
+      setViewportWidth(window.innerWidth);
+    }
+    window.addEventListener('resize', getViewportWidth);
+    return () => window.removeEventListener('resize', getViewportWidth);
+  }, []);
+
+  // --------------------
+  const formContainer = useRef(null);
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (event.target.id === 'openFiltersButton') return;
+      if (
+        formContainer.current &&
+        !formContainer.current.contains(event.target)
+      ) {
+        setIsOpenFilter(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const toggleFilters = event => {
+    event.stopPropagation();
+    setIsOpenFilter(prev => !prev);
+  };
+
+  // --------------------
+  const valueForIngredientSelect = (() => {
+    if (!selectedIngredients) return null;
+    const ing = ingredients.find(i => i._id === selectedIngredients);
+    return ing ? { value: ing._id, label: ing.name } : null;
+  })();
+
+  const valueForCategorySelect = (() => {
+    if (!selectedCategories) return null;
+    const cat = categories.find(c => c.name === selectedCategories);
+    return cat ? { value: cat._id, label: cat.name } : null;
+  })();
+
+  const handleCategoryChange = value => {
+    if (!value) return;
+    dispatch(setSelectedCategory(value.label));
+  };
+
+  const handleIngredientChange = value => {
+    if (!value) return;
+
+    dispatch(setSelectedIngredients(value.value));
+  };
+
+  const handleReset = () => {
+    setSearchParams({});
+    dispatch(resetFilters());
+    dispatch(setSearchPhrase(''));
+    dispatch(resetHits());
+  };
+
+  // --------------------
   const customStyles = {
     control: (provided, state) => ({
       ...provided,
@@ -64,9 +178,7 @@ export default function Filters() {
       boxShadow: state.isFocused ? '0 0 0 2px rgba(0, 0, 0, 0.25)' : 'none',
       borderColor: state.isFocused ? '#000' : '#d9d9d9',
       transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
-      '&:hover': {
-        borderColor: '#000',
-      },
+      '&:hover': { borderColor: '#000' },
     }),
     placeholder: provided => ({
       ...provided,
@@ -95,7 +207,7 @@ export default function Filters() {
       alignItems: 'center',
       width: '100%',
       backgroundColor: state.isFocused ? '#d3d3d3' : '#fff',
-      color: state.isSelected ? '#000' : '#000',
+      color: '#000',
       cursor: 'pointer',
     }),
     menu: provided => ({
@@ -144,209 +256,7 @@ export default function Filters() {
     </components.DropdownIndicator>
   );
 
-  //--------------------------------------------------------------------------
-
-  useEffect(() => {
-    // Завантажуємо інгредієнти і категорії
-    dispatch(getCategories());
-    dispatch(getIngredients());
-  }, [dispatch]);
-
-  useEffect(() => {
-    // Записуємо дані з searchParams у стейт
-    const selectedCategoriesSP = searchParams.getAll('category');
-    const selectedIngredientsSP = searchParams.getAll('ingredients');
-    const searchPhraseSP = searchParams.get('searchPhrase') || '';
-    const pageSP = Number(searchParams.get('page')) || 1;
-    const perPageSP = Number(searchParams.get('perPage')) || 12;
-
-    setSelectedCategoriesState(selectedCategoriesSP);
-    setSelectedIngredientsState(selectedIngredientsSP);
-
-    dispatch(
-      setAllFilters({
-        selectedCategories: selectedCategoriesSP,
-        selectedIngredients: selectedIngredientsSP,
-        searchPhrase: searchPhraseSP,
-      })
-    );
-    dispatch(setPaginationParams({ page: pageSP, perPage: perPageSP }));
-    dispatch(
-      getFilteredRecipes({
-        searchPhrase: searchPhraseSP,
-        selectedCategories: selectedCategoriesSP,
-        selectedIngredients: selectedIngredientsSP,
-        page: pageSP,
-        perPage: perPageSP,
-        append: false,
-      })
-    );
-  }, [searchParams, dispatch]);
-
-  const [selectedCategoriesState, setSelectedCategoriesState] = useState([]);
-  const [selectedIngredientsState, setSelectedIngredientsState] = useState([]);
-  const searchPhrase = useSelector(getSearchPhrase);
-  const page = useSelector(getCurrentPage);
-  const perPage = useSelector(getPerPage);
-
-  const isloadedCategory = useSelector(getIsLoadedCategories);
-  const isloadedIngredients = useSelector(getIsLoadedIngredients);
-
-  const totalRecipes = useSelector(getTotalRecipes);
-
-  useEffect(() => {
-    // Отримуємо рецепти
-    const filtersChanged =
-      selectedCategoriesState.join() +
-        selectedIngredientsState.join() +
-        searchPhrase !==
-      prevFiltersRef.current.categories.join() +
-        prevFiltersRef.current.ingredients.join() +
-        prevFiltersRef.current.searchPhrase;
-
-    const pageChanged =
-      page !== prevPageRef.current.page ||
-      perPage !== prevPageRef.current.perPage;
-
-    if (filtersChanged) {
-      dispatch(resetHits());
-      dispatch(
-        getFilteredRecipes({
-          searchPhrase,
-          selectedCategories: selectedCategoriesState,
-          selectedIngredients: selectedIngredientsState,
-          page,
-          perPage,
-          append: false,
-        })
-      );
-    } else if (pageChanged) {
-      dispatch(
-        getFilteredRecipes({
-          searchPhrase,
-          selectedCategories: selectedCategoriesState,
-          selectedIngredients: selectedIngredientsState,
-          page,
-          perPage,
-          append: true,
-        })
-      );
-    }
-
-    prevFiltersRef.current = {
-      categories: selectedCategoriesState,
-      ingredients: selectedIngredientsState,
-      searchPhrase,
-    };
-    prevPageRef.current = { page, perPage };
-  }, [
-    searchParams,
-    selectedCategoriesState,
-    selectedIngredientsState,
-    searchPhrase,
-    page,
-    perPage,
-    isloadedCategory,
-    isloadedIngredients,
-    dispatch,
-  ]);
-
-  //-------------Обробка подій-----------------------
-
-  useEffect(() => {
-    window.addEventListener('resize', getViewportWidth);
-    function getViewportWidth() {
-      setViewportWidth(window.innerWidth);
-    }
-    return () => window.removeEventListener('resize', getViewportWidth);
-  }, []);
-
-  const formContainer = useRef(null);
-
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (event.target.id === 'openFiltersButton') {
-        return;
-      }
-      if (
-        formContainer.current &&
-        !formContainer.current.contains(event.target)
-      ) {
-        setIsOpenFilter(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [formContainer]);
-
-  const toggleFilters = event => {
-    event.stopPropagation();
-    setIsOpenFilter(prevState => !prevState);
-  };
-
-  const valueForIngredientSelect = selectedIngredientsState
-    .map(id => {
-      const ingredient = ingredients.find(i => i._id === id);
-      return ingredient
-        ? { value: ingredient._id, label: ingredient.name }
-        : null;
-    })
-    .filter(Boolean);
-
-  const valueForCategorySelect = selectedCategoriesState
-    .map(catName => {
-      const category = categories.find(c => c.name === catName);
-      return category ? { value: category._id, label: category.name } : null;
-    })
-    .filter(Boolean);
-
-  const handleCategoryChange = values => {
-    if (!values) return;
-
-    const newCategories = isMultiselect
-      ? [...selectedCategoriesState, values.label]
-      : [values.label];
-    dispatch(setSelectedCategory(newCategories));
-
-    setSearchParams(prev => {
-      const next = new URLSearchParams(prev);
-      if (isMultiselect) {
-        next.append('category', values.label);
-      } else {
-        next.set('category', values.label);
-      }
-      return next;
-    });
-  };
-
-  const handleIngredientChange = values => {
-    if (!values) return;
-
-    const newIngredients = isMultiselect
-      ? [...selectedIngredientsState, values.value]
-      : [values.value];
-    dispatch(setSelectedIngredients(newIngredients));
-
-    setSearchParams(prev => {
-      const next = new URLSearchParams(prev);
-      if (isMultiselect) {
-        next.append('ingredients', values.value);
-      } else {
-        next.set('ingredients', values.value);
-      }
-      return next;
-    });
-  };
-
-  const handleReset = () => {
-    setSearchParams({});
-    dispatch(resetFilters([]));
-    dispatch(resetHits());
-  };
-
+  // --------------------
   return (
     <div className={`${styles.container} container`}>
       <div className={styles.wrapper}>
@@ -383,7 +293,7 @@ export default function Filters() {
           <div
             ref={formContainer}
             className={`${styles.formContainer} ${
-              isOpenFilter && styles.openFilters
+              isOpenFilter ? styles.openFilters : ''
             }`}
           >
             <form action="setFilters" className={styles.filtersForm}>
@@ -423,6 +333,7 @@ export default function Filters() {
                     IndicatorSeparator: () => null,
                   }}
                   placeholder="Ingredient"
+                  isLoading={!ingredients.length}
                   onChange={handleIngredientChange}
                   value={valueForIngredientSelect}
                 />

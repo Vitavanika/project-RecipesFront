@@ -6,10 +6,10 @@ import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import { hasNextPage } from '../../redux/recipes/selectors';
 import {
   fetchOwnRecipes,
-  getFilteredRecipes,
   fetchFavRecipes,
 } from '../../redux/recipes/operations';
 import { getIsLoggedIn } from '../../redux/auth/selectors';
+import NoRecipesFound from '../NoRecipiesFound/NoRecipesFound';
 
 export default function RecipesList({
   variant,
@@ -18,7 +18,6 @@ export default function RecipesList({
   onDelete,
   onOpenAuthModal,
   isAuthenticated = false,
-  emptyMessage,
 }) {
   const hasFetched = useRef({});
   const dispatch = useDispatch();
@@ -90,9 +89,6 @@ export default function RecipesList({
         case 'own':
           dispatch(fetchOwnRecipes());
           break;
-        case 'public':
-          dispatch(getFilteredRecipes());
-          break;
         case 'favorites':
           dispatch(fetchFavRecipes());
           break;
@@ -109,9 +105,11 @@ export default function RecipesList({
   ]);
 
   useEffect(() => {
+    const currentHasFetched = hasFetched.current;
+
     return () => {
-      if (hasFetched.current[variant]) {
-        delete hasFetched.current[variant];
+      if (currentHasFetched[variant]) {
+        delete currentHasFetched[variant];
       }
     };
   }, [variant]);
@@ -128,8 +126,8 @@ export default function RecipesList({
     return <div className={styles.error}>⚠ {String(error)}</div>;
   }
 
-  if (!items.length && !isLoading) {
-    return <div className={styles.empty}>{emptyMessage}</div>;
+  if (!items.length && !isLoading && variant === 'public') {
+    return <NoRecipesFound />;
   }
 
   const uniqueItems = items.filter(

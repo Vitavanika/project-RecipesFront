@@ -21,7 +21,6 @@ export const logIn = createAsyncThunk(
     try {
       const response = await apiClient.post('/auth/login', credentials);
       localStorage.setItem('authToken', response.data.data.accessToken);
-      localStorage.setItem('refreshToken', response.data.data.refreshToken);
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -38,7 +37,6 @@ export const logOut = createAsyncThunk('auth/logout', async () => {
     console.error('Logout failed on server', error);
   } finally {
     localStorage.removeItem('authToken');
-    localStorage.removeItem('refreshToken');
   }
 });
 
@@ -46,17 +44,22 @@ export const refreshUser = createAsyncThunk(
   'auth/refresh',
   async (_, thunkAPI) => {
     const persistedAccessToken = localStorage.getItem('authToken');
-    const persistedRefreshToken = localStorage.getItem('refreshToken');
 
-    if (!persistedAccessToken || !persistedRefreshToken) {
-      return thunkAPI.rejectWithValue('No tokens available');
+    if (!persistedAccessToken) {
+      return thunkAPI.rejectWithValue('No access token available');
     }
 
     try {
-      // Якщо токени існують, робимо запит. apiClient сам оновиться, якщо токен прострочений.
-      const response = await apiClient.get('/users/current');
-      return response.data.data;
+      const { data } = await apiClient.get('/users/current', {
+        headers: {
+          Authorization: `Bearer ${persistedAccessToken}`,
+        },
+      });
+      return data;
     } catch (error) {
+      if (error.response?.status === 401) {
+        thunkAPI.dispatch(logOut());
+      }
       return thunkAPI.rejectWithValue(error.message);
     }
   }

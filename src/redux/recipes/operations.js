@@ -1,6 +1,34 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import apiClient from '../../api/apiClient.js';
 
+export const fetchRecipesByVariant = createAsyncThunk(
+  'recipes/fetchRecipesByVariant',
+  async (variant, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const { own, favorites } = state.recipes;
+
+    try {
+      if (variant === 'own' && own.items.length === 0 && !own.isLoading) {
+        const { data } = await apiClient.get('/recipes/own');
+        return data;
+      }
+
+      if (
+        variant === 'favorites' &&
+        favorites.items.length === 0 &&
+        !favorites.isLoading
+      ) {
+        const { data } = await apiClient.get('/recipes/favorites');
+        return data;
+      }
+
+      return thunkAPI.rejectWithValue('Data already loaded or loading.');
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
 export const fetchOwnRecipes = createAsyncThunk(
   'recipes/getOwn',
   async (_, thunkAPI) => {

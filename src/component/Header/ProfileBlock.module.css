@@ -3,7 +3,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;;
+    gap: 8px;
+    ;
 }
 
 .firstLetter {
@@ -18,18 +19,18 @@
     font-weight: 600;
     font-size: 12px;
     line-height: 1;
-    color: #fff;
+    color: var(--color-white);
     text-transform: uppercase;
 }
 
 .vertLine {
     width: 1px;
-        height: 39px;
-        background: #fff;
+    height: 39px;
+    background: var(--color-white);
 }
 
 .logOutIcon {
     stroke-width: 1.33px;
-    stroke: #fff;
+    stroke: var(--color-white);
     fill: none;
 }

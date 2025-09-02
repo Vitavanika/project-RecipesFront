@@ -1,46 +1,55 @@
 .container {
   margin-bottom: 48px;
 }
+
 .wrapper {
   margin-bottom: 40px;
 }
+
 .title {
   margin-bottom: 8px;
   font-weight: 600;
   font-size: 24px;
 }
+
 .text {
   font-weight: 400;
   font-size: 16px;
   line-height: 155%;
 }
+
 .instructionsTitle {
   margin-bottom: 24px;
   font-weight: 600;
   font-size: 24px;
 }
+
 .instructionsText {
   font-weight: 400;
   font-size: 16px;
   margin-bottom: 20px;
 }
+
 .instructionsText:last-child {
-  margin-bottom: 0; 
+  margin-bottom: 0;
 }
+
 .list {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
+
 .item {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
 .item::before {
   content: "";
   display: inline-block;
-  background-color: #000000;
+  background-color: var(--color-black);
   border: none;
   border-radius: 30%;
   width: 3px;
@@ -49,10 +58,11 @@
 }
 
 @media only screen and (min-width: 768px) {
-.title {
-  font-size: 32px;
-}
-.instructionsTitle {
-  font-size: 32px;
-}
+  .title {
+    font-size: 32px;
+  }
+
+  .instructionsTitle {
+    font-size: 32px;
+  }
 }

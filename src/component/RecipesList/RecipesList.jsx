@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './RecipesList.module.css';
 import RecipeCard from '../RecipeCard/RecipeCard';
@@ -20,7 +20,7 @@ export default function RecipesList({
   isAuthenticated = false,
   emptyMessage,
 }) {
-
+  const hasFetched = useRef(false);
   const dispatch = useDispatch();
 
   const isLoggedIn = useSelector(getIsLoggedIn);
@@ -60,16 +60,27 @@ export default function RecipesList({
 
   const isNextpage = useSelector(hasNextPage);
 
-useEffect(() => {
-  if (!items.length && !isLoading && !error) {
-    if (variant === 'own' && isLoggedIn) {
-      dispatch(fetchOwnRecipes());
-    } else if (variant === 'favorites' && isLoggedIn) {
-      dispatch(fetchFavRecipes());
-    } else if (variant === 'public') {
-      dispatch(getFilteredRecipes());
+  useEffect(() => {
+    if (!hasFetched.current && !isLoading && !error && items.length === 0) {
+      hasFetched.current = true;
+      switch (variant) {
+        case 'own': {
+          dispatch(fetchOwnRecipes());
+          break;
+        }
+        case 'public': {
+          dispatch(getFilteredRecipes());
+          break;
+        }
+        case 'favorites': {
+          dispatch(fetchFavRecipes());
+          break;
+        }
+        default:
+          return;
+      }
     }
-  } [dispatch, variant, items.length, isLoading, error, isLoggedIn]});
+  }, [dispatch, variant, items.length, isLoading, error, isLoggedIn]);
 
   if (isLoading && !items.length) {
     return (

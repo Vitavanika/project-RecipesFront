@@ -11,6 +11,7 @@ import HomePage from './pages/HomePage/HomePage.jsx';
 import AddRecipePage from './pages/AddRecipePage/AddRecipePage.jsx';
 import ProfilePage from './pages/ProfilePage/ProfilePage.jsx';
 import RecipeViewPage from './pages/RecipeViewPage/RecipeViewPage.jsx';
+import Loader from './component/Loader/Loader.jsx';
 
 // Приватний маршрут - доступний тільки для авторизованих користувачів
 const PrivateRoute = ({ children }) => {

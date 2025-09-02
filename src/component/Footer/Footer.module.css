@@ -1,5 +1,5 @@
 .footer {
-  background-color: #3d2218;
+  background-color: var(--color-bg);
 }
 
 .footerContainer {

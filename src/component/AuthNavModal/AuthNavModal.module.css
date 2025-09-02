@@ -138,7 +138,7 @@
 
 .registerNavButton:hover,
 .registerNavButton:focus {
-  background: var(--color-brown);
+  background: var(--color-hover);
 }
 
 .registerNavButton:active {
@@ -147,6 +147,7 @@
 }
 
 @media only screen and (min-width: 768px) {
+
   .loginNavButton,
   .registerNavButton {
     padding: 8px;

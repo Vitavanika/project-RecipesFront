@@ -12,13 +12,13 @@
     justify-content: center;
     align-items: center;
     min-height: calc(100vh - 120px);
-    background-color: #fbfcf8;
+    background-color: var(--color-light-bg);
 }
 
 .card {
     width: 100%;
     max-width: 362px;
-    background-color: #FAF3E0;
+    background-color: var(--color-light-beige);
     border-radius: 20px;
     padding: 48px 32px;
 }
@@ -27,7 +27,7 @@
     font-weight: 600;
     font-size: 32px;
     text-align: center;
-    color: #000;
+    color: var(--color-black);
     margin-bottom: 20px;
 }
 
@@ -36,7 +36,7 @@
     font-size: 14px;
     line-height: 1.55;
     text-align: center;
-    color: #000;
+    color: var(--color-black);
     margin-bottom: 24px;
 }
 
@@ -55,24 +55,27 @@
 .labelText {
     font-weight: 400;
     font-size: 12px;
-    color: #000;
+    color: var(--color-black);
 }
 
 .input {
     width: 100%;
     padding: 8px;
-    border: 1px solid #d9d9d9;
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     font-size: 16px;
     line-height: 1.55;
-    color: #9f9f9f;
-    background-color: #fff;
+    background-color: var(--color-white);
     outline: none;
+}
+
+.input::placeholder {
+    color: var(--color-placeholder);
 }
 
 .input:focus {
     border: 1.50px solid #9b6c43;
-    box-shadow: 0 0 0 4px rgba(78, 70, 180, 0.2);
+    box-shadow: 0 0 0 4px var(--color-focus-input-shadow);
 }
 
 .inputError {
@@ -84,7 +87,6 @@
     display: flex;
     align-items: center;
 }
-
 
 .eyeButton {
     position: absolute;
@@ -98,11 +100,9 @@
 }
 
 .eyeIcon {
-    width: 16px;
-    height: 14px;
-    stroke-width: 1px;
-    stroke: #000;
-    fill: #000;
+    width: 24px;
+    height: 24px;
+    stroke: var(--color-black);
 }
 
 .error {
@@ -116,7 +116,7 @@
     padding: 12px 16px;
     width: 100%;
     background-color: #9b6c43;
-    color: #fff;
+    color: var(--color-white);
     font-size: 16px;
     font-weight: 600;
     border: none;
@@ -125,12 +125,13 @@
     transition: background-color 0.2s ease-in-out;
 }
 
-.submitBtn:hover:focus {
-    background-color: #6d554b;
+.submitBtn:hover,
+.submitBtn:focus {
+    background-color: var(--color-hover);
 }
 
 .submitBtn:active {
-    box-shadow: 0 0 0 6px rgba(78, 70, 180, 0.12), 0 0 0 2px #fff;
+    box-shadow: 0 0 0 6px var(--color-shadow), 0 0 0 2px var(--color-white);
 }
 
 .hint {
@@ -139,11 +140,11 @@
     font-size: 16px;
     line-height: 1.55;
     text-align: center;
-    color: #000;
+    color: var(--color-black);
 }
 
 .link {
-    color: #000;
+    color: var(--color-black);
     font-weight: 600;
     text-decoration: underline;
     text-decoration-skip-ink: none;
@@ -182,7 +183,7 @@
         padding-top: 52px;
         padding-bottom: 52px;
     }
-    
+
     .card {
         max-width: 420px;
     }

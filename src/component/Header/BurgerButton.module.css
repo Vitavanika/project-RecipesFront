@@ -1,14 +1,11 @@
 .closeIcon {
     stroke-width: 1.33px;
-    stroke: #fff;
+    stroke: var(--color-white);
     fill: none;
 }
 
 .openIcon {
     stroke-width: 1.33px;
-    stroke: #fff;
+    stroke: var(--color-white);
     fill: none;
 }
-
-
-        

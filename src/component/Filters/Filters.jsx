@@ -72,7 +72,6 @@ export default function Filters() {
       ...provided,
       margin: 0,
       padding: 0,
-      fontFamily: 'Montserrat, sans-serif',
       fontWeight: 400,
       fontSize: 16,
       lineHeight: '155%',
@@ -113,7 +112,6 @@ export default function Filters() {
     }),
     singleValue: provided => ({
       ...provided,
-      fontFamily: 'Montserrat, sans-serif',
       fontWeight: 400,
       fontSize: 16,
       lineHeight: '155%',

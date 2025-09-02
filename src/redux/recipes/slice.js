@@ -125,9 +125,11 @@ const recipesSlice = createSlice({
       .addCase(toggleFavoriteRecipe.fulfilled, (state, action) => {
         const { recipeId, isFavorite } = action.payload;
 
-        if (isFavorite) {
-          if (!state.favorites.items.includes(recipeId)) {
-            state.favorites.items.push(recipeId);
+         if (state.favorites && state.favorites.items) {
+          if (isFavorite) {
+            if (!state.favorites.items.includes(recipeId)) {
+              state.favorites.items.push(recipeId);
+            }
           }
         } else {
           state.favorites.items = state.favorites.items.filter(

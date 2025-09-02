@@ -1,14 +1,15 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
-import { toggleFavoriteRecipe } from "../redux/recipes/operations";
-import { getIsLoggedIn, getUserData } from "../redux/auth/selectors";
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
+import { toggleFavoriteRecipe } from '../redux/recipes/operations';
+import { getIsLoggedIn, getUserData } from '../redux/auth/selectors';
 
-export const useFavoriteRecipe = (recipeId) => {
+export const useFavoriteRecipe = recipeId => {
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector(getIsLoggedIn);
-  const favorites = useSelector(getUserData).favorites; 
+  const userData = useSelector(getUserData);
+  const favorites = userData?.favorites || [];
   const saved = favorites.includes(recipeId);
 
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -29,13 +30,13 @@ export const useFavoriteRecipe = (recipeId) => {
 
       toast.success(
         result.isFavorite
-          ? "Recipe added to favorites"
-          : "Recipe removed from favorites"
+          ? 'Recipe added to favorites'
+          : 'Recipe removed from favorites'
       );
 
       return result.isFavorite;
     } catch (error) {
-      toast.error(error.message || "Something went wrong");
+      toast.error(error.message || 'Something went wrong');
     } finally {
       setIsLoading(false);
     }

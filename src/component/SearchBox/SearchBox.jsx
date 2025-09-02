@@ -6,6 +6,7 @@ import { useState } from 'react';
 import styles from './SearchBox.module.css';
 import { setSearchPhrase } from '../../redux/filters/slice';
 import { getSearchPhrase } from '../../redux/filters/selectors';
+import { setPage } from '../../redux/recipes/slice';
 
 export const SearchBox = () => {
   const searchPhrase = useSelector(getSearchPhrase);
@@ -19,6 +20,7 @@ export const SearchBox = () => {
 
     try {
       dispatch(setSearchPhrase(searchQuery));
+      dispatch(setPage(1));
       toast.success('Search is done!');
       setIsSearching(false);
     } catch (error) {

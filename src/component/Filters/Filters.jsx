@@ -25,7 +25,11 @@ import {
   getPerPage,
   getTotalRecipes,
 } from '../../redux/recipes/selectors';
-import { resetHits, setPaginationParams } from '../../redux/recipes/slice';
+import {
+  resetHits,
+  setPage,
+  setPaginationParams,
+} from '../../redux/recipes/slice';
 
 export default function Filters() {
   const dispatch = useDispatch();
@@ -149,12 +153,14 @@ export default function Filters() {
   const handleCategoryChange = value => {
     if (!value) return;
     dispatch(setSelectedCategory(value.label));
+    dispatch(setPage(1));
   };
 
   const handleIngredientChange = value => {
     if (!value) return;
 
     dispatch(setSelectedIngredients(value.value));
+    dispatch(setPage(1));
   };
 
   const handleReset = () => {

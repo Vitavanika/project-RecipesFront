@@ -42,6 +42,7 @@ export default function Filters() {
   useEffect(() => {
     dispatch(getCategories());
     dispatch(getIngredients());
+    dispatch(getFilteredRecipes());
   }, [dispatch]);
 
   const categories = useSelector(getCategoriesSlice);

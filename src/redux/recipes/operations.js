@@ -29,36 +29,31 @@ export const fetchFavRecipes = createAsyncThunk(
 
 export const getFilteredRecipes = createAsyncThunk(
   'recipes/getFilteredRecipes',
-  async (requestParams, thunkAPI) => {
-    const {
-      searchPhrase,
-      selectedCategories: category,
-      selectedIngredients: ingredient,
-      page,
-      perPage,
-      append,
-    } = requestParams;
-
-    const selectedIngredients = ingredient
+  async (_, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const searchPhrase = state.filters.searchPhrase;
+    const selectedIngredients = state.filters.selectedIngredients
       .map(ingredient => `ingredients=${ingredient}`)
       .join('&');
-    const selectedCategory = category
+    const selectedCategory = state.filters.selectedCategory
       .map(category => `category=${encodeURIComponent(category)}`)
       .join('&');
+    const currentPage = state.recipes.filteredRecipes.page ?? 1;
+    const perPage = state.recipes.filteredRecipes.perPage ?? 12;
 
     const queryParams = [];
     if (searchPhrase)
       queryParams.push(`searchPhrase=${encodeURIComponent(searchPhrase)}`);
     if (selectedIngredients) queryParams.push(selectedIngredients);
     if (selectedCategory) queryParams.push(selectedCategory);
-    queryParams.push(`page=${page}`);
+    queryParams.push(`page=${currentPage}`);
     queryParams.push(`perPage=${perPage}`);
 
     const requestPath = `/recipes?${queryParams.join('&')}`;
 
     try {
       const response = await apiClient.get(requestPath);
-      return { ...response.data.data, append };
+      return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
@@ -93,8 +88,6 @@ export const toggleFavoriteRecipe = createAsyncThunk(
 
       return {
         recipeId,
-        isFavorite: !isFavorite,
-        favorites,
         isFavorite: !isFavorite,
         recipe: response.data,
       };

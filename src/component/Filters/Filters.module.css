@@ -31,6 +31,11 @@
   padding: 0px 0px 4px;
   width: 74px;
   height: 19px;
+  transition: border-color 250ms ease-in, border-width 250ms ease-in;
+}
+
+.resetButton:hover {
+  border-bottom: 2px solid var(--color-light-brown);
 }
 
 .butonWrapper {
@@ -76,7 +81,13 @@
   flex-direction: column;
   align-items: start;
   gap: 24px;
+  opacity: 0;
+  transition: opacity 250ms ease-in 250ms;
   /* padding: 0 12px 16px; */
+}
+
+.formContainer.openFilters .filtersForm {
+  opacity: 1;
 }
 
 .selectLabel {
@@ -177,6 +188,7 @@
   .filtersForm {
     flex-direction: row;
     align-items: center;
+    opacity: 1;
   }
 
   .resetButton {

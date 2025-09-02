@@ -30,7 +30,6 @@ export const FooterNav = () => {
     }
 
     return () => {
-      console.log('removing event listener');
       document.removeEventListener('mousedown', handleClick);
     };
   }, [isModalOpen, toggleModalState]);

@@ -152,19 +152,31 @@ const recipesSlice = createSlice({
         state.filteredRecipes.errorData = null;
       })
       .addCase(getFilteredRecipes.fulfilled, (state, action) => {
-        state.filteredRecipes.hits = [
-          ...state.filteredRecipes.hits,
-          ...(action.payload?.hits ?? []),
-        ];
-        state.filteredRecipes.page =
-          action.payload?.page ?? state.filteredRecipes.page;
-        state.filteredRecipes.perPage =
-          action.payload?.perPage ?? state.filteredRecipes.perPage;
-        state.filteredRecipes.totalPages = action.payload?.totalPages ?? 0;
-        state.filteredRecipes.hasPreviousPage =
-          !!action.payload?.hasPreviousPage;
-        state.filteredRecipes.hasNextPage = !!action.payload?.hasNextPage;
-        state.filteredRecipes.totalItems = action.payload?.totalItems ?? 0;
+        const {
+          hits,
+          page,
+          perPage,
+          totalPages,
+          hasPreviousPage,
+          hasNextPage,
+          totalItems,
+        } = action.payload;
+
+        if (page > 1) {
+          state.filteredRecipes.hits = [
+            ...(state.filteredRecipes.hits || []),
+            ...(hits || []),
+          ];
+        } else {
+          state.filteredRecipes.hits = hits || [];
+        }
+
+        state.filteredRecipes.page = page;
+        state.filteredRecipes.perPage = perPage;
+        state.filteredRecipes.totalPages = totalPages;
+        state.filteredRecipes.hasPreviousPage = hasPreviousPage;
+        state.filteredRecipes.hasNextPage = hasNextPage;
+        state.filteredRecipes.totalItems = totalItems;
         state.filteredRecipes.isLoading = false;
       })
       .addCase(getFilteredRecipes.rejected, (state, action) => {

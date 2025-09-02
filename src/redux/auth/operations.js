@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import apiClient from '../../api/apiClient';
+import { fetchFavRecipes } from '../recipes/operations';
 
 export const register = createAsyncThunk(
   'auth/register',
@@ -52,6 +53,7 @@ export const refreshUser = createAsyncThunk(
 
     try {
       const response = await apiClient.get('/users/current');
+       thunkAPI.dispatch(fetchFavRecipes());
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);

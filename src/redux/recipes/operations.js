@@ -84,6 +84,8 @@ export const toggleFavoriteRecipe = createAsyncThunk(
         method,
       });
 
+thunkAPI.dispatch(fetchFavRecipes());
+
       return {
         recipeId,
         isFavorite: !isFavorite,

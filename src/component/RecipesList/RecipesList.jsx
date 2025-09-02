@@ -60,7 +60,15 @@ export default function RecipesList({
 
   const isNextpage = useSelector(hasNextPage);
 
+
+  
   useEffect(() => {
+    if (variant === 'favorites') {
+    if (isLoggedIn) {
+      dispatch(fetchFavRecipes());
+    }
+    return;
+  }
     if (!hasFetched.current && !isLoading && !error && items.length === 0) {
       hasFetched.current = true;
       switch (variant) {

@@ -8,6 +8,8 @@ import {
   fetchAddRecipe,
 } from './operations';
 
+import { logOut } from '../auth/operations';
+
 const initialState = {
   own: {
     items: [],
@@ -98,12 +100,9 @@ const recipesSlice = createSlice({
       })
       .addCase(fetchFavRecipes.rejected, (state, action) => {
         state.favorites.isLoading = false;
-        state.favorites.error =
-          action.payload?.message ||
-          action.error?.message ||
-          'Failed to load favorites';
-        state.favorites.errorData = action.payload ?? null;
+        state.favorites.error = action.payload
       })
+      
       .addCase(fetchRecipeById.pending, state => {
         state.current.isLoading = true;
         state.current.error = null;
@@ -127,21 +126,15 @@ const recipesSlice = createSlice({
         const { recipeId, isFavorite, recipe } = action.payload;
 
         if (isFavorite) {
-          // Додали улюблений → пушимо рецепт
           state.favorites.items.push(recipe);
         } else {
-          // Видалили з улюблених → фільтруємо
           state.favorites.items = state.favorites.items.filter(
             r => r._id !== recipeId
           );
         }
       })
       .addCase(toggleFavoriteRecipe.rejected, (state, action) => {
-        state.favorites.error =
-          action.payload?.message ||
-          action.error?.message ||
-          'Failed to toggle favorite';
-        state.favorites.errorData = action.payload ?? null;
+        state.favorites.error = action.payload
       })
 
       .addCase(getFilteredRecipes.pending, state => {
@@ -188,7 +181,8 @@ const recipesSlice = createSlice({
         state.add.loading = false;
         state.add.error = action.payload || true;
         state.add.success = false;
-      });
+      })
+      .addCase(logOut.fulfilled, () => initialState);
   },
 });
 

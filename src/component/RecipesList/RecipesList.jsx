@@ -7,9 +7,9 @@ import { hasNextPage } from '../../redux/recipes/selectors';
 import {
   fetchOwnRecipes,
   getFilteredRecipes,
-  fetchFavRecipes
+  fetchFavRecipes,
 } from '../../redux/recipes/operations';
-import { getIsLoggedIn } from "../../redux/auth/selectors";
+import { getIsLoggedIn } from '../../redux/auth/selectors';
 
 export default function RecipesList({
   variant,
@@ -18,8 +18,9 @@ export default function RecipesList({
   onDelete,
   onOpenAuthModal,
   isAuthenticated = false,
-  emptyMessage = 'No recipes found',
+  emptyMessage,
 }) {
+
   const dispatch = useDispatch();
 
   const isLoggedIn = useSelector(getIsLoggedIn);
@@ -34,8 +35,6 @@ export default function RecipesList({
         return s?.recipes?.filteredRecipes?.hits ?? [];
     }
   });
-
- 
 
   const isLoading = useSelector(s => {
     switch (variant) {
@@ -62,12 +61,6 @@ export default function RecipesList({
   const isNextpage = useSelector(hasNextPage);
 
 useEffect(() => {
-  if (isLoggedIn) {
-    dispatch(fetchFavRecipes());
-  }
-}, [isLoggedIn, dispatch]);
-
-useEffect(() => {
   if (!items.length && !isLoading && !error) {
     if (variant === 'own' && isLoggedIn) {
       dispatch(fetchOwnRecipes());
@@ -76,8 +69,7 @@ useEffect(() => {
     } else if (variant === 'public') {
       dispatch(getFilteredRecipes());
     }
-  }
-}, [dispatch, variant, items.length, isLoading, error, isLoggedIn]);
+  } [dispatch, variant, items.length, isLoading, error, isLoggedIn]});
 
   if (isLoading && !items.length) {
     return (
@@ -96,8 +88,7 @@ useEffect(() => {
   }
 
   const uniqueItems = items.filter(
-    (recipe, index, self) =>
-      index === self.findIndex(r => r._id === recipe._id)
+    (recipe, index, self) => index === self.findIndex(r => r._id === recipe._id)
   );
 
   return (
@@ -106,20 +97,19 @@ useEffect(() => {
         uniqueItems.length === 1 ? styles['single-item'] : ''
       }`}
     >
-      {uniqueItems.map(r =>  (
-          <RecipeCard
-            key={r._id || r.id}
-            recipe={r}
-            variant={variant}
-            isAuthenticated={isAuthenticated}
-            onLearnMore={onLearnMore}
-            onToggleFavorite={onToggleFavorite}
-            onDelete={onDelete}
-            onOpenAuthModal={onOpenAuthModal}
-            disabled={r._pending === true}
-          />
-        )
-      )}
+      {uniqueItems.map(r => (
+        <RecipeCard
+          key={r._id || r.id}
+          recipe={r}
+          variant={variant}
+          isAuthenticated={isAuthenticated}
+          onLearnMore={onLearnMore}
+          onToggleFavorite={onToggleFavorite}
+          onDelete={onDelete}
+          onOpenAuthModal={onOpenAuthModal}
+          disabled={r._pending === true}
+        />
+      ))}
       {isNextpage && <LoadMoreBtn />}
     </div>
   );

@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import apiClient from '../../api/apiClient';
+import { fetchFavRecipes } from '../recipes/operations';
+import apiClient, { clearAuthData } from '../../api/apiClient';
 
 export const register = createAsyncThunk(
   'auth/register',
@@ -23,6 +24,9 @@ export const logIn = createAsyncThunk(
   async (credentials, thunkAPI) => {
     try {
       const response = await apiClient.post('/auth/login', credentials);
+      const { accessToken, refreshToken } = response.data.data;
+      localStorage.setItem('authToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -36,7 +40,9 @@ export const logOut = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
   try {
     await apiClient.post('/auth/logout');
   } catch (error) {
-    return thunkAPI.rejectWithValue(error.message);
+    // Logout навіть якщо запит не вдався
+  } finally {
+    clearAuthData();
   }
 });
 
@@ -52,6 +58,7 @@ export const refreshUser = createAsyncThunk(
 
     try {
       const response = await apiClient.get('/users/current');
+       thunkAPI.dispatch(fetchFavRecipes());
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);

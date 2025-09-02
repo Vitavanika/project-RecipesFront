@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './RecipesList.module.css';
 import RecipeCard from '../RecipeCard/RecipeCard';
@@ -20,7 +20,7 @@ export default function RecipesList({
   onOpenAuthModal,
   isAuthenticated = false,
 }) {
-  const hasFetched = useRef(false);
+  const hasFetched = useRef({});
   const dispatch = useDispatch();
 
   const isLoggedIn = useSelector(getIsLoggedIn);
@@ -60,27 +60,43 @@ export default function RecipesList({
 
   const isNextpage = useSelector(hasNextPage);
 
+  const shouldFetch = useMemo(() => {
+    return !hasFetched.current[variant] && !isLoading && !error && items.length === 0 && isLoggedIn;
+  }, [variant, isLoading, error, items.length, isLoggedIn]);
+
   useEffect(() => {
-    if (!hasFetched.current && !isLoading && !error && items.length === 0) {
-      hasFetched.current = true;
+    if (!isLoggedIn) return;
+
+  if (variant === 'favorites' && !hasFetched.current[variant] && !isLoading && !error && items.length === 0) {
+    hasFetched.current[variant] = true;
+    return;
+  }
+
+    if (shouldFetch) {
+      hasFetched.current[variant] = true;
       switch (variant) {
-        case 'own': {
+        case 'own':
           dispatch(fetchOwnRecipes());
           break;
         }
         case 'public': {
           // dispatch(getFilteredRecipes());
           break;
-        }
-        case 'favorites': {
+        case 'favorites':
           dispatch(fetchFavRecipes());
           break;
-        }
-        default:
-          return;
       }
     }
-  }, [dispatch, variant, items.length, isLoading, error, isLoggedIn]);
+  }, [shouldFetch, dispatch, variant, isLoggedIn, isLoading, error, items.length]);
+
+ 
+  useEffect(() => {
+    return () => {
+      if (hasFetched.current[variant]) {
+        delete hasFetched.current[variant];
+      }
+    };
+  }, [variant]);
 
   if (isLoading && !items.length) {
     return (

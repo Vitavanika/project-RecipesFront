@@ -1,6 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { fetchFavRecipes } from '../recipes/operations';
-import apiClient, { clearAuthData } from '../../api/apiClient';
+import apiClient, { token } from '../../api/apiClient';
 
 export const register = createAsyncThunk(
   'auth/register',
@@ -13,7 +12,6 @@ export const register = createAsyncThunk(
         error.response?.data?.data?.message ||
         error.response?.data?.message ||
         'Registration failed';
-
       return thunkAPI.rejectWithValue(serverMessage);
     }
   }
@@ -25,8 +23,7 @@ export const logIn = createAsyncThunk(
     try {
       const response = await apiClient.post('/auth/login', credentials);
       const { accessToken, refreshToken } = response.data.data;
-      localStorage.setItem('authToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
+      token.set(accessToken, refreshToken);
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -40,27 +37,49 @@ export const logOut = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
   try {
     await apiClient.post('/auth/logout');
   } catch (error) {
-    // Logout навіть якщо запит не вдався
+    console.error('Logout failed on server', error);
   } finally {
-    clearAuthData();
+    token.unset();
   }
 });
 
 export const refreshUser = createAsyncThunk(
   'auth/refresh',
   async (_, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const persistedToken = state.auth.token;
+    const persistedAccessToken = localStorage.getItem('authToken');
+    const persistedRefreshToken = localStorage.getItem('refreshToken');
 
-    if (!persistedToken) {
-      return thunkAPI.rejectWithValue('Unable to fetch user');
+    if (!persistedAccessToken || !persistedRefreshToken) {
+      return thunkAPI.rejectWithValue('No tokens available');
     }
 
     try {
+      // Встановлюємо токени з localStorage для первинного запиту
+      token.set(persistedAccessToken, persistedRefreshToken);
+
       const response = await apiClient.get('/users/current');
-       thunkAPI.dispatch(fetchFavRecipes());
       return response.data.data;
     } catch (error) {
+      if (error.response?.status === 401) {
+        try {
+          //Оновлюємо токени
+          const refreshResponse = await apiClient.post('/auth/refresh', {
+            refreshToken: persistedRefreshToken,
+          });
+          const { accessToken: newAccessToken } = refreshResponse.data.data;
+
+          // Встановлюємо нові токени
+          token.set(newAccessToken, persistedRefreshToken);
+
+          // Повторюємо запит
+          const userResponse = await apiClient.get('/users/current');
+          return userResponse.data.data;
+        } catch (refreshError) {
+          // Якщо оновлення не вдалось, видаляємо токени і повертаємо помилку
+          token.unset();
+          return thunkAPI.rejectWithValue(refreshError.message);
+        }
+      }
       return thunkAPI.rejectWithValue(error.message);
     }
   }

@@ -35,15 +35,12 @@ const PublicRoute = ({ children }) => {
 
 const App = () => {
   const dispatch = useDispatch();
-  const isRefreshing = useSelector(getIsRefreshing);
-  
- useEffect(() => {
+
+  useEffect(() => {
     dispatch(refreshUser());
   }, [dispatch]);
-  
-  return isRefreshing ? (
-    <strong>Loading...</strong>
-  ) : (
+
+  return (
     <Routes>
       <Route path="/" element={<Layout />}>
         {/* Публічні маршрути */}

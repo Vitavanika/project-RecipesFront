@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { register, logIn, logOut, refreshUser } from './operations';
-import { toggleFavoriteRecipe } from '../recipes/operations'
+import { toggleFavoriteRecipe } from '../recipes/operations';
 
 const handlePending = state => {
   state.isLoading = true;
@@ -67,8 +67,11 @@ const authSlice = createSlice({
       })
       .addCase(refreshUser.rejected, state => {
         state.isRefreshing = false;
+        state.isLoggedIn = false;
+        state.token = null;
         state.error = 'Refresh failed';
       })
+
       .addCase(toggleFavoriteRecipe.fulfilled, (state, action) => {
         const { recipeId, isFavorite } = action.payload;
 

@@ -37,6 +37,9 @@ const ProfilePage = () => {
     }
   },[recipeType, dispatch, navigate]);
 
+  useEffect(() => {
+  dispatch(fetchFavRecipes());
+}, [dispatch]);
 
   const recipeListToRender = recipeType === "favorites" ? favRecipes : ownRecipes;
   const hasNoRecipes = recipeListToRender.length === 0;

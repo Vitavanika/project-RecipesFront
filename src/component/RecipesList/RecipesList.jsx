@@ -62,6 +62,12 @@ export default function RecipesList({
   const isNextpage = useSelector(hasNextPage);
 
 useEffect(() => {
+  if (isLoggedIn) {
+    dispatch(fetchFavRecipes());
+  }
+}, [isLoggedIn, dispatch]);
+
+useEffect(() => {
   if (!items.length && !isLoading && !error) {
     if (variant === 'own' && isLoggedIn) {
       dispatch(fetchOwnRecipes());

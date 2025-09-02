@@ -91,8 +91,9 @@ const recipesSlice = createSlice({
       })
       .addCase(fetchFavRecipes.fulfilled, (state, action) => {
         state.favorites.isLoading = false;
-        state.favorites.items = Array.isArray(action.payload)
-          ? action.payload
+        state.favorites.error = null;
+        state.favorites.items = Array.isArray(action.payload?.data?.hits)
+          ? action.payload.data.hits
           : [];
       })
       .addCase(fetchFavRecipes.rejected, (state, action) => {
@@ -123,11 +124,13 @@ const recipesSlice = createSlice({
       })
 
       .addCase(toggleFavoriteRecipe.fulfilled, (state, action) => {
-        const { recipeId, isFavorite, favorites } = action.payload;
+        const { recipeId, isFavorite, recipe } = action.payload;
 
         if (isFavorite) {
-          state.favorites.items = favorites;
+          // Додали улюблений → пушимо рецепт
+          state.favorites.items.push(recipe);
         } else {
+          // Видалили з улюблених → фільтруємо
           state.favorites.items = state.favorites.items.filter(
             r => r._id !== recipeId
           );

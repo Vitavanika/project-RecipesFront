@@ -2,7 +2,6 @@ import { Routes, Route, Navigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { getIsLoggedIn, getIsRefreshing } from './redux/auth/selectors.js';
 import { refreshUser } from './redux/auth/operations.js';
-import { fetchFavRecipes } from "./redux/recipes/operations.js";
 import { useEffect } from 'react';
 
 // Імпорт компонентів
@@ -36,21 +35,10 @@ const PublicRoute = ({ children }) => {
 const App = () => {
   const dispatch = useDispatch();
   const isRefreshing = useSelector(getIsRefreshing);
-
-
-useEffect(() => {
-  const init = async () => {
-    try {
-      const result = await dispatch(refreshUser()).unwrap();
-      if (result) {
-        await dispatch(fetchFavRecipes());
-      }
-    } catch (error) {
-      console.error("Refresh or fetchFavRecipes failed:", error);
-    }
-  };
-  init();
-}, [dispatch]);
+  
+ useEffect(() => {
+    dispatch(refreshUser());
+  }, [dispatch]);
   
   return isRefreshing ? (
     <strong>Loading...</strong>

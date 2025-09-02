@@ -2,6 +2,7 @@ import { useEffect, useRef, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './RecipesList.module.css';
 import RecipeCard from '../RecipeCard/RecipeCard';
+import NoRecipesFound from '../NoRecipiesFound/NoRecipesFound';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import { hasNextPage } from '../../redux/recipes/selectors';
 import {
@@ -18,7 +19,6 @@ export default function RecipesList({
   onDelete,
   onOpenAuthModal,
   isAuthenticated = false,
-  emptyMessage,
 }) {
   const hasFetched = useRef({});
   const dispatch = useDispatch();
@@ -110,7 +110,7 @@ export default function RecipesList({
   }
 
   if (!items.length && !isLoading) {
-    return <div className={styles.empty}>{emptyMessage}</div>;
+    return <NoRecipesFound/>;
   }
 
   const uniqueItems = items.filter(

@@ -36,8 +36,8 @@
 .resetFiltersButton:focus,
 .resetFiltersButton:focus-visible {
   outline: none;
-  border: 1px solid var(--color-light-gray);
-  background-color: var(--color-light-gray);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-border);
 }
 
 .message {

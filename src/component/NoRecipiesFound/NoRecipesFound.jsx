@@ -19,14 +19,14 @@ export default function NoRecipesFound() {
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <h2 className={styles.message}>
-          We’re sorry! We were not able to find a match.
+          We're sorry! We were not able to find a match.
         </h2>
         <button
           type="button"
           className={styles.resetFiltersButton}
           onClick={handleClick}
         >
-          Reset serach and filters
+          Reset search and filters
         </button>
       </div>
     </div>

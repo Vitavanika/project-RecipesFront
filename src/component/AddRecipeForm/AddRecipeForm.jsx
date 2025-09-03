@@ -90,7 +90,7 @@ const AddRecipeForm = () => {
     photo: Yup.mixed().required('Photo is required'),
     
     ingredients: Yup.array()
-      .min(1, 'At least one ingredient is required')
+      .min(2, 'At least two ingredient is required')
       .required('Ingredients are required'),
   });
 

@@ -44,7 +44,6 @@ export const refreshUser = createAsyncThunk(
   'auth/refresh',
   async (_, thunkAPI) => {
     const persistedAccessToken = localStorage.getItem('authToken');
-
     if (!persistedAccessToken) {
       return thunkAPI.rejectWithValue('No access token available');
     }
@@ -55,7 +54,7 @@ export const refreshUser = createAsyncThunk(
           Authorization: `Bearer ${persistedAccessToken}`,
         },
       });
-      return data;
+      return data.data;
     } catch (error) {
       if (error.response?.status === 401) {
         thunkAPI.dispatch(logOut());

@@ -32,12 +32,6 @@ const initialState = {
   },
   filteredRecipes: {
     hits: [],
-    page: 1,
-    perPage: 12,
-    totalPages: 0,
-    hasPreviousPage: false,
-    hasNextPage: false,
-    totalItems: 0,
     isLoading: false,
     error: null,
     errorData: null,
@@ -47,6 +41,14 @@ const initialState = {
     error: null,
     success: false,
   },
+  pagination: {
+    page: 1,
+    perPage: 12,
+    totalPages: 0,
+    hasPreviousPage: false,
+    hasNextPage: false,
+    totalItems: 0,
+  },
 };
 
 const recipesSlice = createSlice({
@@ -54,17 +56,17 @@ const recipesSlice = createSlice({
   initialState,
   reducers: {
     setPerPage(state, action) {
-      state.filteredRecipes.perPage = action.payload.perPage;
+      state.pagination.perPage = action.payload.perPage;
     },
     setPage(state, action) {
-      state.filteredRecipes.page = action.payload.page;
+      state.pagination.page = action.payload.page;
     },
     setPaginationParams(state, action) {
-      state.filteredRecipes.perPage = action.payload.perPage;
-      state.filteredRecipes.page = action.payload.page;
+      state.pagination.perPage = action.payload.perPage;
+      state.pagination.page = action.payload.page;
     },
     resetHits(state) {
-      state.filteredRecipes = initialState.filteredRecipes;
+      state.pagination = initialState.pagination;
     },
   },
   extraReducers: builder => {
@@ -171,11 +173,6 @@ const recipesSlice = createSlice({
           state.filteredRecipes.hits = hits || [];
         }
 
-        state.filteredRecipes.page = page;
-        state.filteredRecipes.perPage = perPage;
-        state.filteredRecipes.totalPages = totalPages;
-        state.filteredRecipes.hasPreviousPage = hasPreviousPage;
-        state.filteredRecipes.hasNextPage = hasNextPage;
         state.filteredRecipes.totalItems = totalItems;
         state.filteredRecipes.isLoading = false;
       })

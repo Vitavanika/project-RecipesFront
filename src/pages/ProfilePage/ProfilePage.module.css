@@ -7,16 +7,20 @@
 
 .pageContainer {
   padding: 48px 16px;
+  margin: 0 auto;
+  max-width: 393px;
 }
 
 @media only screen and (min-width: 768px) {
   .pageContainer {
     padding: 48px 32px;
+    max-width: 768px;
   }
 }
 
 @media only screen and (min-width: 1440px) {
   .pageContainer {
     padding: 46px 108px;
+    max-width: 1440px;
   }
 }

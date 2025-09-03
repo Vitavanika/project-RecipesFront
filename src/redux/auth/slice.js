@@ -66,7 +66,7 @@ const authSlice = createSlice({
           state.user = {
             name: user?.name,
             email: user?.email,
-            favorites: user?.favorites ?? [],
+            favorites: user?.favouriteRecipes ?? [],
           };
           state.isLoggedIn = true;
           state.isRefreshing = false;

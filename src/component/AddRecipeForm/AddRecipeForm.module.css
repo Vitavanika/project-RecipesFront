@@ -76,6 +76,19 @@
     color: #000;
 }
 
+/* Specific styling for calories input to remove arrows */
+.formField input[type="number"] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+.formField input[type="number"]::-webkit-outer-spin-button,
+.formField input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
 .uploadHead {
     margin-bottom: 4px;
 }
@@ -209,7 +222,7 @@
     font-weight: 400;
     font-size: 18px;
     background: #fff;
-    color: #595d62;
+    color: var(--color-black);
     box-sizing: border-box;
     transition: border-color 0.2s ease;
 }
@@ -303,7 +316,7 @@
     border-radius: 8px;
     font-size: 14px;
     background-color: white;
-    color: #333;
+    color: var(--color-black);
     box-sizing: border-box;
     -webkit-appearance: none;
     -moz-appearance: none;

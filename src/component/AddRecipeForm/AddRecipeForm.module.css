@@ -2,7 +2,6 @@
     margin: 0 auto;
     padding: 16px;
     background: var(--color-light-bg);
-    min-height: 100vh;
 }
 
 .addRecipeForm h1 {

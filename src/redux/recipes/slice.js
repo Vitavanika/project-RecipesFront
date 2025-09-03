@@ -53,16 +53,6 @@ const recipesSlice = createSlice({
   name: 'recipes',
   initialState,
   reducers: {
-    // setPerPage(state, action) {
-    //   state.filteredRecipes.perPage = action.payload.perPage;
-    // },
-    // setPage(state, action) {
-    //   state.filteredRecipes.page = action.payload.page;
-    // },
-    // setPaginationParams(state, action) {
-    //   state.filteredRecipes.perPage = action.payload.perPage;
-    //   state.filteredRecipes.page = action.payload.page;
-    // },
     resetHits(state) {
       state.filteredRecipes = initialState.filteredRecipes;
     },
@@ -214,9 +204,4 @@ const recipesSlice = createSlice({
 });
 
 export default recipesSlice.reducer;
-export const {
-  // setPage,
-  // setPerPage,
-  // setPaginationParams,
-  resetHits,
-} = recipesSlice.actions;
+export const { resetHits } = recipesSlice.actions;

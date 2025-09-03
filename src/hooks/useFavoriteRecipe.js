@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import { toggleFavoriteRecipe } from '../redux/recipes/operations';
 import { getIsLoggedIn, getUserData } from '../redux/auth/selectors';
+import { useLockBodyScroll } from './useLockBodyScroll';
 
 export const useFavoriteRecipe = (recipeId) => {
   const dispatch = useDispatch();

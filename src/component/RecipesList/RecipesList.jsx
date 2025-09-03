@@ -68,15 +68,20 @@ export default function RecipesList({
   });
 
   useEffect(() => {
+    const currentHasFetched = hasFetched.current;
+    
+    // Не запускаємо, якщо користувач не авторизований
     if (!isLoggedIn) {
-      if (hasFetched.current[variant]) {
-        delete hasFetched.current[variant];
+      // Очищаємо прапорець при вилогіні
+      if (currentHasFetched[variant]) {
+        delete currentHasFetched[variant];
       }
       return;
     }
 
-    if (!hasFetched.current[variant] && !isLoading && items.length === 0 && !error) {
-      hasFetched.current[variant] = true; 
+    // Завантажуємо лише один раз для поточного варіанту
+    if (!currentHasFetched[variant] && !isLoading && items.length === 0 && !error) {
+      currentHasFetched[variant] = true;
       
       switch (variant) {
         case 'own':
@@ -85,19 +90,19 @@ export default function RecipesList({
         case 'favorites':
           dispatch(fetchFavRecipes());
           break;
+        default:
+          // Завантаження public recipes відбувається в іншому місці
+          break;
       }
     }
-  }, [variant, isLoggedIn, dispatch, isLoading, items.length, error]);
 
-  useEffect(() => {
-    const currentHasFetched = hasFetched.current;
-    
+    // Cleanup функція
     return () => {
       if (currentHasFetched[variant]) {
         delete currentHasFetched[variant];
       }
     };
-  }, [variant]);
+  }, [variant, isLoggedIn, dispatch, isLoading, items.length, error]);
 
   if (isLoading && !items.length) {
     return (
@@ -108,7 +113,7 @@ export default function RecipesList({
   }
 
   if (error && !items.length) {
-    return <div className={styles.error}>⚠ {String(error)}</div>;
+    return <div className={styles.error}>⚠️ {String(error)}</div>;
   }
 
   if (!items.length && !isLoading) {
@@ -133,6 +138,7 @@ export default function RecipesList({
     (recipe, index, self) => index === self.findIndex(r => r._id === recipe._id)
   );
 
+  // Показуємо кнопку Load More тільки якщо є достатньо елементів
   const shouldShowLoadMore = isNextpage && uniqueItems.length > 0 && uniqueItems.length >= 6;
 
   return (

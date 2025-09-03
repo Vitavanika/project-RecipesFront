@@ -90,9 +90,11 @@ export default function RecipesList({
   }, [variant, isLoggedIn, dispatch, isLoading, items.length, error]);
 
   useEffect(() => {
+    const currentHasFetched = hasFetched.current;
+    
     return () => {
-      if (hasFetched.current[variant]) {
-        delete hasFetched.current[variant];
+      if (currentHasFetched[variant]) {
+        delete currentHasFetched[variant];
       }
     };
   }, [variant]);

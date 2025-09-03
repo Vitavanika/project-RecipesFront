@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './RecipesList.module.css';
 import RecipeCard from '../RecipeCard/RecipeCard';
@@ -21,7 +21,6 @@ export default function RecipesList({
 }) {
   const hasFetched = useRef({});
   const dispatch = useDispatch();
-
   const isLoggedIn = useSelector(getIsLoggedIn);
 
   const items = useSelector(s => {
@@ -57,34 +56,25 @@ export default function RecipesList({
     }
   });
 
-  const isNextpage = useSelector(hasNextPage);
-
-  const shouldFetch = useMemo(() => {
-    return (
-      !hasFetched.current[variant] &&
-      !isLoading &&
-      !error &&
-      items.length === 0 &&
-      isLoggedIn
-    );
-  }, [variant, isLoading, error, items.length, isLoggedIn]);
+  const isNextpage = useSelector(s => {
+    switch (variant) {
+      case 'favorites':
+        return s?.recipes?.favorites?.hasNextPage ?? false;
+      case 'own':
+        return s?.recipes?.own?.hasNextPage ?? false;
+      default:
+        return hasNextPage(s);
+    }
+  });
 
   useEffect(() => {
-    if (!isLoggedIn) return;
-
-    if (
-      variant === 'favorites' &&
-      !hasFetched.current[variant] &&
-      !isLoading &&
-      !error &&
-      items.length === 0
-    ) {
-      hasFetched.current[variant] = true;
+    const currentHasFetched = hasFetched.current;
+    if (!isLoggedIn) {
       return;
     }
+    if (!currentHasFetched[variant]) {
+      currentHasFetched[variant] = true;
 
-    if (shouldFetch) {
-      hasFetched.current[variant] = true;
       switch (variant) {
         case 'own':
           dispatch(fetchOwnRecipes());
@@ -92,27 +82,17 @@ export default function RecipesList({
         case 'favorites':
           dispatch(fetchFavRecipes());
           break;
+        default:
+          break;
       }
     }
-  }, [
-    shouldFetch,
-    dispatch,
-    variant,
-    isLoggedIn,
-    isLoading,
-    error,
-    items.length,
-  ]);
-
-  useEffect(() => {
-    const currentHasFetched = hasFetched.current;
 
     return () => {
-      if (currentHasFetched[variant]) {
+      if (currentHasFetched) {
         delete currentHasFetched[variant];
       }
     };
-  }, [variant]);
+  }, [variant, isLoggedIn, dispatch]);
 
   if (isLoading && !items.length) {
     return (
@@ -123,16 +103,30 @@ export default function RecipesList({
   }
 
   if (error && !items.length) {
-    return <div className={styles.error}>⚠ {String(error)}</div>;
+    return <div className={styles.error}>⚠️ {String(error)}</div>;
   }
 
-  if (!items.length && !isLoading && variant === 'public') {
-    return <NoRecipesFound />;
+  if (!items.length && !isLoading) {
+    if (variant === 'public') {
+      return <NoRecipesFound />;
+    }
+
+    if (variant === 'favorites' || variant === 'own') {
+      const emptyMessage =
+        variant === 'favorites'
+          ? "You don't have any saved recipes yet. Add some by clicking the save button."
+          : "You haven't added your own recipes yet. Click 'Add recipes' to create your first recipe.";
+
+      return <div className={styles.emptyMessage}>{emptyMessage}</div>;
+    }
   }
 
   const uniqueItems = items.filter(
     (recipe, index, self) => index === self.findIndex(r => r._id === recipe._id)
   );
+
+  const shouldShowLoadMore =
+    isNextpage && uniqueItems.length > 0 && uniqueItems.length >= 6;
 
   return (
     <div
@@ -153,7 +147,7 @@ export default function RecipesList({
           disabled={r._pending === true}
         />
       ))}
-      {isNextpage && <LoadMoreBtn />}
+      {shouldShowLoadMore && <LoadMoreBtn />}
     </div>
   );
 }

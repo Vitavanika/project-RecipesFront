@@ -57,7 +57,16 @@ export default function RecipesList({
     }
   });
 
-  const isNextpage = useSelector(hasNextPage);
+  const isNextpage = useSelector(s => {
+    switch (variant) {
+      case 'favorites':
+        return s?.recipes?.favorites?.hasNextPage ?? false;
+      case 'own':
+        return s?.recipes?.own?.hasNextPage ?? false;
+      default:
+        return hasNextPage(s);
+    }
+  });
 
   const shouldFetch = useMemo(() => {
     return (
@@ -105,6 +114,23 @@ export default function RecipesList({
   ]);
 
   useEffect(() => {
+    if (!isLoggedIn) return;
+    
+    if (hasFetched.current[variant]) {
+      delete hasFetched.current[variant];
+    }
+    
+    switch (variant) {
+      case 'own':
+        dispatch(fetchOwnRecipes());
+        break;
+      case 'favorites':
+        dispatch(fetchFavRecipes());
+        break;
+    }
+  }, [variant, isLoggedIn, dispatch]);
+
+  useEffect(() => {
     const currentHasFetched = hasFetched.current;
 
     return () => {
@@ -126,8 +152,22 @@ export default function RecipesList({
     return <div className={styles.error}>⚠ {String(error)}</div>;
   }
 
-  if (!items.length && !isLoading && variant === 'public') {
-    return <NoRecipesFound />;
+  if (!items.length && !isLoading) {
+    if (variant === 'public') {
+      return <NoRecipesFound />;
+    }
+    
+    if (variant === 'favorites' || variant === 'own') {
+      const emptyMessage = variant === 'favorites' 
+        ? "You don't have any saved recipes yet. Add some by clicking the save button."
+        : "You haven't added your own recipes yet. Click 'Add recipes' to create your first recipe.";
+      
+      return (
+        <div className={styles.emptyMessage}>
+          {emptyMessage}
+        </div>
+      );
+    }
   }
 
   const uniqueItems = items.filter(
@@ -153,7 +193,8 @@ export default function RecipesList({
           disabled={r._pending === true}
         />
       ))}
-      {isNextpage && <LoadMoreBtn />}
+      {/* Only show LoadMoreBtn if there are actually more pages AND we have items */}
+      {isNextpage && uniqueItems.length > 0 && <LoadMoreBtn />}
     </div>
   );
 }

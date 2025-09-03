@@ -47,8 +47,13 @@ const RegistrationForm = () => {
       navigate('/auth/login');
       resetForm();
     } catch (error) {
-      console.error('Registration error:', error);
-      toast.error('Registration failed');
+      const status = error?.status;
+      const messages = {
+    400: 'Invalid data. Please check the fields.',
+    409: error?.data?.message || 'Email already in use',
+    500: 'Server error. Try again later',
+  };
+  toast.error(messages[status] ?? 'Registration failed');
     } finally {
       setSubmitting(false);
     }

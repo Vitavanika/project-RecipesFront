@@ -39,8 +39,13 @@ export default function LoginForm() {
       navigate('/');
       resetForm();
     } catch (error) {
-      console.error('Login error:', error);
-      toast.error('Login failed');
+      const status = error?.status;
+      const messages = {
+    400: 'Wrong email or password',
+    401: 'Wrong email or password',
+    500: 'Server error. Try again later',
+  };
+  toast.error(messages[status] ?? 'Login failed');
     } finally {
       setSubmitting(false);
     }

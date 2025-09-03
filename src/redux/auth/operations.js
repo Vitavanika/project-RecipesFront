@@ -9,9 +9,11 @@ export const register = createAsyncThunk(
       const response = await apiClient.post('/auth/register', credentials);
       return response.data.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || 'Registration failed'
-      );
+      return thunkAPI.rejectWithValue({
+        status: error.response?.status,
+        message: error.response?.data?.message,
+        data: error.response?.data?.data,
+      });
     }
   }
 );
@@ -24,9 +26,10 @@ export const logIn = createAsyncThunk(
       localStorage.setItem('authToken', response.data.data.accessToken);
       return response.data.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(
-        error.response?.data?.message || 'Login failed'
-      );
+      return thunkAPI.rejectWithValue({
+        status: error.response?.status,
+        message: error.response?.data?.message || 'Login failed'
+      });
     }
   }
 );

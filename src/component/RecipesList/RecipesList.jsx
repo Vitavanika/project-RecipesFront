@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './RecipesList.module.css';
 import RecipeCard from '../RecipeCard/RecipeCard';
@@ -21,7 +21,6 @@ export default function RecipesList({
 }) {
   const hasFetched = useRef({});
   const dispatch = useDispatch();
-
   const isLoggedIn = useSelector(getIsLoggedIn);
 
   const items = useSelector(s => {
@@ -68,32 +67,17 @@ export default function RecipesList({
     }
   });
 
-  const shouldFetch = useMemo(() => {
-    return (
-      !hasFetched.current[variant] &&
-      !isLoading &&
-      !error &&
-      items.length === 0 &&
-      isLoggedIn
-    );
-  }, [variant, isLoading, error, items.length, isLoggedIn]);
-
   useEffect(() => {
-    if (!isLoggedIn) return;
-
-    if (
-      variant === 'favorites' &&
-      !hasFetched.current[variant] &&
-      !isLoading &&
-      !error &&
-      items.length === 0
-    ) {
-      hasFetched.current[variant] = true;
+    if (!isLoggedIn) {
+      if (hasFetched.current[variant]) {
+        delete hasFetched.current[variant];
+      }
       return;
     }
 
-    if (shouldFetch) {
-      hasFetched.current[variant] = true;
+    if (!hasFetched.current[variant] && !isLoading && items.length === 0 && !error) {
+      hasFetched.current[variant] = true; 
+      
       switch (variant) {
         case 'own':
           dispatch(fetchOwnRecipes());
@@ -103,39 +87,12 @@ export default function RecipesList({
           break;
       }
     }
-  }, [
-    shouldFetch,
-    dispatch,
-    variant,
-    isLoggedIn,
-    isLoading,
-    error,
-    items.length,
-  ]);
+  }, [variant, isLoggedIn, dispatch, isLoading, items.length, error]);
 
   useEffect(() => {
-    if (!isLoggedIn) return;
-    
-    if (hasFetched.current[variant]) {
-      delete hasFetched.current[variant];
-    }
-    
-    switch (variant) {
-      case 'own':
-        dispatch(fetchOwnRecipes());
-        break;
-      case 'favorites':
-        dispatch(fetchFavRecipes());
-        break;
-    }
-  }, [variant, isLoggedIn, dispatch]);
-
-  useEffect(() => {
-    const currentHasFetched = hasFetched.current;
-
     return () => {
-      if (currentHasFetched[variant]) {
-        delete currentHasFetched[variant];
+      if (hasFetched.current[variant]) {
+        delete hasFetched.current[variant];
       }
     };
   }, [variant]);
@@ -174,6 +131,8 @@ export default function RecipesList({
     (recipe, index, self) => index === self.findIndex(r => r._id === recipe._id)
   );
 
+  const shouldShowLoadMore = isNextpage && uniqueItems.length > 0 && uniqueItems.length >= 6;
+
   return (
     <div
       className={`${styles.wrap} ${
@@ -193,8 +152,7 @@ export default function RecipesList({
           disabled={r._pending === true}
         />
       ))}
-      {/* Only show LoadMoreBtn if there are actually more pages AND we have items */}
-      {isNextpage && uniqueItems.length > 0 && <LoadMoreBtn />}
+      {shouldShowLoadMore && <LoadMoreBtn />}
     </div>
   );
 }

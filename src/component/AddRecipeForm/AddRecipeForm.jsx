@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { useNavigate } from 'react-router';
 import { toast } from 'react-hot-toast';
 import { getCategories } from '../../redux/categories/operations';
 import { getIngredients } from '../../redux/ingredients/operations';
@@ -19,12 +18,13 @@ import {
   getIsLoadingCategories,
   getIsErrorLoadCategories,
 } from '../../redux/categories/selectors';
+import { useLockBodyScroll } from '../../hooks/useLockBodyScroll';
+import { AddRecipeModal } from '../AddRecipeModal/AddRecipeModal';
 
 import styles from './AddRecipeForm.module.css';
 
 const AddRecipeForm = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const categories = useSelector(getCategoriesSlice);
   const ingredients = useSelector(getIngredientsSlice);
@@ -40,6 +40,33 @@ const AddRecipeForm = () => {
   const error = isErrorCategories || isErrorIngredients;
 
   const [selectedIngredients, setSelectedIngredients] = useState([]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const toggleModalState = useCallback(() => setIsModalOpen(prev => !prev), []);
+  const modalRef = useRef(null);
+  const [recipeId, setRecipeId] = useState(null);
+
+  useLockBodyScroll(isModalOpen);
+
+  useEffect(() => {
+    const handleClick = event => {
+      if (
+        modalRef.current &&
+        event.target &&
+        !modalRef.current.contains(event.target)
+      ) {
+        toggleModalState();
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener('mousedown', handleClick);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClick);
+    };
+  }, [isModalOpen, toggleModalState]);
 
   useEffect(() => {
     const loadData = async () => {
@@ -124,7 +151,8 @@ const AddRecipeForm = () => {
     try {
       const response = await dispatch(fetchAddRecipe(formData)).unwrap();
       toast.success('Recipe added successfully!');
-      navigate(`/recipes/${response.data._id || response.data.id}`);
+      setRecipeId(response.data._id);
+      toggleModalState();
       resetForm();
       setSelectedIngredients([]);
     } catch (error) {
@@ -531,6 +559,13 @@ const AddRecipeForm = () => {
           </Form>
         )}
       </Formik>
+      {isModalOpen && (
+        <AddRecipeModal
+          ref={modalRef}
+          onClick={toggleModalState}
+          recipeId={recipeId}
+        />
+      )}
     </div>
   );
 };

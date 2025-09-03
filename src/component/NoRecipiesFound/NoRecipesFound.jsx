@@ -11,7 +11,7 @@ export default function NoRecipesFound() {
 
   const handleClick = () => {
     setSearchParams({});
-    dispatch(resetFilters([]));
+    dispatch(resetFilters());
     dispatch(resetHits());
   };
 

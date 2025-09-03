@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 import {
+  getPage,
+  getPerPage,
   getSearchPhrase,
   getSelectedCategory,
   getSelectedIngredients,
@@ -13,23 +15,14 @@ import {
   setSelectedCategory,
   setSelectedIngredients,
   setAllFilters,
-  setSearchPhrase,
 } from '../../redux/filters/slice';
 import { getCategoriesSlice } from '../../redux/categories/selectors';
 import { getIngredientsSlice } from '../../redux/ingredients/selectors';
 import { getCategories } from '../../redux/categories/operations';
 import { getIngredients } from '../../redux/ingredients/operations';
 import { getFilteredRecipes } from '../../redux/recipes/operations';
-import {
-  getCurrentPage,
-  getPerPage,
-  getTotalRecipes,
-} from '../../redux/recipes/selectors';
-import {
-  resetHits,
-  setPage,
-  setPaginationParams,
-} from '../../redux/recipes/slice';
+import { getTotalRecipes } from '../../redux/recipes/selectors';
+import { resetHits } from '../../redux/recipes/slice';
 
 export default function Filters() {
   const dispatch = useDispatch();
@@ -42,7 +35,6 @@ export default function Filters() {
   useEffect(() => {
     dispatch(getCategories());
     dispatch(getIngredients());
-    dispatch(getFilteredRecipes());
   }, [dispatch]);
 
   const categories = useSelector(getCategoriesSlice);
@@ -63,9 +55,10 @@ export default function Filters() {
         category,
         ingredients,
         searchPhrase,
+        page,
+        perPage,
       })
     );
-    dispatch(setPaginationParams({ page, perPage }));
     setIsFiltersInitialized(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -74,7 +67,7 @@ export default function Filters() {
   const searchPhrase = useSelector(getSearchPhrase);
   const selectedCategories = useSelector(getSelectedCategory);
   const selectedIngredients = useSelector(getSelectedIngredients);
-  const page = useSelector(getCurrentPage);
+  const page = useSelector(getPage);
   const perPage = useSelector(getPerPage);
   const totalRecipes = useSelector(getTotalRecipes);
 
@@ -91,9 +84,16 @@ export default function Filters() {
   }, [searchPhrase, selectedCategories, selectedIngredients, page, perPage]);
 
   // --------------------
+
   useEffect(() => {
     if (!isFiltersInitialized) return;
     dispatch(getFilteredRecipes(query));
+  }, [dispatch, query, isFiltersInitialized]);
+
+  // --------------------
+
+  useEffect(() => {
+    if (!isFiltersInitialized) return;
 
     const newParams = new URLSearchParams();
     if (searchPhrase) newParams.set('searchPhrase', searchPhrase);
@@ -103,10 +103,19 @@ export default function Filters() {
     if (page > 1 && perPage) newParams.set('perPage', perPage);
 
     if (newParams.toString() !== searchParams.toString()) {
-      setSearchParams(newParams);
+      setSearchParams(newParams, { replace: true });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch, query, setSearchParams]);
+  }, [
+    dispatch,
+    searchPhrase,
+    selectedCategories,
+    selectedIngredients,
+    page,
+    perPage,
+    isFiltersInitialized,
+    searchParams,
+    setSearchParams,
+  ]);
 
   // --------------------
   useEffect(() => {
@@ -154,20 +163,17 @@ export default function Filters() {
   const handleCategoryChange = value => {
     if (!value) return;
     dispatch(setSelectedCategory(value.label));
-    dispatch(setPage(1));
   };
 
   const handleIngredientChange = value => {
     if (!value) return;
 
     dispatch(setSelectedIngredients(value.value));
-    dispatch(setPage(1));
   };
 
   const handleReset = () => {
     setSearchParams({});
     dispatch(resetFilters());
-    dispatch(setSearchPhrase(''));
     dispatch(resetHits());
   };
 

@@ -25,6 +25,7 @@ export const useFavoriteRecipe = (recipeId) => {
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  useLockBodyScroll(showAuthModal);
 
   const toggleSave = async (onAuthRequired = () => setShowAuthModal(true)) => {
     if (!isAuthenticated) {

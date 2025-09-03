@@ -2,7 +2,6 @@ import { useEffect, useRef, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './RecipesList.module.css';
 import RecipeCard from '../RecipeCard/RecipeCard';
-import NoRecipesFound from '../NoRecipiesFound/NoRecipesFound';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import { hasNextPage } from '../../redux/recipes/selectors';
 import {
@@ -10,6 +9,7 @@ import {
   fetchFavRecipes,
 } from '../../redux/recipes/operations';
 import { getIsLoggedIn } from '../../redux/auth/selectors';
+import NoRecipesFound from '../NoRecipiesFound/NoRecipesFound';
 
 export default function RecipesList({
   variant,

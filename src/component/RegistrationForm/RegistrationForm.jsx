@@ -1,10 +1,11 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { register } from '../../redux/auth/operations';
+import { selectAuthIsLoading } from '../../redux/auth/selectors';
 import css from '../../pages/AuthPage/AuthPage.module.css';
 import icons from '/sprite.svg';
 
@@ -26,6 +27,7 @@ const RegisterSchema = Yup.object().shape({
 const RegistrationForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isLoading = useSelector(selectAuthIsLoading);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
@@ -177,9 +179,9 @@ const RegistrationForm = () => {
             <button
               type="submit"
               className={css.submitBtn}
-              disabled={isSubmitting}
-            >
-              Create account
+              disabled={isSubmitting || isLoading}
+             >
+              {isLoading ? 'Creating account...' : 'Create account'}
             </button>
           </Form>
         )}

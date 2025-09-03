@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import apiClient from '../../api/apiClient';
+import { fetchFavRecipes } from '../recipes/operations';
 
 export const register = createAsyncThunk(
   'auth/register',
@@ -20,8 +21,13 @@ export const logIn = createAsyncThunk(
   async (credentials, thunkAPI) => {
     try {
       const response = await apiClient.post('/auth/login', credentials);
-      localStorage.setItem('authToken', response.data.data.accessToken);
-      return response.data.data;
+      const data = response.data.data;
+
+      localStorage.setItem('authToken', data.accessToken);
+
+       thunkAPI.dispatch(fetchFavRecipes());
+
+      return data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
         error.response?.data?.message || 'Login failed'

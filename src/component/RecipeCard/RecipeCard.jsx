@@ -4,7 +4,7 @@ import { useFavoriteRecipe } from "../../hooks/useFavoriteRecipe";
 import css from "./RecipeCard.module.css";
 
 const RecipeCard = ({
-  recipe, onLearnMore
+  recipe, variant, onLearnMore
 }) => {
   const {
     saved,
@@ -12,7 +12,7 @@ const RecipeCard = ({
     showAuthModal,
     setShowAuthModal,
     toggleSave,
-  } = useFavoriteRecipe(recipe._id);
+  } = useFavoriteRecipe(recipe._id, variant === "favorites");
 
 const navigate = useNavigate();
 

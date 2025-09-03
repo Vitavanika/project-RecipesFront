@@ -88,6 +88,10 @@ const AddRecipeForm = () => {
       .required('Instructions are required'),
 
     photo: Yup.mixed().required('Photo is required'),
+    
+    ingredients: Yup.array()
+      .min(2, 'At least two ingredient is required')
+      .required('Ingredients are required'),
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
@@ -103,6 +107,7 @@ const AddRecipeForm = () => {
       title: 'name',
       time: 'cookingTime',
       calories: 'foodEnergy',
+
     };
 
     const formData = new FormData();
@@ -239,6 +244,11 @@ const AddRecipeForm = () => {
           >
             Add new Ingredient
           </button>
+          <ErrorMessage
+                  name="ingredients"
+                  component="div"
+                  className={styles.fieldError}
+                />
         </div>
 
         <div className={styles.selectedIngredients}>
@@ -331,12 +341,6 @@ const AddRecipeForm = () => {
           </div>
         )}
       </div>
-
-      <ErrorMessage
-        name="photo"
-        component="div"
-        className={styles.fieldError}
-      />
     </div>
   );
 
@@ -377,6 +381,7 @@ const AddRecipeForm = () => {
           category: '',
           instructions: '',
           photo: null,
+          ingredients: [],
         }}
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -451,7 +456,7 @@ const AddRecipeForm = () => {
                     id="calfoodEnergyories"
                     type="number"
                     min="1"
-                    placeholder="150 cals"
+                    placeholder="150"
                   />
                   <ErrorMessage
                     name="foodEnergy"
@@ -489,6 +494,7 @@ const AddRecipeForm = () => {
               </div>
 
               <IngredientSelector />
+              
 
               <div className={styles.formField}>
                 <label className={styles.instrHead} htmlFor="instructions">

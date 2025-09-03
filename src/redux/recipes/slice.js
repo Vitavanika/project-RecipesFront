@@ -6,6 +6,7 @@ import {
   toggleFavoriteRecipe,
   getFilteredRecipes,
   fetchAddRecipe,
+  fetchRecipesByVariant,
 } from './operations';
 
 import { logOut } from '../auth/operations';
@@ -173,7 +174,12 @@ const recipesSlice = createSlice({
           state.filteredRecipes.hits = hits || [];
         }
 
-        state.filteredRecipes.totalItems = totalItems;
+        state.pagination.page = page;
+        state.pagination.perPage = perPage;
+        state.pagination.totalPages = totalPages;
+        state.pagination.hasPreviousPage = hasPreviousPage;
+        state.pagination.hasNextPage = hasNextPage;
+        state.pagination.totalItems = totalItems;
         state.filteredRecipes.isLoading = false;
       })
       .addCase(getFilteredRecipes.rejected, (state, action) => {

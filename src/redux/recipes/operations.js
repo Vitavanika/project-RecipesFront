@@ -10,7 +10,7 @@ export const fetchRecipesByVariant = createAsyncThunk(
     try {
       if (variant === 'own' && own.items.length === 0 && !own.isLoading) {
         const { data } = await apiClient.get('/recipes/own');
-        return data;
+        return { ...data.data, variant: 'own' };
       }
 
       if (

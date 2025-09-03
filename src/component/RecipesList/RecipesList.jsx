@@ -69,20 +69,12 @@ export default function RecipesList({
 
   useEffect(() => {
     const currentHasFetched = hasFetched.current;
-    
-    // Не запускаємо, якщо користувач не авторизований
     if (!isLoggedIn) {
-      // Очищаємо прапорець при вилогіні
-      if (currentHasFetched[variant]) {
-        delete currentHasFetched[variant];
-      }
       return;
     }
-
-    // Завантажуємо лише один раз для поточного варіанту
-    if (!currentHasFetched[variant] && !isLoading && items.length === 0 && !error) {
+    if (!currentHasFetched[variant]) {
       currentHasFetched[variant] = true;
-      
+
       switch (variant) {
         case 'own':
           dispatch(fetchOwnRecipes());
@@ -91,18 +83,16 @@ export default function RecipesList({
           dispatch(fetchFavRecipes());
           break;
         default:
-          // Завантаження public recipes відбувається в іншому місці
           break;
       }
     }
 
-    // Cleanup функція
     return () => {
-      if (currentHasFetched[variant]) {
+      if (currentHasFetched) {
         delete currentHasFetched[variant];
       }
     };
-  }, [variant, isLoggedIn, dispatch, isLoading, items.length, error]);
+  }, [variant, isLoggedIn, dispatch]);
 
   if (isLoading && !items.length) {
     return (
@@ -120,17 +110,14 @@ export default function RecipesList({
     if (variant === 'public') {
       return <NoRecipesFound />;
     }
-    
+
     if (variant === 'favorites' || variant === 'own') {
-      const emptyMessage = variant === 'favorites' 
-        ? "You don't have any saved recipes yet. Add some by clicking the save button."
-        : "You haven't added your own recipes yet. Click 'Add recipes' to create your first recipe.";
-      
-      return (
-        <div className={styles.emptyMessage}>
-          {emptyMessage}
-        </div>
-      );
+      const emptyMessage =
+        variant === 'favorites'
+          ? "You don't have any saved recipes yet. Add some by clicking the save button."
+          : "You haven't added your own recipes yet. Click 'Add recipes' to create your first recipe.";
+
+      return <div className={styles.emptyMessage}>{emptyMessage}</div>;
     }
   }
 
@@ -138,8 +125,8 @@ export default function RecipesList({
     (recipe, index, self) => index === self.findIndex(r => r._id === recipe._id)
   );
 
-  // Показуємо кнопку Load More тільки якщо є достатньо елементів
-  const shouldShowLoadMore = isNextpage && uniqueItems.length > 0 && uniqueItems.length >= 6;
+  const shouldShowLoadMore =
+    isNextpage && uniqueItems.length > 0 && uniqueItems.length >= 6;
 
   return (
     <div

@@ -11,7 +11,7 @@ export default function NoRecipesFound() {
 
   const handleClick = () => {
     setSearchParams({});
-    dispatch(resetFilters([]));
+    dispatch(resetFilters());
     dispatch(resetHits());
   };
 
@@ -26,7 +26,7 @@ export default function NoRecipesFound() {
           className={styles.resetFiltersButton}
           onClick={handleClick}
         >
-          Reset serach and filters
+          Reset search and filters
         </button>
       </div>
     </div>

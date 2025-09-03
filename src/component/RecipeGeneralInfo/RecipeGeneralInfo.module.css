@@ -4,6 +4,7 @@
   flex-direction: column;
   gap: 24px;
 }
+
 .wrapper {
   width: 100%;
   min-width: 0;
@@ -11,21 +12,25 @@
   border-radius: 16px;
   padding: 16px;
   height: 100%;
-  background-color: #faf3e0;
+  background-color: var(--color-light-beige);
 }
+
 .title {
   font-weight: 600;
   font-size: 24px;
   margin-bottom: 15px;
 }
+
 .list {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
+
 .item {
   font-size: 16px;
 }
+
 .button {
   display: flex;
   align-items: center;
@@ -44,23 +49,26 @@
   color: var(--color-white);
   cursor: pointer;
 }
+
 .button:hover,
 .button:focus {
-  background-color: var(--color-brown);
+  background-color: var(--color-hover);
 }
+
 .button:active {
-  box-shadow: 0 0 0 6px rgba(78, 70, 180, 0.12), 0 0 0 2px var(--color-white);
+  box-shadow: 0 0 0 6px var(--color-shadow), 0 0 0 2px var(--color-white);
   background-color: var(--light-brown);
 }
 
 .unsaveIcon {
-  fill: #ffffff;
+  fill: var(--color-white);
   stroke: none;
   margin-left: 16px;
 }
+
 .saveIcon {
   fill: none;
-  stroke: #ffffff;
+  stroke: var(--color-white);
   margin-left: 16px;
 }
 
@@ -71,12 +79,14 @@
     flex-direction: row;
     gap: 24px;
   }
+
   .wrapper {
 
     padding: 24px;
-      max-width: 431px;
+    max-width: 431px;
     height: 100%;
   }
+
   .button {
     width: 249px;
   }
@@ -89,10 +99,12 @@
     flex-direction: column;
     gap: 24px;
   }
+
   .wrapper {
     width: 393px;
     height: 222px;
   }
+
   .button {
     width: 393px;
   }

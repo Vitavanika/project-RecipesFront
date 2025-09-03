@@ -22,19 +22,19 @@
 :root {
   /* Основні кольори */
   --color-black: #000;
-  --color-gray: #595d62;
   --color-white: #fff;
+  --color-gray: #595d62;
+  --color-red: #c80000;
   --color-light-brown: #9b6c43;
   --color-light-beige: #faf3e0;
-  --color-light-gray: #d9d9d9;
-  --color-dark-brown: #3d2218;
-  --color-background: #fbfcf8;
-  --color-brown: #6d554b;
-  --color-gray-3: #9f9f9f;
-  --color-social-media: rgba(255, 255, 255, 0);
-  --color-icon-gray: #3a3a3a;
-  --color-dark-gray: #323232;
-  --color-red: #c80000;
+  --color-light-bg: #fbfcf8;
+  --color-bg: #3d2218;
+  --color-border: #d9d9d9;
+  --color-hover: #6d554b;
+  --color-placeholder: #9f9f9f;
+
+  --color-focus-input-shadow: rgba(78, 70, 180, 0.2);
+  --color-shadow: rgba(78, 70, 180, 0.12);
 
   /* Типографія */
   --font-family: "Montserrat", sans-serif;
@@ -74,7 +74,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: var(--font-family);
-  background-color: var(--color-background);
+  background-color: var(--color-light-bg);
   color: var(--color-black);
 }
 
@@ -89,11 +89,18 @@ main {
 }
 
 
-h1, h2, h3, h4, h5, h6, p {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
   margin: 0;
 }
 
-ul, ol {
+ul,
+ol {
   margin: 0;
   padding: 0;
   list-style: none;

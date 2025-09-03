@@ -1,5 +1,5 @@
 .header {
-    background: #3d2218;
+    background: var(--color-bg);
 }
 
 .headerWrapper {
@@ -24,4 +24,3 @@
         padding: 22px 108px;
     }
 }
-

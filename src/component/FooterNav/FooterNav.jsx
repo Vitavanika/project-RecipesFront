@@ -4,6 +4,7 @@ import { Navigate, NavLink, useLocation } from 'react-router';
 import { getIsLoggedIn } from '../../redux/auth/selectors';
 import { AuthNavModal } from '../AuthNavModal/AuthNavModal';
 import styles from './FooterNav.module.css';
+import { useLockBodyScroll } from '../../hooks/useLockBodyScroll';
 
 export const FooterNav = () => {
   const isLoggedIn = useSelector(getIsLoggedIn);
@@ -13,6 +14,7 @@ export const FooterNav = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModalState = useCallback(() => setIsModalOpen(prev => !prev), []);
+  useLockBodyScroll(isModalOpen);
 
   useEffect(() => {
     const handleClick = event => {
@@ -30,7 +32,6 @@ export const FooterNav = () => {
     }
 
     return () => {
-      console.log('removing event listener');
       document.removeEventListener('mousedown', handleClick);
     };
   }, [isModalOpen, toggleModalState]);

@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router";
 import { AuthModal } from "../AuthModal/AuthModal";
 import { useFavoriteRecipe } from "../../hooks/useFavoriteRecipe";
+import Loader from "../Loader/Loader";
 import css from "./RecipeCard.module.css";
 
 const RecipeCard = ({
-  recipe, onLearnMore
+  recipe,  onLearnMore
 }) => {
   const {
     saved,
@@ -26,7 +27,11 @@ const navigate = useNavigate();
 
   return (
     <div className={css.card}>
-        <img src={recipe.photo} alt={recipe.title} className={css.cardImage} />
+      {isLoading && (
+        <div className={css.cardOverlay}>
+          <Loader />
+           </div>)}
+        <img src={recipe.photo} alt={recipe.name} className={css.cardImage} />
         <div className={css.cardHeader}>
           <h3 className={css.cardTitle}>{recipe.name}</h3>
           <div className={css.cardTime}>
@@ -51,15 +56,15 @@ const navigate = useNavigate();
           disabled={isLoading}
           aria-label={saved ? "Remove from favorites" : "Add to favorites"}
         >
-            <svg
-              width="15"
-              height="17"
-              className={saved ? css.unsaveIcon : css.saveIcon}
-            >
-              <use href="/sprite.svg#icon-bookmark"></use>
-            </svg>
-          </button>
-        </div>
+      <svg
+        width="15"
+        height="17"
+        className={saved ? css.unsaveIcon : css.saveIcon}
+      >
+        <use href="/sprite.svg#icon-bookmark"></use>
+      </svg>
+  </button>
+</div>
 
 
       {showAuthModal && <AuthModal onClick={() => setShowAuthModal(false)} />}

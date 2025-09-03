@@ -12,22 +12,22 @@
 .input {
   width: 100%;
   padding: 12px;
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   font-size: 16px;
   line-height: 1.22;
-  color: #000000;
-  background-color: #fff;
+  color: var(--color-black);
+  background-color: var(--color-white);
   outline: none;
 }
 
 .input::placeholder {
-  color: #9f9f9f;
+  color: var(--color-placeholder);
 }
 
 .input:focus {
   border: 1.5px solid #9b6c43;
-  box-shadow: 0 0 0 4px rgba(78, 70, 180, 0.2);
+  box-shadow: 0 0 0 4px var(--color-focus-shadow);
 }
 
 .button {
@@ -38,18 +38,18 @@
   font-weight: 600;
   font-size: 16px;
   line-height: 1.25;
-  color: #ffffff;
+  color: var(--color-white);
   cursor: pointer;
   transition: background-color 0.2s ease-in-out;
 }
 
 .button:hover,
 .button:focus {
-  background-color: #6d554b;
+  background-color: var(--color-hover);
 }
 
 .button:active {
-  box-shadow: 0 0 0 6px rgba(78, 70, 180, 0.12), 0 0 0 2px #fff;
+  box-shadow: 0 0 0 6px var(--color-shadow), 0 0 0 2px var(--color-white);
 }
 
 .button:disabled {
@@ -58,7 +58,7 @@
   background: #9b6c43;
   opacity: 0.3;
   cursor: not-allowed;
-  box-shadow: 0px 0px 0px 2px #ffffff, 0px 0px 0px 6px rgba(78, 70, 180, 0.12);
+  box-shadow: 0px 0px 0px 2px var(--color-white), 0px 0px 0px 6px var(--color-shadow);
   border-radius: 8px;
 }
 

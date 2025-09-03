@@ -9,33 +9,33 @@
 @media only screen and (min-width: 768px) and (max-width: 1440px) {
   .navContainer {
     gap: 48px;
-    
+
   }
 }
 
 .navLink {
   font-weight: 600;
   font-size: 18px;
-  color: #000;
+  color: var(--color-black);
   display: inline-block;
 }
 
 @media only screen and (min-width: 768px) {
-   .navLink {
+  .navLink {
     font-size: 12px;
   }
 }
 
 .navLink::after {
-  content: "";                      
+  content: "";
   position: absolute;
   left: 0;
   bottom: -2px;
   width: 100%;
   height: 1px;
-  background-color: #000;
+  background-color: var(--color-black);
   border-radius: 1px;
-  transform: scaleX(0);      
+  transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.3s ease;
 }

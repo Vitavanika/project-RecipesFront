@@ -1,23 +1,26 @@
 .title {
-    font-weight: 600;
-    font-size: 40px;
-    color: #000;
-    font-family: "Montserrat", sans-serif;
-    margin-bottom: 16px;
+  font-weight: 600;
+  font-size: 40px;
+  color: var(--color-black);
+  margin-bottom: 16px;
 }
 
 .pageContainer {
-    padding: 48px 16px;
+  padding: 48px 16px;
+  margin: 0 auto;
+  max-width: 393px;
 }
 
 @media only screen and (min-width: 768px) {
   .pageContainer {
     padding: 48px 32px;
-}
+    max-width: 768px;
+  }
 }
 
 @media only screen and (min-width: 1440px) {
   .pageContainer {
     padding: 46px 108px;
-}
+    max-width: 1440px;
+  }
 }

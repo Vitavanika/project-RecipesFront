@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import { logOut } from '../../redux/auth/operations';
 import { getUserData } from '../../redux/auth/selectors';
 import { LogoutModal } from './LogoutModal';
+import { useLockBodyScroll } from '../../hooks/useLockBodyScroll';
 
 export const ProfileBlock = ({ onClose }) => {
   const dispatch = useDispatch();
@@ -12,6 +13,8 @@ export const ProfileBlock = ({ onClose }) => {
   const user = useSelector(getUserData);
   const isAuth = useSelector(state => state.auth.isLoggedIn);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+
+  useLockBodyScroll(isLogoutModalOpen);
 
   if (!isAuth) return null;
 

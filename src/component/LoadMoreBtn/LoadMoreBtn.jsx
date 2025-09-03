@@ -5,7 +5,7 @@ import {
   getTotalPages,
   selectLoading,
 } from '../../redux/recipes/selectors';
-import { setPage } from '../../redux/recipes/slice';
+import { setPage } from '../../redux/filters/slice';
 import css from './LoadMoreBtn.module.css';
 
 const LoadMoreBtn = () => {
@@ -17,7 +17,7 @@ const LoadMoreBtn = () => {
 
   const handleLoadMore = () => {
     const nextPage = (currentPage ?? 1) + 1;
-    dispatch(setPage({ page: nextPage }));
+    dispatch(setPage(nextPage));
   };
 
   if (!totalPages || currentPage >= totalPages) {

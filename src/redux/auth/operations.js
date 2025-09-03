@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import apiClient, { clearAuthData } from '../../api/apiClient';
+import apiClient from '../../api/apiClient';
+import { fetchFavRecipes } from '../recipes/operations';
 
 export const register = createAsyncThunk(
   'auth/register',
@@ -8,12 +9,9 @@ export const register = createAsyncThunk(
       const response = await apiClient.post('/auth/register', credentials);
       return response.data.data;
     } catch (error) {
-      const serverMessage =
-        error.response?.data?.data?.message ||
-        error.response?.data?.message ||
-        'Registration failed';
-
-      return thunkAPI.rejectWithValue(serverMessage);
+      return thunkAPI.rejectWithValue(
+        error.response?.data?.message || 'Registration failed'
+      );
     }
   }
 );
@@ -23,9 +21,7 @@ export const logIn = createAsyncThunk(
   async (credentials, thunkAPI) => {
     try {
       const response = await apiClient.post('/auth/login', credentials);
-      const { accessToken, refreshToken } = response.data.data;
-      localStorage.setItem('authToken', accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
+      localStorage.setItem('authToken', response.data.data.accessToken);
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(
@@ -35,30 +31,36 @@ export const logIn = createAsyncThunk(
   }
 );
 
-export const logOut = createAsyncThunk('auth/logout', async (_, thunkAPI) => {
+export const logOut = createAsyncThunk('auth/logout', async () => {
   try {
     await apiClient.post('/auth/logout');
   } catch (error) {
-    // Logout навіть якщо запит не вдався
+    console.error('Logout failed on server', error);
   } finally {
-    clearAuthData();
+    localStorage.removeItem('authToken');
   }
 });
 
 export const refreshUser = createAsyncThunk(
   'auth/refresh',
   async (_, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const persistedToken = state.auth.token;
-
-    if (!persistedToken) {
-      return thunkAPI.rejectWithValue('Unable to fetch user');
+    const persistedAccessToken = localStorage.getItem('authToken');
+    if (!persistedAccessToken) {
+      return thunkAPI.rejectWithValue('No access token available');
     }
 
     try {
-      const response = await apiClient.get('/users/current');
-      return response.data.data;
+      const { data } = await apiClient.get('/users/current', {
+        headers: {
+          Authorization: `Bearer ${persistedAccessToken}`,
+        },
+      });
+      thunkAPI.dispatch(fetchFavRecipes());
+      return data.data;
     } catch (error) {
+      if (error.response?.status === 401) {
+        thunkAPI.dispatch(logOut());
+      }
       return thunkAPI.rejectWithValue(error.message);
     }
   }

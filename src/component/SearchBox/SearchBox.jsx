@@ -1,7 +1,5 @@
 import { Field, Form, Formik } from 'formik';
-import { useSearchParams } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
-import { getFilteredRecipes } from '../../redux/recipes/operations';
 import { toast } from 'react-hot-toast';
 import { useState } from 'react';
 
@@ -10,7 +8,6 @@ import { setSearchPhrase } from '../../redux/filters/slice';
 import { getSearchPhrase } from '../../redux/filters/selectors';
 
 export const SearchBox = () => {
-  const [, setSearchParams] = useSearchParams();
   const searchPhrase = useSelector(getSearchPhrase);
   const formInitialValue = { query: searchPhrase || '' };
   const dispatch = useDispatch();
@@ -19,33 +16,14 @@ export const SearchBox = () => {
   const handleSubmit = values => {
     setIsSearching(true);
     const searchQuery = values.query.trim();
-    if (!searchQuery) {
-      setSearchParams(prev => {
-        const next = new URLSearchParams(prev);
-        next.delete('searchPhrase');
-        return next;
-      });
-    } else {
-      setSearchParams(prev => {
-        const next = new URLSearchParams(prev);
-        next.set('searchPhrase', searchQuery);
-        return next;
-      });
-    }
 
-    dispatch(setSearchPhrase(searchQuery));
-
-    dispatchSearch();
-  };
-
-  const dispatchSearch = async () => {
     try {
-      await dispatch(getFilteredRecipes()).unwrap();
+      dispatch(setSearchPhrase(searchQuery));
       toast.success('Search is done!');
+      setIsSearching(false);
     } catch (error) {
       toast.error(error?.message || String(error) || 'Search failed');
     }
-    setIsSearching(false);
   };
 
   return (

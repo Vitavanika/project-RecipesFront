@@ -7,7 +7,6 @@ import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
 import { hasNextPage } from '../../redux/recipes/selectors';
 import {
   fetchOwnRecipes,
-  getFilteredRecipes,
   fetchFavRecipes,
 } from '../../redux/recipes/operations';
 import { getIsLoggedIn } from '../../redux/auth/selectors';
@@ -61,16 +60,28 @@ export default function RecipesList({
   const isNextpage = useSelector(hasNextPage);
 
   const shouldFetch = useMemo(() => {
-    return !hasFetched.current[variant] && !isLoading && !error && items.length === 0 && isLoggedIn;
+    return (
+      !hasFetched.current[variant] &&
+      !isLoading &&
+      !error &&
+      items.length === 0 &&
+      isLoggedIn
+    );
   }, [variant, isLoading, error, items.length, isLoggedIn]);
 
   useEffect(() => {
     if (!isLoggedIn) return;
 
-  if (variant === 'favorites' && !hasFetched.current[variant] && !isLoading && !error && items.length === 0) {
-    hasFetched.current[variant] = true;
-    return;
-  }
+    if (
+      variant === 'favorites' &&
+      !hasFetched.current[variant] &&
+      !isLoading &&
+      !error &&
+      items.length === 0
+    ) {
+      hasFetched.current[variant] = true;
+      return;
+    }
 
     if (shouldFetch) {
       hasFetched.current[variant] = true;
@@ -78,21 +89,27 @@ export default function RecipesList({
         case 'own':
           dispatch(fetchOwnRecipes());
           break;
-        case 'public':
-          dispatch(getFilteredRecipes());
-          break;
         case 'favorites':
           dispatch(fetchFavRecipes());
           break;
       }
     }
-  }, [shouldFetch, dispatch, variant, isLoggedIn, isLoading, error, items.length]);
+  }, [
+    shouldFetch,
+    dispatch,
+    variant,
+    isLoggedIn,
+    isLoading,
+    error,
+    items.length,
+  ]);
 
- 
   useEffect(() => {
+    const currentHasFetched = hasFetched.current;
+
     return () => {
-      if (hasFetched.current[variant]) {
-        delete hasFetched.current[variant];
+      if (currentHasFetched[variant]) {
+        delete currentHasFetched[variant];
       }
     };
   }, [variant]);
@@ -109,8 +126,8 @@ export default function RecipesList({
     return <div className={styles.error}>⚠ {String(error)}</div>;
   }
 
-  if (!items.length && !isLoading) {
-    return <NoRecipesFound/>;
+  if (!items.length && !isLoading && variant === 'public') {
+    return <NoRecipesFound />;
   }
 
   const uniqueItems = items.filter(

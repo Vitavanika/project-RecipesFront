@@ -1,6 +1,34 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import apiClient from '../../api/apiClient.js';
 
+export const fetchRecipesByVariant = createAsyncThunk(
+  'recipes/fetchRecipesByVariant',
+  async (variant, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const { own, favorites } = state.recipes;
+
+    try {
+      if (variant === 'own' && own.items.length === 0 && !own.isLoading) {
+        const { data } = await apiClient.get('/recipes/own');
+        return data;
+      }
+
+      if (
+        variant === 'favorites' &&
+        favorites.items.length === 0 &&
+        !favorites.isLoading
+      ) {
+        const { data } = await apiClient.get('/recipes/favorites');
+        return data;
+      }
+
+      return thunkAPI.rejectWithValue('Data already loaded or loading.');
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
+
 export const fetchOwnRecipes = createAsyncThunk(
   'recipes/getOwn',
   async (_, thunkAPI) => {
@@ -18,7 +46,7 @@ export const fetchFavRecipes = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await apiClient.get('/recipes/favorites', {
-        headers: { 'Cache-Control': 'no-cache' }  
+        headers: { 'Cache-Control': 'no-cache' },
       });
       return response.data.data?.hits ?? [];
     } catch (error) {
@@ -29,33 +57,15 @@ export const fetchFavRecipes = createAsyncThunk(
 
 export const getFilteredRecipes = createAsyncThunk(
   'recipes/getFilteredRecipes',
-  async (_, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const searchPhrase = state.filters.searchPhrase;
-    const selectedIngredients = state.filters.selectedIngredients
-      .map(ingredient => `ingredients=${ingredient}`)
-      .join('&');
-    const selectedCategory = state.filters.selectedCategory
-      .map(category => `category=${encodeURIComponent(category)}`)
-      .join('&');
-    const currentPage = state.recipes.filteredRecipes.page ?? 1;
-    const perPage = state.recipes.filteredRecipes.perPage ?? 12;
-
-    const queryParams = [];
-    if (searchPhrase)
-      queryParams.push(`searchPhrase=${encodeURIComponent(searchPhrase)}`);
-    if (selectedIngredients) queryParams.push(selectedIngredients);
-    if (selectedCategory) queryParams.push(selectedCategory);
-    queryParams.push(`page=${currentPage}`);
-    queryParams.push(`perPage=${perPage}`);
-
-    const requestPath = `/recipes?${queryParams.join('&')}`;
-
+  async (searchParams, thunkAPI) => {
     try {
-      const response = await apiClient.get(requestPath);
+      const response = await apiClient.get('/recipes', {
+        params: searchParams,
+      });
       return response.data.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      const message = error.response?.data?.message || error.message;
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -75,21 +85,21 @@ export const fetchRecipeById = createAsyncThunk(
 );
 
 export const toggleFavoriteRecipe = createAsyncThunk(
-  "recipes/toggleFavorite",
+  'recipes/toggleFavorite',
   async ({ recipeId, isFavorite }, thunkAPI) => {
     try {
-      const method = isFavorite ? "DELETE" : "POST";
+      const method = isFavorite ? 'DELETE' : 'POST';
       const response = await apiClient({
         url: `/recipes/favorites/${recipeId}`,
         method,
       });
 
-thunkAPI.dispatch(fetchFavRecipes());
+      thunkAPI.dispatch(fetchFavRecipes());
 
       return {
         recipeId,
         isFavorite: !isFavorite,
-        recipe: response.data, 
+        recipe: response.data,
       };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);

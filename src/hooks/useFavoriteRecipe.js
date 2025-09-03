@@ -1,19 +1,29 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import { toggleFavoriteRecipe } from '../redux/recipes/operations';
 import { getIsLoggedIn, getUserData } from '../redux/auth/selectors';
 
-export const useFavoriteRecipe = recipeId => {
+export const useFavoriteRecipe = (recipeId) => {
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector(getIsLoggedIn);
   const userData = useSelector(getUserData);
-  const favorites = userData?.favorites || [];
+
+  const favRecipes = useSelector(state => state.recipes?.favorites?.items || []);
+
+   const favorites = useMemo(() => {
+    if (favRecipes.length > 0) {
+      return favRecipes.map(r => r._id);
+    }
+    return userData?.favorites || [];
+  }, [favRecipes, userData?.favorites]);
+
   const saved = favorites.includes(recipeId);
 
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
 
   const toggleSave = async (onAuthRequired = () => setShowAuthModal(true)) => {
     if (!isAuthenticated) {
@@ -25,7 +35,7 @@ export const useFavoriteRecipe = recipeId => {
       setIsLoading(true);
 
       const result = await dispatch(
-        toggleFavoriteRecipe({ recipeId, isFavorite: saved })
+        toggleFavoriteRecipe({ recipeId, isFavorite: saved})
       ).unwrap();
 
       toast.success(

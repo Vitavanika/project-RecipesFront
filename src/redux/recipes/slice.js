@@ -254,10 +254,10 @@ const recipesSlice = createSlice({
       .addCase(logOut.fulfilled, state => {
         state.own = initialState.own;
         state.favorites = initialState.favorites;
+        state.pagination = initialState.pagination;
       });
   },
 });
 
 export default recipesSlice.reducer;
-export const { setPage, setPerPage, setPaginationParams, resetHits } =
-  recipesSlice.actions;
+export const { resetHits } = recipesSlice.actions;

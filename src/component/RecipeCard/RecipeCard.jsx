@@ -4,7 +4,7 @@ import { useFavoriteRecipe } from "../../hooks/useFavoriteRecipe";
 import css from "./RecipeCard.module.css";
 
 const RecipeCard = ({
-  recipe, onLearnMore
+  recipe,  onLearnMore
 }) => {
   const {
     saved,
@@ -26,7 +26,7 @@ const navigate = useNavigate();
 
   return (
     <div className={css.card}>
-        <img src={recipe.photo} alt={recipe.title} className={css.cardImage} />
+        <img src={recipe.photo} alt={recipe.name} className={css.cardImage} />
         <div className={css.cardHeader}>
           <h3 className={css.cardTitle}>{recipe.name}</h3>
           <div className={css.cardTime}>

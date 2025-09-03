@@ -1,6 +1,7 @@
 import css from './LogoutModal.module.css';
 import clsx from 'clsx';
 import { useEffect } from 'react';
+import { useLockBodyScroll } from '../../hooks/useLockBodyScroll';
 
 export const LogoutModal = ({ onCancel, onConfirm, isOpen }) => {
   useEffect(() => {
@@ -15,6 +16,8 @@ export const LogoutModal = ({ onCancel, onConfirm, isOpen }) => {
     }
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onCancel]);
+
+  useLockBodyScroll(isOpen);
 
   const handleOverlayClick = event => {
     if (event.target === event.currentTarget) {

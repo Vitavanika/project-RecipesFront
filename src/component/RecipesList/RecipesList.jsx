@@ -59,9 +59,9 @@ export default function RecipesList({
   const isNextpage = useSelector(s => {
     switch (variant) {
       case 'favorites':
-        return s?.recipes?.favorites?.hasNextPage ?? false;
+        return s?.recipes?.pagination?.hasNextPage ?? false;
       case 'own':
-        return s?.recipes?.own?.hasNextPage ?? false;
+        return s?.recipes?.pagination?.hasNextPage ?? false;
       default:
         return hasNextPage(s);
     }

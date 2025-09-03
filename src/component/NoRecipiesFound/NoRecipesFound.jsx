@@ -26,7 +26,7 @@ export default function NoRecipesFound() {
           className={styles.resetFiltersButton}
           onClick={handleClick}
         >
-          Reset serach and filters
+          Reset search and filters
         </button>
       </div>
     </div>

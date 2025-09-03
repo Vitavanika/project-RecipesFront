@@ -10,7 +10,7 @@ export const fetchRecipesByVariant = createAsyncThunk(
     try {
       if (variant === 'own' && own.items.length === 0 && !own.isLoading) {
         const { data } = await apiClient.get('/recipes/own');
-        return data;
+        return { ...data.data, variant: 'own' };
       }
 
       if (
@@ -19,7 +19,7 @@ export const fetchRecipesByVariant = createAsyncThunk(
         !favorites.isLoading
       ) {
         const { data } = await apiClient.get('/recipes/favorites');
-        return data;
+        return { ...data.data, variant: 'favourites' };
       }
 
       return thunkAPI.rejectWithValue('Data already loaded or loading.');
@@ -33,7 +33,7 @@ export const fetchOwnRecipes = createAsyncThunk(
   'recipes/getOwn',
   async (_, thunkAPI) => {
     try {
-      const response = await apiClient.get('/recipes');
+      const response = await apiClient.get('/recipes/own');
       return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
@@ -48,7 +48,7 @@ export const fetchFavRecipes = createAsyncThunk(
       const response = await apiClient.get('/recipes/favorites', {
         headers: { 'Cache-Control': 'no-cache' },
       });
-      return response.data.data?.hits ?? [];
+      return response.data.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response?.data || error.message);
     }

@@ -15,6 +15,7 @@ const LoginSchema = Yup.object().shape({
     .required('Required field'),
   password: Yup.string()
     .min(8, 'Minimum 8 characters')
+    .max(128, 'Maximum 128 characters')
     .required('Required field'),
 });
 

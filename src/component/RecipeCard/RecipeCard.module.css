@@ -145,6 +145,23 @@
   }
 }
 
+.learnMoreOwn {
+  width: 337px;
+  height: 36px;
+}
+
+@media only screen and (min-width: 768px) {
+  .learnMoreOwn {
+    width: 315px;
+  }
+}
+
+@media only screen and (min-width: 1440px) {
+  .learnMoreOwn {
+    width: 264px;
+  }
+}
+
 .favoriteBtn {
   width: 40px;
   height: 40px;

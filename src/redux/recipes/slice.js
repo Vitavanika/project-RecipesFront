@@ -206,7 +206,10 @@ const recipesSlice = createSlice({
           'Failed to add recipe';
         state.add.success = false;
       })
-      .addCase(logOut.fulfilled, () => initialState);
+      .addCase(logOut.fulfilled, state => {
+        state.own = initialState.own;
+        state.favorites = initialState.favorites;
+      });
   },
 });
 

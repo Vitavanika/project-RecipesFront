@@ -78,8 +78,29 @@ const recipesSlice = createSlice({
         state.own.errorData = null;
       })
       .addCase(fetchOwnRecipes.fulfilled, (state, action) => {
+        const {
+          hits,
+          page,
+          perPage,
+          totalPages,
+          hasPreviousPage,
+          hasNextPage,
+          totalItems,
+        } = action.payload;
+
+        if (page > 1) {
+          state.own.items = [...(state.own.items || []), ...(hits || [])];
+        } else {
+          state.own.items = hits || [];
+        }
+
+        state.pagination.page = page;
+        state.pagination.perPage = perPage;
+        state.pagination.totalPages = totalPages;
+        state.pagination.hasPreviousPage = hasPreviousPage;
+        state.pagination.hasNextPage = hasNextPage;
+        state.pagination.totalItems = totalItems;
         state.own.isLoading = false;
-        state.own.items = Array.isArray(action.payload) ? action.payload : [];
       })
       .addCase(fetchOwnRecipes.rejected, (state, action) => {
         state.own.isLoading = false;
@@ -95,11 +116,32 @@ const recipesSlice = createSlice({
         state.favorites.errorData = null;
       })
       .addCase(fetchFavRecipes.fulfilled, (state, action) => {
+        const {
+          hits,
+          page,
+          perPage,
+          totalPages,
+          hasPreviousPage,
+          hasNextPage,
+          totalItems,
+        } = action.payload;
+
+        if (page > 1) {
+          state.favorites.items = [
+            ...(state.favorites.items || []),
+            ...(hits || []),
+          ];
+        } else {
+          state.favorites.items = hits || [];
+        }
+
+        state.pagination.page = page;
+        state.pagination.perPage = perPage;
+        state.pagination.totalPages = totalPages;
+        state.pagination.hasPreviousPage = hasPreviousPage;
+        state.pagination.hasNextPage = hasNextPage;
+        state.pagination.totalItems = totalItems;
         state.favorites.isLoading = false;
-        state.favorites.error = null;
-        state.favorites.items = Array.isArray(action.payload)
-          ? action.payload
-          : [];
       })
       .addCase(fetchFavRecipes.rejected, (state, action) => {
         state.favorites.isLoading = false;

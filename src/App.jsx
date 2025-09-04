@@ -2,15 +2,15 @@ import { Routes, Route, Navigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { getIsLoggedIn, getIsRefreshing } from './redux/auth/selectors.js';
 import { refreshUser } from './redux/auth/operations.js';
-import { useEffect } from 'react';
+import { useEffect, lazy, Suspense } from 'react';
 
 // Імпорт компонентів
 import { Layout } from './component/Layout/Layout.jsx';
-import AuthPage from './pages/AuthPage/AuthPage.jsx';
-import HomePage from './pages/HomePage/HomePage.jsx';
-import AddRecipePage from './pages/AddRecipePage/AddRecipePage.jsx';
-import ProfilePage from './pages/ProfilePage/ProfilePage.jsx';
-import RecipeViewPage from './pages/RecipeViewPage/RecipeViewPage.jsx';
+const AuthPage = lazy(() => import('./pages/AuthPage/AuthPage.jsx'));
+const HomePage = lazy(() => import('./pages/HomePage/HomePage.jsx'));
+const AddRecipePage = lazy(() => import('./pages/AddRecipePage/AddRecipePage.jsx'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage/ProfilePage.jsx'));
+const RecipeViewPage = lazy(() => import('./pages/RecipeViewPage/RecipeViewPage.jsx'));
 import Loader from './component/Loader/Loader.jsx';
 
 // Приватний маршрут - доступний тільки для авторизованих користувачів
@@ -41,43 +41,45 @@ const App = () => {
   }, [dispatch]);
 
   return (
-    <Routes>
-      <Route path="/" element={<Layout />}>
-        {/* Публічні маршрути */}
-        <Route index element={<HomePage />} />
-        <Route path="recipes/:recipeId" element={<RecipeViewPage />} />
+    <Suspense fallback={<Loader />}>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          {/* Публічні маршрути */}
+          <Route index element={<HomePage />} />
+          <Route path="recipes/:recipeId" element={<RecipeViewPage />} />
 
-        {/* Маршрут для авторизації */}
-        <Route
-          path="auth/:authType"
-          element={
-            <PublicRoute>
-              <AuthPage />
-            </PublicRoute>
-          }
-        />
+          {/* Маршрут для авторизації */}
+          <Route
+            path="auth/:authType"
+            element={
+              <PublicRoute>
+                <AuthPage />
+              </PublicRoute>
+            }
+          />
 
-        {/* Приватні маршрути */}
-        <Route
-          path="add-recipe"
-          element={
-            <PrivateRoute>
-              <AddRecipePage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="profile/:recipeType"
-          element={
-            <PrivateRoute>
-              <ProfilePage />
-            </PrivateRoute>
-          }
-        />
+          {/* Приватні маршрути */}
+          <Route
+            path="add-recipe"
+            element={
+              <PrivateRoute>
+                <AddRecipePage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="profile/:recipeType"
+            element={
+              <PrivateRoute>
+                <ProfilePage />
+              </PrivateRoute>
+            }
+          />
 
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Route>
-    </Routes>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    </Suspense>
   );
 };
 

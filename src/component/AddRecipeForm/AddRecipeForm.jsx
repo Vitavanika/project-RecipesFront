@@ -161,7 +161,7 @@ const AddRecipeForm = () => {
       resetForm();
     } catch (error) {
       const formattedMessage = error.data.errors
-        .map((err, i) => `• ${err.message}`)
+        .map(err => `• ${err.message}`)
         .join('\n');
 
       const errorMessage = formattedMessage || 'Error adding recipe';
@@ -370,6 +370,11 @@ const AddRecipeForm = () => {
           </div>
         )}
       </div>
+      <ErrorMessage
+        name="photo"
+        component="div"
+        className={styles.fieldError}
+      />
     </div>
   );
 

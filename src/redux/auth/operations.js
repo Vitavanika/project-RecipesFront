@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import apiClient from '../../api/apiClient';
-import { fetchFavRecipes } from '../recipes/operations';
+import { fetchRecipesByVariant } from '../recipes/operations';
 
 export const register = createAsyncThunk(
   'auth/register',
@@ -28,7 +28,7 @@ export const logIn = createAsyncThunk(
     } catch (error) {
       return thunkAPI.rejectWithValue({
         status: error.response?.status,
-        message: error.response?.data?.message || 'Login failed'
+        message: error.response?.data?.message || 'Login failed',
       });
     }
   }
@@ -58,7 +58,12 @@ export const refreshUser = createAsyncThunk(
           Authorization: `Bearer ${persistedAccessToken}`,
         },
       });
-      thunkAPI.dispatch(fetchFavRecipes());
+      thunkAPI.dispatch(
+        fetchRecipesByVariant({
+          recipeType: 'favorites',
+          searchParams: { page: 1, perPage: 12 },
+        })
+      );
       return data.data;
     } catch (error) {
       if (error.response?.status === 401) {

@@ -35,32 +35,6 @@ export const fetchRecipesByVariant = createAsyncThunk(
   }
 );
 
-export const fetchOwnRecipes = createAsyncThunk(
-  'recipes/getOwn',
-  async (_, thunkAPI) => {
-    try {
-      const response = await apiClient.get('/recipes/own');
-      return response.data.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
-
-export const fetchFavRecipes = createAsyncThunk(
-  'recipes/getFavRecipes',
-  async (_, thunkAPI) => {
-    try {
-      const response = await apiClient.get('/recipes/favorites', {
-        headers: { 'Cache-Control': 'no-cache' },
-      });
-      return response.data.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response?.data || error.message);
-    }
-  }
-);
-
 export const getFilteredRecipes = createAsyncThunk(
   'recipes/getFilteredRecipes',
   async (searchParams, thunkAPI) => {
@@ -100,7 +74,9 @@ export const toggleFavoriteRecipe = createAsyncThunk(
         method,
       });
 
-      thunkAPI.dispatch(fetchFavRecipes());
+      thunkAPI
+        .dispatch(fetchRecipesByVariant({ recipeType: 'favorites' }, thunkAPI))
+        .unwrap();
 
       return {
         recipeId,

@@ -39,8 +39,6 @@ const AddRecipeForm = () => {
   const loading = isLoadingCategories || isLoadingIngredients;
   const error = isErrorCategories || isErrorIngredients;
 
-  const [selectedIngredients, setSelectedIngredients] = useState([]);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModalState = useCallback(() => setIsModalOpen(prev => !prev), []);
   const modalRef = useRef(null);
@@ -89,10 +87,12 @@ const AddRecipeForm = () => {
   const validationSchema = Yup.object({
     name: Yup.string()
       .min(3, 'Title must be at least 3 characters')
+      .max(64, 'Name should have at most 64 characters')
       .required('Title is required'),
 
     description: Yup.string()
       .min(10, 'Description must be at least 10 characters')
+      .max(200, 'Description can have at most 200 characters')
       .required('Description is required'),
 
     cookingTime: Yup.string()
@@ -101,52 +101,52 @@ const AddRecipeForm = () => {
         const num = Number(value);
         return num >= 1;
       })
+      .test('max-value', 'Time must be at most 360 minutes', value => {
+        const num = Number(value);
+        return num <= 360;
+      })
       .required('Time is required'),
 
     foodEnergy: Yup.number()
       .positive('Calories must be a positive number')
       .integer('Calories must be an integer')
+      .max(1000, 'Calories must be at most 10000')
       .nullable(),
 
     category: Yup.string().required('Category is required'),
 
     instructions: Yup.string()
       .min(20, 'Instructions must be at least 20 characters')
+      .max(1200, 'Instructions should have at most 1200 characters')
       .required('Instructions are required'),
 
     photo: Yup.mixed().required('Photo is required'),
-    
+
     ingredients: Yup.array()
       .min(2, 'At least two ingredient is required')
+      .max(16, 'Can have at most 16 ingredients!')
       .required('Ingredients are required'),
   });
 
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     setSubmitting(true);
 
-    if (selectedIngredients.length === 0) {
-      toast.error('Add at least one ingredient');
-      setSubmitting(false);
-      return;
-    }
-
     const fieldMap = {
       title: 'name',
       time: 'cookingTime',
       calories: 'foodEnergy',
-
     };
 
     const formData = new FormData();
 
     Object.entries(values).forEach(([key, val]) => {
-      if (val !== null && val !== '') {
+      if (val !== null && val !== '' && key !== 'ingredients') {
         const mappedKey = fieldMap[key] || key;
         formData.append(mappedKey, val);
       }
     });
 
-    const mappedIngredients = selectedIngredients.map(({ name, amount }) => ({
+    const mappedIngredients = values.ingredients.map(({ name, amount }) => ({
       name,
       quantity: amount,
     }));
@@ -159,19 +159,19 @@ const AddRecipeForm = () => {
       setRecipeId(response.data._id);
       toggleModalState();
       resetForm();
-      setSelectedIngredients([]);
     } catch (error) {
-      const errorMessage =
-        error?.message ||
-        error?.response?.data?.message ||
-        'Error adding recipe';
+      const formattedMessage = error.data.errors
+        .map((err, i) => `• ${err.message}`)
+        .join('\n');
+
+      const errorMessage = formattedMessage || 'Error adding recipe';
       toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }
   };
 
-  const IngredientSelector = () => {
+  const IngredientSelector = ({ values, setFieldValue }) => {
     const [ingredientId, setIngredientId] = useState('');
     const [amount, setAmount] = useState('');
 
@@ -181,7 +181,7 @@ const AddRecipeForm = () => {
         return;
       }
 
-      if (selectedIngredients.some(i => i.id === ingredientId)) {
+      if (values.ingredients.some(i => i.id === ingredientId)) {
         toast.error('This ingredient has already been added');
         return;
       }
@@ -194,21 +194,22 @@ const AddRecipeForm = () => {
         return;
       }
 
-      setSelectedIngredients([
-        ...selectedIngredients,
+      const updated = [
+        ...values.ingredients,
         {
           id: ingredient._id || ingredient.id,
           name: ingredient.name,
           amount: amount.trim(),
         },
-      ]);
-
+      ];
+      setFieldValue('ingredients', updated);
       setIngredientId('');
       setAmount('');
     };
 
     const removeIngredient = id => {
-      setSelectedIngredients(selectedIngredients.filter(i => i.id !== id));
+      const updated = values.ingredients.filter(i => i.id !== id);
+      setFieldValue('ingredients', updated);
     };
 
     const handleKeyPress = e => {
@@ -273,10 +274,10 @@ const AddRecipeForm = () => {
             Add new Ingredient
           </button>
           <ErrorMessage
-                  name="ingredients"
-                  component="div"
-                  className={styles.fieldError}
-                />
+            name="ingredients"
+            component="div"
+            className={styles.fieldError}
+          />
         </div>
 
         <div className={styles.selectedIngredients}>
@@ -289,8 +290,8 @@ const AddRecipeForm = () => {
               </tr>
             </thead>
             <tbody>
-              {selectedIngredients.length > 0 ? (
-                selectedIngredients.map(ingredient => (
+              {values.ingredients.length > 0 ? (
+                values.ingredients.map(ingredient => (
                   <tr key={ingredient.id}>
                     <td>{ingredient.name}</td>
                     <td>{ingredient.amount}</td>
@@ -521,8 +522,10 @@ const AddRecipeForm = () => {
                 </div>
               </div>
 
-              <IngredientSelector />
-              
+              <IngredientSelector
+                values={values}
+                setFieldValue={setFieldValue}
+              />
 
               <div className={styles.formField}>
                 <label className={styles.instrHead} htmlFor="instructions">

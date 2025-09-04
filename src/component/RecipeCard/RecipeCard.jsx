@@ -1,21 +1,20 @@
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { AuthModal } from '../AuthModal/AuthModal';
 import { useFavoriteRecipe } from '../../hooks/useFavoriteRecipe';
 import Loader from '../Loader/Loader';
 import css from './RecipeCard.module.css';
 
-const RecipeCard = ({ recipe, onLearnMore, variant }) => {
+const RecipeCard = ({ recipe }) => {
   const { saved, isLoading, showAuthModal, setShowAuthModal, toggleSave } =
     useFavoriteRecipe(recipe._id);
+
+  const location = useLocation();
+  const path = location.pathname;
 
   const navigate = useNavigate();
 
   const handleLearnMoreClick = () => {
-    if (onLearnMore) {
-      onLearnMore(recipe);
-    } else {
-      navigate(`/recipes/${recipe._id}`);
-    }
+    navigate(`/recipes/${recipe._id}`);
   };
 
   return (
@@ -41,12 +40,14 @@ const RecipeCard = ({ recipe, onLearnMore, variant }) => {
       <div className={css.cardActions}>
         <button
           type="button"
-           className={`${css.learnMoreBtn} ${variant === "own" ? css.learnMoreOwn : ""}`}
+          className={`${css.learnMoreBtn} ${
+            path === '/profile/own' ? css.learnMoreOwn : ''
+          }`}
           onClick={handleLearnMoreClick}
         >
           Learn more
         </button>
-        {(variant === "favorites" || variant === "public") && (
+        {(path === '/profile/favorites' || path === '/') && (
           <button
             type="button"
             onClick={() => toggleSave(() => setShowAuthModal(true))}

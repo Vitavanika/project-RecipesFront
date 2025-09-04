@@ -5,15 +5,15 @@ import { toggleFavoriteRecipe } from '../redux/recipes/operations';
 import { getIsLoggedIn, getUserData } from '../redux/auth/selectors';
 import { useLockBodyScroll } from './useLockBodyScroll';
 
-export const useFavoriteRecipe = (recipeId) => {
+export const useFavoriteRecipe = recipeId => {
   const dispatch = useDispatch();
 
   const isAuthenticated = useSelector(getIsLoggedIn);
   const userData = useSelector(getUserData);
 
-  const favRecipes = useSelector(state => state.recipes?.favorites?.items || []);
+  const favRecipes = useSelector(state => state.recipes?.favorites?.hits || []);
 
-   const favorites = useMemo(() => {
+  const favorites = useMemo(() => {
     if (favRecipes.length > 0) {
       return favRecipes.map(r => r._id);
     }
@@ -37,7 +37,7 @@ export const useFavoriteRecipe = (recipeId) => {
       setIsLoading(true);
 
       const result = await dispatch(
-        toggleFavoriteRecipe({ recipeId, isFavorite: saved})
+        toggleFavoriteRecipe({ recipeId, isFavorite: saved })
       ).unwrap();
 
       toast.success(

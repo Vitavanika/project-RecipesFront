@@ -21,8 +21,7 @@ import { getIngredientsSlice } from '../../redux/ingredients/selectors';
 import { getCategories } from '../../redux/categories/operations';
 import { getIngredients } from '../../redux/ingredients/operations';
 import { getFilteredRecipes } from '../../redux/recipes/operations';
-import { getTotalRecipes } from '../../redux/recipes/selectors';
-import { resetHits } from '../../redux/recipes/slice';
+import { getFilteredTotalRecipes } from '../../redux/recipes/selectors';
 
 export default function Filters() {
   const dispatch = useDispatch();
@@ -69,7 +68,7 @@ export default function Filters() {
   const selectedIngredients = useSelector(getSelectedIngredients);
   const page = useSelector(getPage);
   const perPage = useSelector(getPerPage);
-  const totalRecipes = useSelector(getTotalRecipes);
+  const totalRecipes = useSelector(getFilteredTotalRecipes);
 
   // --------------------
   const query = useMemo(() => {
@@ -174,7 +173,6 @@ export default function Filters() {
   const handleReset = () => {
     setSearchParams({});
     dispatch(resetFilters());
-    dispatch(resetHits());
   };
 
   // --------------------

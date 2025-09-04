@@ -17,6 +17,17 @@
   text-align: center;
 }
 
+.recipesCount {
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--color-black);
+}
+
+.countWrapper {
+  padding: 6px 0;
+  margin-bottom: 16px;
+}
+
 .loader,
 .error {
   margin-top: 8px;
@@ -78,6 +89,10 @@
 }
 
 @media screen and (min-width: 1440px) {
+  .countWrapper {
+    margin-bottom: 24px;
+  }
+
   .wrap {
     max-width: 1225px;
     grid-template-columns: repeat(4, 1fr);

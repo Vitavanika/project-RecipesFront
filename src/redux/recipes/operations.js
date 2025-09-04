@@ -3,28 +3,34 @@ import apiClient from '../../api/apiClient.js';
 
 export const fetchRecipesByVariant = createAsyncThunk(
   'recipes/fetchRecipesByVariant',
-  async (variant, thunkAPI) => {
-    const state = thunkAPI.getState();
-    const { own, favorites } = state.recipes;
+  async (requestParams, thunkAPI) => {
+    const { searchParams, recipeType } = requestParams;
 
     try {
-      if (variant === 'own' && own.items.length === 0 && !own.isLoading) {
-        const { data } = await apiClient.get('/recipes/own');
-        return { ...data.data, variant: 'own' };
+      let endpoint = null;
+
+      if (recipeType === 'own') {
+        endpoint = '/recipes/own';
+      } else if (recipeType === 'favorites') {
+        endpoint = '/recipes/favorites';
+      } else {
+        return thunkAPI.rejectWithValue({
+          message: `Unknown recipeType: ${recipeType}`,
+          variant: recipeType,
+        });
       }
 
-      if (
-        variant === 'favorites' &&
-        favorites.items.length === 0 &&
-        !favorites.isLoading
-      ) {
-        const { data } = await apiClient.get('/recipes/favorites');
-        return { ...data.data, variant: 'favourites' };
-      }
+      const response = await apiClient.get(endpoint, { params: searchParams });
 
-      return thunkAPI.rejectWithValue('Data already loaded or loading.');
+      return { ...response.data.data, variant: recipeType };
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue({
+        message:
+          error.response?.data?.message ||
+          error.message ||
+          'Failed to load recipes',
+        variant: recipeType,
+      });
     }
   }
 );

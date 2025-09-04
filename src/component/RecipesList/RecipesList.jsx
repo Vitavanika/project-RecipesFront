@@ -1,100 +1,30 @@
-import { useEffect, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styles from './RecipesList.module.css';
 import RecipeCard from '../RecipeCard/RecipeCard';
 import LoadMoreBtn from '../LoadMoreBtn/LoadMoreBtn';
-import { hasNextPage } from '../../redux/recipes/selectors';
-import {
-  fetchOwnRecipes,
-  fetchFavRecipes,
-} from '../../redux/recipes/operations';
-import { getIsLoggedIn } from '../../redux/auth/selectors';
 import NoRecipesFound from '../NoRecipiesFound/NoRecipesFound';
+import { useLocation } from 'react-router';
+import * as recipeSelectors from '../../redux/recipes/selectors';
 
-export default function RecipesList({
-  variant,
-  onLearnMore,
-  onToggleFavorite,
-  onDelete,
-  onOpenAuthModal,
-  isAuthenticated = false,
-}) {
-  const hasFetched = useRef({});
-  const dispatch = useDispatch();
-  const isLoggedIn = useSelector(getIsLoggedIn);
+export default function RecipesList() {
+  const location = useLocation();
+  const path = location.pathname;
 
-  const items = useSelector(s => {
-    switch (variant) {
-      case 'favorites':
-        return s?.recipes?.favorites?.items ?? [];
-      case 'own':
-        return s?.recipes?.own?.items ?? [];
-      default:
-        return s?.recipes?.filteredRecipes?.hits ?? [];
-    }
-  });
+  const getRenderParams = {
+    '/': recipeSelectors.selectFilteredRecipes,
+    '/profile/favorites': recipeSelectors.getFavorites,
+    '/profile/own': recipeSelectors.getOwn,
+  };
 
-  const isLoading = useSelector(s => {
-    switch (variant) {
-      case 'favorites':
-        return !!s?.recipes?.favorites?.isLoading;
-      case 'own':
-        return !!s?.recipes?.own?.isLoading;
-      default:
-        return !!s?.recipes?.filteredRecipes?.isLoading;
-    }
-  });
+  const currentState = useSelector(getRenderParams[path]);
 
-  const error = useSelector(s => {
-    switch (variant) {
-      case 'favorites':
-        return s?.recipes?.favorites?.error ?? '';
-      case 'own':
-        return s?.recipes?.own?.error ?? '';
-      default:
-        return s?.recipes?.filteredRecipes?.error ?? '';
-    }
-  });
+  const hits = currentState.hits;
+  const totalRecipes = currentState.totalItems;
+  const hasNextPage = currentState.hasNextPage;
+  const isLoading = currentState.isLoading;
+  const error = currentState.error;
 
-  const isNextpage = useSelector(s => {
-    switch (variant) {
-      case 'favorites':
-        return s?.recipes?.pagination?.hasNextPage ?? false;
-      case 'own':
-        return s?.recipes?.pagination?.hasNextPage ?? false;
-      default:
-        return hasNextPage(s);
-    }
-  });
-
-  useEffect(() => {
-    const currentHasFetched = hasFetched.current;
-    if (!isLoggedIn) {
-      return;
-    }
-    if (!currentHasFetched[variant]) {
-      currentHasFetched[variant] = true;
-
-      switch (variant) {
-        case 'own':
-          dispatch(fetchOwnRecipes());
-          break;
-        case 'favorites':
-          dispatch(fetchFavRecipes());
-          break;
-        default:
-          break;
-      }
-    }
-
-    return () => {
-      if (currentHasFetched) {
-        delete currentHasFetched[variant];
-      }
-    };
-  }, [variant, isLoggedIn, dispatch]);
-
-  if (isLoading && !items.length) {
+  if (isLoading && !hits.length) {
     return (
       <div className={styles.loader} role="status" aria-live="polite">
         <span className={styles.spinner} /> Loading…
@@ -102,18 +32,18 @@ export default function RecipesList({
     );
   }
 
-  if (error && !items.length) {
+  if (error && !hits.length) {
     return <div className={styles.error}>⚠️ {String(error)}</div>;
   }
 
-  if (!items.length && !isLoading) {
-    if (variant === 'public') {
+  if (!hits.length && !isLoading) {
+    if (path === '/') {
       return <NoRecipesFound />;
     }
 
-    if (variant === 'favorites' || variant === 'own') {
+    if (path === '/profile/favorites' || path === '/profile/own') {
       const emptyMessage =
-        variant === 'favorites'
+        path === '/profile/favorites'
           ? "You don't have any saved recipes yet. Add some by clicking the save button."
           : "You haven't added your own recipes yet. Click 'Add recipes' to create your first recipe.";
 
@@ -121,33 +51,33 @@ export default function RecipesList({
     }
   }
 
-  const uniqueItems = items.filter(
+  const uniqueItems = hits.filter(
     (recipe, index, self) => index === self.findIndex(r => r._id === recipe._id)
   );
 
-  const shouldShowLoadMore =
-    isNextpage && uniqueItems.length > 0 && uniqueItems.length >= 6;
-
   return (
-    <div
-      className={`${styles.wrap} ${
-        uniqueItems.length === 1 ? styles['single-item'] : ''
-      }`}
-    >
-      {uniqueItems.map(r => (
-        <RecipeCard
-          key={r._id || r.id}
-          recipe={r}
-          variant={variant}
-          isAuthenticated={isAuthenticated}
-          onLearnMore={onLearnMore}
-          onToggleFavorite={onToggleFavorite}
-          onDelete={onDelete}
-          onOpenAuthModal={onOpenAuthModal}
-          disabled={r._pending === true}
-        />
-      ))}
-      {shouldShowLoadMore && <LoadMoreBtn />}
-    </div>
+    <>
+      {(path === '/profile/favorites' || path === '/profile/own') && (
+        <div className={styles.countWrapper}>
+          <p className={styles.recipesCount}>{`${
+            totalRecipes ?? 0
+          } recipes`}</p>
+        </div>
+      )}
+      <div
+        className={`${styles.wrap} ${
+          uniqueItems.length === 1 ? styles['single-item'] : ''
+        }`}
+      >
+        {uniqueItems.map(r => (
+          <RecipeCard
+            key={r._id || r.id}
+            recipe={r}
+            disabled={r._pending === true}
+          />
+        ))}
+        {hasNextPage && <LoadMoreBtn />}
+      </div>
+    </>
   );
 }

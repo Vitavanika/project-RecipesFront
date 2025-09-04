@@ -1,31 +1,43 @@
 import css from './ProfilePage.module.css';
-import { useNavigate, useParams } from 'react-router';
+import { useNavigate, useParams, useLocation } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import ProfileNavigation from '../../component/ProfileNavigation/ProfileNavigation';
 import RecipesList from '../../component/RecipesList/RecipesList';
 import { fetchRecipesByVariant } from '../../redux/recipes/operations.js';
 import { getIsRefreshing } from '../../redux/auth/selectors';
-import {
-  selectOwnRecipes,
-  selectFavRecipes,
-  selectOwnRecipesLoading,
-  selectFavRecipesLoading,
-} from '../../redux/recipes/selectors';
+import * as recipeSelectors from '../../redux/recipes/selectors';
 
 const ProfilePage = () => {
   const { recipeType } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isRefreshing = useSelector(getIsRefreshing);
+  const location = useLocation();
+  const path = location.pathname;
 
-  const isOwnLoading = useSelector(selectOwnRecipesLoading);
-  const isFavLoading = useSelector(selectFavRecipesLoading);
-  const ownRecipes = useSelector(selectOwnRecipes);
-  const favRecipes = useSelector(selectFavRecipes);
+  const getPaginationParams = {
+    '/profile/favorites': {
+      page: recipeSelectors.getFavoritesCurrentPage,
+      perPage: recipeSelectors.getFavoritesPerPage,
+    },
+    '/profile/own': {
+      page: recipeSelectors.getOwnCurrentPage,
+      perPage: recipeSelectors.getOwnPerPage,
+    },
+  };
 
-  const items = recipeType === 'own' ? ownRecipes : favRecipes;
-  const isLoading = recipeType === 'own' ? isOwnLoading : isFavLoading;
+  const page = useSelector(getPaginationParams[path].page);
+  const perPage = useSelector(getPaginationParams[path].perPage);
+
+  const requestParams = useMemo(() => {
+    const q = {};
+    q.searchParams = {};
+    q.searchParams.page = page;
+    q.searchParams.perPage = perPage;
+    q.recipeType = recipeType;
+    return q;
+  }, [page, perPage, recipeType]);
 
   useEffect(() => {
     if (!recipeType || (recipeType !== 'favorites' && recipeType !== 'own')) {
@@ -35,27 +47,15 @@ const ProfilePage = () => {
 
   useEffect(() => {
     if (!isRefreshing) {
-      dispatch(fetchRecipesByVariant(recipeType));
+      dispatch(fetchRecipesByVariant(requestParams));
     }
-  }, [recipeType, dispatch, isRefreshing]);
-
-  const getEmptyMessage = () => {
-    if (recipeType === 'favorites') {
-      return "You don't have any saved recipes yet. Add some by clicking the save button.";
-    }
-    return "You haven't added your own recipes yet. Click 'Add recipes' to create your first recipe.";
-  };
+  }, [recipeType, requestParams, dispatch, isRefreshing]);
 
   return (
     <div className={css.pageContainer}>
       <h1 className={css.title}>My profile</h1>
       <ProfileNavigation />
-      <RecipesList
-        variant={recipeType}
-        items={items}
-        isLoading={isLoading}
-        emptyMessage={getEmptyMessage()}
-      />
+      <RecipesList />
     </div>
   );
 };

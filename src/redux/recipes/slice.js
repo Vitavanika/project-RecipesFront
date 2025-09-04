@@ -13,13 +13,25 @@ import { logOut } from '../auth/operations';
 
 const initialState = {
   own: {
-    items: [],
+    hits: [],
+    page: 1,
+    perPage: 12,
+    totalPages: 0,
+    hasPreviousPage: false,
+    hasNextPage: false,
+    totalItems: 0,
     isLoading: false,
     error: null,
     errorData: null,
   },
   favorites: {
-    items: [],
+    hits: [],
+    page: 1,
+    perPage: 12,
+    totalPages: 0,
+    hasPreviousPage: false,
+    hasNextPage: false,
+    totalItems: 0,
     isLoading: false,
     error: null,
     errorData: null,
@@ -33,6 +45,12 @@ const initialState = {
   },
   filteredRecipes: {
     hits: [],
+    page: 1,
+    perPage: 12,
+    totalPages: 0,
+    hasPreviousPage: false,
+    hasNextPage: false,
+    totalItems: 0,
     isLoading: false,
     error: null,
     errorData: null,
@@ -42,32 +60,17 @@ const initialState = {
     error: null,
     success: false,
   },
-  pagination: {
-    page: 1,
-    perPage: 12,
-    totalPages: 0,
-    hasPreviousPage: false,
-    hasNextPage: false,
-    totalItems: 0,
-  },
 };
 
 const recipesSlice = createSlice({
   name: 'recipes',
   initialState,
   reducers: {
-    setPerPage(state, action) {
-      state.pagination.perPage = action.payload.perPage;
+    setFavoritesPage(state, action) {
+      state.favorites.page = action.payload;
     },
-    setPage(state, action) {
-      state.pagination.page = action.payload.page;
-    },
-    setPaginationParams(state, action) {
-      state.pagination.perPage = action.payload.perPage;
-      state.pagination.page = action.payload.page;
-    },
-    resetHits(state) {
-      state.pagination = initialState.pagination;
+    setOwnPage(state, action) {
+      state.own.page = action.payload;
     },
   },
   extraReducers: builder => {
@@ -89,17 +92,17 @@ const recipesSlice = createSlice({
         } = action.payload;
 
         if (page > 1) {
-          state.own.items = [...(state.own.items || []), ...(hits || [])];
+          state.own.hits = [...(state.own.hits || []), ...(hits || [])];
         } else {
-          state.own.items = hits || [];
+          state.own.hits = hits || [];
         }
 
-        state.pagination.page = page;
-        state.pagination.perPage = perPage;
-        state.pagination.totalPages = totalPages;
-        state.pagination.hasPreviousPage = hasPreviousPage;
-        state.pagination.hasNextPage = hasNextPage;
-        state.pagination.totalItems = totalItems;
+        state.own.page = page;
+        state.own.perPage = perPage;
+        state.own.totalPages = totalPages;
+        state.own.hasPreviousPage = hasPreviousPage;
+        state.own.hasNextPage = hasNextPage;
+        state.own.totalItems = totalItems;
         state.own.isLoading = false;
       })
       .addCase(fetchOwnRecipes.rejected, (state, action) => {
@@ -127,20 +130,20 @@ const recipesSlice = createSlice({
         } = action.payload;
 
         if (page > 1) {
-          state.favorites.items = [
-            ...(state.favorites.items || []),
+          state.favorites.hits = [
+            ...(state.favorites.hits || []),
             ...(hits || []),
           ];
         } else {
-          state.favorites.items = hits || [];
+          state.favorites.hits = hits || [];
         }
 
-        state.pagination.page = page;
-        state.pagination.perPage = perPage;
-        state.pagination.totalPages = totalPages;
-        state.pagination.hasPreviousPage = hasPreviousPage;
-        state.pagination.hasNextPage = hasNextPage;
-        state.pagination.totalItems = totalItems;
+        state.favorites.page = page;
+        state.favorites.perPage = perPage;
+        state.favorites.totalPages = totalPages;
+        state.favorites.hasPreviousPage = hasPreviousPage;
+        state.favorites.hasNextPage = hasNextPage;
+        state.favorites.totalItems = totalItems;
         state.favorites.isLoading = false;
       })
       .addCase(fetchFavRecipes.rejected, (state, action) => {
@@ -171,14 +174,14 @@ const recipesSlice = createSlice({
       .addCase(toggleFavoriteRecipe.fulfilled, (state, action) => {
         const { recipeId, isFavorite } = action.payload;
 
-        if (state.favorites && state.favorites.items) {
+        if (state.favorites && state.favorites.hits) {
           if (isFavorite) {
-            if (!state.favorites.items.includes(recipeId)) {
-              state.favorites.items.push(recipeId);
+            if (!state.favorites.hits.includes(recipeId)) {
+              state.favorites.hits.push(recipeId);
             }
           }
         } else {
-          state.favorites.items = state.favorites.items.filter(
+          state.favorites.hits = state.favorites.hits.filter(
             id => id !== recipeId
           );
         }
@@ -216,12 +219,12 @@ const recipesSlice = createSlice({
           state.filteredRecipes.hits = hits || [];
         }
 
-        state.pagination.page = page;
-        state.pagination.perPage = perPage;
-        state.pagination.totalPages = totalPages;
-        state.pagination.hasPreviousPage = hasPreviousPage;
-        state.pagination.hasNextPage = hasNextPage;
-        state.pagination.totalItems = totalItems;
+        state.filteredRecipes.page = page;
+        state.filteredRecipes.perPage = perPage;
+        state.filteredRecipes.totalPages = totalPages;
+        state.filteredRecipes.hasPreviousPage = hasPreviousPage;
+        state.filteredRecipes.hasNextPage = hasNextPage;
+        state.filteredRecipes.totalItems = totalItems;
         state.filteredRecipes.isLoading = false;
       })
       .addCase(getFilteredRecipes.rejected, (state, action) => {
@@ -255,9 +258,81 @@ const recipesSlice = createSlice({
         state.own = initialState.own;
         state.favorites = initialState.favorites;
         state.pagination = initialState.pagination;
+      })
+
+      .addCase(fetchRecipesByVariant.rejected, (state, action) => {
+        const variant = action.meta.arg.recipeType;
+        if (variant === 'own') {
+          state.own.isLoading = false;
+          state.own.error =
+            action.payload?.message ||
+            action.error?.message ||
+            'Failed to load own recipes';
+          state.own.errorData = action.payload ?? null;
+        } else {
+          state.favorites.error =
+            action.payload?.message ||
+            action.error?.message ||
+            'Failed to toggle favorite status.';
+        }
+      })
+
+      .addCase(fetchRecipesByVariant.pending, (state, action) => {
+        const variant = action.meta.arg.recipeType;
+        if (variant === 'own') {
+          state.favorites.isLoading = true;
+          state.favorites.error = null;
+          state.favorites.errorData = null;
+        } else {
+          state.favorites.isLoading = true;
+          state.favorites.error = null;
+          state.favorites.errorData = null;
+        }
+      })
+      .addCase(fetchRecipesByVariant.fulfilled, (state, action) => {
+        const {
+          hits,
+          page,
+          perPage,
+          totalPages,
+          hasPreviousPage,
+          hasNextPage,
+          totalItems,
+          variant,
+        } = action.payload;
+        if (variant === 'own') {
+          if (page > 1) {
+            state.own.hits = [...(state.own.hits || []), ...(hits || [])];
+          } else {
+            state.own.hits = hits || [];
+          }
+          state.own.page = page;
+          state.own.perPage = perPage;
+          state.own.totalPages = totalPages;
+          state.own.hasPreviousPage = hasPreviousPage;
+          state.own.hasNextPage = hasNextPage;
+          state.own.totalItems = totalItems;
+          state.own.isLoading = false;
+        } else {
+          if (page > 1) {
+            state.favorites.hits = [
+              ...(state.favorites.hits || []),
+              ...(hits || []),
+            ];
+          } else {
+            state.favorites.hits = hits || [];
+          }
+          state.favorites.page = page;
+          state.favorites.perPage = perPage;
+          state.favorites.totalPages = totalPages;
+          state.favorites.hasPreviousPage = hasPreviousPage;
+          state.favorites.hasNextPage = hasNextPage;
+          state.favorites.totalItems = totalItems;
+          state.favorites.isLoading = false;
+        }
       });
   },
 });
 
 export default recipesSlice.reducer;
-export const { resetHits } = recipesSlice.actions;
+export const { resetHits, setFavoritesPage, setOwnPage } = recipesSlice.actions;

@@ -39,8 +39,6 @@ const AddRecipeForm = () => {
   const loading = isLoadingCategories || isLoadingIngredients;
   const error = isErrorCategories || isErrorIngredients;
 
-  const [selectedIngredients, setSelectedIngredients] = useState([]);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModalState = useCallback(() => setIsModalOpen(prev => !prev), []);
   const modalRef = useRef(null);
@@ -115,7 +113,7 @@ const AddRecipeForm = () => {
       .required('Instructions are required'),
 
     photo: Yup.mixed().required('Photo is required'),
-    
+
     ingredients: Yup.array()
       .min(2, 'At least two ingredient is required')
       .required('Ingredients are required'),
@@ -124,29 +122,22 @@ const AddRecipeForm = () => {
   const handleSubmit = async (values, { setSubmitting, resetForm }) => {
     setSubmitting(true);
 
-    if (selectedIngredients.length === 0) {
-      toast.error('Add at least one ingredient');
-      setSubmitting(false);
-      return;
-    }
-
     const fieldMap = {
       title: 'name',
       time: 'cookingTime',
       calories: 'foodEnergy',
-
     };
 
     const formData = new FormData();
 
     Object.entries(values).forEach(([key, val]) => {
-      if (val !== null && val !== '') {
+      if (val !== null && val !== '' && key !== 'ingredients') {
         const mappedKey = fieldMap[key] || key;
         formData.append(mappedKey, val);
       }
     });
 
-    const mappedIngredients = selectedIngredients.map(({ name, amount }) => ({
+    const mappedIngredients = values.ingredients.map(({ name, amount }) => ({
       name,
       quantity: amount,
     }));
@@ -159,7 +150,6 @@ const AddRecipeForm = () => {
       setRecipeId(response.data._id);
       toggleModalState();
       resetForm();
-      setSelectedIngredients([]);
     } catch (error) {
       const errorMessage =
         error?.message ||
@@ -171,7 +161,7 @@ const AddRecipeForm = () => {
     }
   };
 
-  const IngredientSelector = () => {
+  const IngredientSelector = ({ values, setFieldValue }) => {
     const [ingredientId, setIngredientId] = useState('');
     const [amount, setAmount] = useState('');
 
@@ -181,7 +171,7 @@ const AddRecipeForm = () => {
         return;
       }
 
-      if (selectedIngredients.some(i => i.id === ingredientId)) {
+      if (values.ingredients.some(i => i.id === ingredientId)) {
         toast.error('This ingredient has already been added');
         return;
       }
@@ -194,21 +184,22 @@ const AddRecipeForm = () => {
         return;
       }
 
-      setSelectedIngredients([
-        ...selectedIngredients,
+      const updated = [
+        ...values.ingredients,
         {
           id: ingredient._id || ingredient.id,
           name: ingredient.name,
           amount: amount.trim(),
         },
-      ]);
-
+      ];
+      setFieldValue('ingredients', updated);
       setIngredientId('');
       setAmount('');
     };
 
     const removeIngredient = id => {
-      setSelectedIngredients(selectedIngredients.filter(i => i.id !== id));
+      const updated = values.ingredients.filter(i => i.id !== id);
+      setFieldValue('ingredients', updated);
     };
 
     const handleKeyPress = e => {
@@ -273,10 +264,10 @@ const AddRecipeForm = () => {
             Add new Ingredient
           </button>
           <ErrorMessage
-                  name="ingredients"
-                  component="div"
-                  className={styles.fieldError}
-                />
+            name="ingredients"
+            component="div"
+            className={styles.fieldError}
+          />
         </div>
 
         <div className={styles.selectedIngredients}>
@@ -289,8 +280,8 @@ const AddRecipeForm = () => {
               </tr>
             </thead>
             <tbody>
-              {selectedIngredients.length > 0 ? (
-                selectedIngredients.map(ingredient => (
+              {values.ingredients.length > 0 ? (
+                values.ingredients.map(ingredient => (
                   <tr key={ingredient.id}>
                     <td>{ingredient.name}</td>
                     <td>{ingredient.amount}</td>
@@ -521,8 +512,10 @@ const AddRecipeForm = () => {
                 </div>
               </div>
 
-              <IngredientSelector />
-              
+              <IngredientSelector
+                values={values}
+                setFieldValue={setFieldValue}
+              />
 
               <div className={styles.formField}>
                 <label className={styles.instrHead} htmlFor="instructions">

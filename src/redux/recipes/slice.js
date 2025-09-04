@@ -1,7 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {
-  fetchOwnRecipes,
-  fetchFavRecipes,
   fetchRecipeById,
   toggleFavoriteRecipe,
   getFilteredRecipes,
@@ -75,83 +73,6 @@ const recipesSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(fetchOwnRecipes.pending, state => {
-        state.own.isLoading = true;
-        state.own.error = null;
-        state.own.errorData = null;
-      })
-      .addCase(fetchOwnRecipes.fulfilled, (state, action) => {
-        const {
-          hits,
-          page,
-          perPage,
-          totalPages,
-          hasPreviousPage,
-          hasNextPage,
-          totalItems,
-        } = action.payload;
-
-        if (page > 1) {
-          state.own.hits = [...(state.own.hits || []), ...(hits || [])];
-        } else {
-          state.own.hits = hits || [];
-        }
-
-        state.own.page = page;
-        state.own.perPage = perPage;
-        state.own.totalPages = totalPages;
-        state.own.hasPreviousPage = hasPreviousPage;
-        state.own.hasNextPage = hasNextPage;
-        state.own.totalItems = totalItems;
-        state.own.isLoading = false;
-      })
-      .addCase(fetchOwnRecipes.rejected, (state, action) => {
-        state.own.isLoading = false;
-        state.own.error =
-          action.payload?.message ||
-          action.error?.message ||
-          'Failed to load own recipes';
-        state.own.errorData = action.payload ?? null;
-      })
-      .addCase(fetchFavRecipes.pending, state => {
-        state.favorites.isLoading = true;
-        state.favorites.error = null;
-        state.favorites.errorData = null;
-      })
-      .addCase(fetchFavRecipes.fulfilled, (state, action) => {
-        const {
-          hits,
-          page,
-          perPage,
-          totalPages,
-          hasPreviousPage,
-          hasNextPage,
-          totalItems,
-        } = action.payload;
-
-        if (page > 1) {
-          state.favorites.hits = [
-            ...(state.favorites.hits || []),
-            ...(hits || []),
-          ];
-        } else {
-          state.favorites.hits = hits || [];
-        }
-
-        state.favorites.page = page;
-        state.favorites.perPage = perPage;
-        state.favorites.totalPages = totalPages;
-        state.favorites.hasPreviousPage = hasPreviousPage;
-        state.favorites.hasNextPage = hasNextPage;
-        state.favorites.totalItems = totalItems;
-        state.favorites.isLoading = false;
-      })
-      .addCase(fetchFavRecipes.rejected, (state, action) => {
-        state.favorites.isLoading = false;
-        state.favorites.error =
-          action.payload?.message || 'Failed to load favorite recipes';
-      })
-
       .addCase(fetchRecipeById.pending, state => {
         state.current.isLoading = true;
         state.current.error = null;
@@ -172,17 +93,14 @@ const recipesSlice = createSlice({
       })
 
       .addCase(toggleFavoriteRecipe.fulfilled, (state, action) => {
-        const { recipeId, isFavorite } = action.payload;
-
-        if (state.favorites && state.favorites.hits) {
-          if (isFavorite) {
-            if (!state.favorites.hits.includes(recipeId)) {
-              state.favorites.hits.push(recipeId);
-            }
+        const { recipeId, isFavorite, recipe } = action.payload;
+        if (isFavorite) {
+          if (!state.favorites.hits.some(r => r._id === recipeId)) {
+            state.favorites.hits.push(recipe);
           }
         } else {
           state.favorites.hits = state.favorites.hits.filter(
-            id => id !== recipeId
+            r => r._id !== recipeId
           );
         }
       })
@@ -269,7 +187,7 @@ const recipesSlice = createSlice({
             action.error?.message ||
             'Failed to load own recipes';
           state.own.errorData = action.payload ?? null;
-        } else {
+        } else if (variant === 'favorites') {
           state.favorites.error =
             action.payload?.message ||
             action.error?.message ||
@@ -280,10 +198,10 @@ const recipesSlice = createSlice({
       .addCase(fetchRecipesByVariant.pending, (state, action) => {
         const variant = action.meta.arg.recipeType;
         if (variant === 'own') {
-          state.favorites.isLoading = true;
-          state.favorites.error = null;
-          state.favorites.errorData = null;
-        } else {
+          state.own.isLoading = true;
+          state.own.error = null;
+          state.own.errorData = null;
+        } else if (variant === 'favorites') {
           state.favorites.isLoading = true;
           state.favorites.error = null;
           state.favorites.errorData = null;
